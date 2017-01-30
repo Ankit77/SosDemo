@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btn_capturePhoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Capture Photo" />
+
+    <Button
+        android:id="@+id/btn_selectphoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Gallery" />
+
+    <Button
+        android:id="@+id/btn_capturevideo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Capture Video" />
+
+    <Button
+        android:id="@+id/btn_selectvideo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Video" />
+</LinearLayout>
