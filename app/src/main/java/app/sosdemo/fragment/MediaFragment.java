@@ -3,7 +3,9 @@ package app.sosdemo.fragment;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
@@ -15,12 +17,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.lkland.util.FileUtils;
@@ -40,8 +44,11 @@ import com.lkland.videocompressor.video.IVideo;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import app.sosdemo.R;
+import app.sosdemo.adapter.DashboardAdapter;
+import app.sosdemo.model.ActionModel;
 import app.sosdemo.util.Constant;
 import app.sosdemo.util.GetFilePath;
 import app.sosdemo.util.Utils;
@@ -50,12 +57,8 @@ import app.sosdemo.util.Utils;
  * Created by indianic on 28/01/17.
  */
 
-public class MediaFragment extends Fragment implements View.OnClickListener, IQueueList {
+public class MediaFragment extends Fragment implements View.OnClickListener, IQueueList, DashboardAdapter.onActionListner {
     private View view;
-    private Button btnCapturePhoto;
-    private Button btnSelectPhoto;
-    private Button btnCaptureVideo;
-    private Button btnSelectVideo;
     //files
     private final String WRITE_PERMISSION = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     public static final int REQUEST_WRITE_ACCESS = 1000;
@@ -65,14 +68,14 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
     private final int REQUEST_PICK_IMAGE = 333;
     private final int REQUEST_PICK_VIDEO = 444;
     private final int REQUEST_PICK_FILE = 555;
-    private final int REQUEST_CATEGORY_CODE = 666;
-    private final int REQUEST_TAG_CODE = 777;
 
     protected String filePath = null;
     protected String cameraFilePath;
     private QueuedFFmpegCompressor mCompressor;
-
-
+    private RecyclerView rvActionList;
+    private DashboardAdapter dashboardAdapter;
+    private ArrayList<ActionModel> actionList;
+    private ProgressDialog progressDialog;
     ServiceConnection conn = new ServiceConnection() {
 
         @Override
@@ -100,7 +103,7 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_media, null);
+        view = inflater.inflate(R.layout.fragment_dashboard, null);
         init();
         return view;
 
@@ -131,6 +134,9 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
         this.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
                 Log.d("FINISH", "FINISH");
             }
         });
@@ -166,11 +172,28 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
 
 
     private void init() {
-        btnCapturePhoto = (Button) view.findViewById(R.id.btn_capturePhoto);
-        btnSelectPhoto = (Button) view.findViewById(R.id.btn_selectphoto);
-        btnCaptureVideo = (Button) view.findViewById(R.id.btn_capturevideo);
-        btnSelectVideo = (Button) view.findViewById(R.id.btn_selectvideo);
-        btnCapturePhoto.setOnClickListener(this);
+        rvActionList = (RecyclerView) view.findViewById(R.id.fragment_dashboard_rv_actionlist);
+        if (isWritePermission()) {
+            loadDashboardAdapter();
+        }
+    }
+
+
+    private void loadDashboardAdapter() {
+        loadActiondata();
+        dashboardAdapter = new DashboardAdapter(getActivity(), actionList, false);
+        dashboardAdapter.setOnactionListner(this);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        rvActionList.setLayoutManager(mLayoutManager);
+        rvActionList.setAdapter(dashboardAdapter);
+    }
+
+    private void loadActiondata() {
+        actionList = new ArrayList<>();
+        actionList.add(new ActionModel("SOS/EMergency", "VIDEO"));
+        actionList.add(new ActionModel("Domestic Violence", "VIDEO"));
+        actionList.add(new ActionModel("Trafic Update", "IMAGE"));
+        actionList.add(new ActionModel("Recording", "AUDIO"));
     }
 
     private void chooseImageFileFromStorage() {
@@ -237,29 +260,29 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
                     }
                 } else if (requestCode == REQUEST_CAPTURE_VIDEO) {
                     try {
-                        if (!TextUtils.isEmpty(cameraFilePath)) {
+
+                        if (!TextUtils.isEmpty(filePath)) {
+                            progressDialog = Utils.displayProgressDialog(getActivity());
                             final Uri uri = Uri.fromFile(new File(cameraFilePath));
                             filePath = GetFilePath.getPath(getActivity(), uri);
                             String outPath = FileUtils.createFolderInExternalStorageDirectory("VideoCompressor");
-                            String outName = "test";
-                            String outSize = "4";
-                            if (!TextUtils.isEmpty(filePath)) {
-
-                                ValidationFactory validationFactory = new ValidationFactory();
-                                int ret = validationFactory.getValidator(filePath, outPath, outName, outSize).validate();
-                                if (ret != AbstractCompressionOptionsValidator.PASS) {
-                                    //tvErrorMsg.setText(validationFactory.getErrorMsgPresenter().present(ret));
-                                    return;
-                                }
-
-                                Intent intent = new Intent(MediaFragment.this.getActivity(), CompressionService.class);
-                                intent.putExtra(CompressionService.TAG_ACTION, CompressionService.FLAG_ACTION_ADD_VIDEO);
-                                intent.putExtra(CompressionService.TAG_DATA_INPUT_FILE_PATH, filePath);
-                                intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_PATH, outPath);
-                                intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_NAME, outName);
-                                intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_SIZE, outSize);
-                                MediaFragment.this.getActivity().startService(intent);
+                            String outName = "video_" + System.currentTimeMillis();
+                            String outSize = Constant.VIDEO_SIZE;
+                            ValidationFactory validationFactory = new ValidationFactory();
+                            int ret = validationFactory.getValidator(filePath, outPath, outName, outSize).validate();
+                            if (ret != AbstractCompressionOptionsValidator.PASS) {
+                                //tvErrorMsg.setText(validationFactory.getErrorMsgPresenter().present(ret));
+                                return;
                             }
+
+                            Intent intent = new Intent(MediaFragment.this.getActivity(), CompressionService.class);
+                            intent.putExtra(CompressionService.TAG_ACTION, CompressionService.FLAG_ACTION_ADD_VIDEO);
+                            intent.putExtra(CompressionService.TAG_DATA_INPUT_FILE_PATH, filePath);
+                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_PATH, outPath);
+                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_NAME, outName);
+                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_SIZE, outSize);
+                            MediaFragment.this.getActivity().startService(intent);
+
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -279,6 +302,26 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
                         }
                     } else if (requestCode == REQUEST_PICK_VIDEO) {
                         if (!TextUtils.isEmpty(filePath)) {
+                            progressDialog = Utils.displayProgressDialog(getActivity());
+                            final Uri uri = Uri.fromFile(new File(filePath));
+                            filePath = GetFilePath.getPath(getActivity(), uri);
+                            String outPath = FileUtils.createFolderInExternalStorageDirectory("VideoCompressor");
+                            String outName = "video_" + System.currentTimeMillis();
+                            String outSize = Constant.VIDEO_SIZE;
+                            ValidationFactory validationFactory = new ValidationFactory();
+                            int ret = validationFactory.getValidator(filePath, outPath, outName, outSize).validate();
+                            if (ret != AbstractCompressionOptionsValidator.PASS) {
+                                //tvErrorMsg.setText(validationFactory.getErrorMsgPresenter().present(ret));
+                                return;
+                            }
+
+                            Intent intent = new Intent(MediaFragment.this.getActivity(), CompressionService.class);
+                            intent.putExtra(CompressionService.TAG_ACTION, CompressionService.FLAG_ACTION_ADD_VIDEO);
+                            intent.putExtra(CompressionService.TAG_DATA_INPUT_FILE_PATH, filePath);
+                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_PATH, outPath);
+                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_NAME, outName);
+                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_SIZE, outSize);
+                            MediaFragment.this.getActivity().startService(intent);
                         }
                     }
                 }
@@ -376,7 +419,7 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // write permission has been granted
                 Log.i("Permission", "permission has now been granted. Showing preview.");
-                captureImage();
+                loadDashboardAdapter();
             } else {
                 Log.i("Permission", "permission was NOT granted.");
                 Toast.makeText(getActivity(), "msg_write_permission_needed", Toast.LENGTH_LONG).show();
@@ -390,12 +433,64 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
 
     @Override
     public void onClick(View view) {
-        if (view == btnCapturePhoto) {
-            if (isWritePermission()) {
-                captureVideo();
-            }
+
+    }
+
+
+    @Override
+    public void onClick(String action) {
+        if (action.equalsIgnoreCase(Constant.TYPE_VIDEO)) {
+            selectVideoOption();
+        } else if (action.equalsIgnoreCase(Constant.TYPE_AUDIO)) {
+            selectImageOption();
+        } else {
+
         }
     }
 
 
+    private void selectImageOption() {
+
+        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Add Photo!");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (item == 0) {
+                    captureImage();
+                } else if (item == 1) {
+                    chooseImageFileFromStorage();
+
+                } else if (options[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+
+    private void selectVideoOption() {
+
+        final CharSequence[] options = {"Take Video", "Choose from Gallery", "Cancel"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Add Photo!");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (item == 0) {
+                    captureVideo();
+                } else if (item == 1) {
+                    chooseVideoFileFromStorage();
+
+                } else if (options[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
 }
