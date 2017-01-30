@@ -11,6 +11,7 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -48,6 +49,7 @@ import java.util.ArrayList;
 
 import app.sosdemo.R;
 import app.sosdemo.adapter.DashboardAdapter;
+import app.sosdemo.audio.AudioRecorder;
 import app.sosdemo.model.ActionModel;
 import app.sosdemo.util.Constant;
 import app.sosdemo.util.GetFilePath;
@@ -76,6 +78,7 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
     private DashboardAdapter dashboardAdapter;
     private ArrayList<ActionModel> actionList;
     private ProgressDialog progressDialog;
+    private AudioRecorder audioRecorder;
     ServiceConnection conn = new ServiceConnection() {
 
         @Override
@@ -265,7 +268,7 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
                             progressDialog = Utils.displayProgressDialog(getActivity());
                             final Uri uri = Uri.fromFile(new File(cameraFilePath));
                             filePath = GetFilePath.getPath(getActivity(), uri);
-                            String outPath = FileUtils.createFolderInExternalStorageDirectory("VideoCompressor");
+                            String outPath = FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.VIDEO_FOLDER_NAME);
                             String outName = "video_" + System.currentTimeMillis();
                             String outSize = Constant.VIDEO_SIZE;
                             ValidationFactory validationFactory = new ValidationFactory();
@@ -305,7 +308,7 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
                             progressDialog = Utils.displayProgressDialog(getActivity());
                             final Uri uri = Uri.fromFile(new File(filePath));
                             filePath = GetFilePath.getPath(getActivity(), uri);
-                            String outPath = FileUtils.createFolderInExternalStorageDirectory("VideoCompressor");
+                            String outPath = FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.VIDEO_FOLDER_NAME);
                             String outName = "video_" + System.currentTimeMillis();
                             String outSize = Constant.VIDEO_SIZE;
                             ValidationFactory validationFactory = new ValidationFactory();
@@ -441,10 +444,31 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
     public void onClick(String action) {
         if (action.equalsIgnoreCase(Constant.TYPE_VIDEO)) {
             selectVideoOption();
-        } else if (action.equalsIgnoreCase(Constant.TYPE_AUDIO)) {
+        } else if (action.equalsIgnoreCase(Constant.TYPE_IMAGE)) {
             selectImageOption();
         } else {
+            audioRecorder = new AudioRecorder(FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.AUDIO_FOLDER_NAME) + "/Audio_" + System.currentTimeMillis());
+            try {
+                audioRecorder.start();
+                CountDownTimer countDowntimer = new CountDownTimer(Constant.AUDIO_RECORD_TIMELIMIT, 1000) {
+                    public void onTick(long millisUntilFinished) {
+                    }
 
+                    public void onFinish() {
+                        try {
+                            audioRecorder.stop();
+                        } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                };
+                countDowntimer.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

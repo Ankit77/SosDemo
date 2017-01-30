@@ -7,12 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
 
 import app.sosdemo.R;
 import app.sosdemo.model.ActionModel;
+import app.sosdemo.util.Constant;
 
 /**
  * Created by indianic on 30/01/17.
@@ -49,7 +51,14 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Recy
     public void onBindViewHolder(DashboardAdapter.RecyclerViewHolders holder, final int position) {
 
         holder.tvCaption.setText(mList.get(position).getCaption());
-        holder.tvCaption.setOnClickListener(new View.OnClickListener() {
+        if (mList.get(position).getAction().equalsIgnoreCase(Constant.TYPE_VIDEO)) {
+            holder.ivImage.setImageResource(R.drawable.ic_videocam);
+        } else if (mList.get(position).getAction().equalsIgnoreCase(Constant.TYPE_IMAGE)) {
+
+        } else if (mList.get(position).getAction().equalsIgnoreCase(Constant.TYPE_AUDIO)) {
+
+        }
+        holder.llMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -74,11 +83,13 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Recy
 
         ImageView ivImage;
         TextView tvCaption;
+        LinearLayout llMain;
 
         RecyclerViewHolders(View itemView) {
             super(itemView);
             ivImage = (ImageView) itemView.findViewById(R.id.row_dashboard_iv_image);
             tvCaption = (TextView) itemView.findViewById(R.id.row_dashboard_tv_name);
+            llMain = (LinearLayout) itemView.findViewById(R.id.row_dashboard_ll_main);
 
         }
     }

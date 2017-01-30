@@ -11,4 +11,8 @@ public class Constant {
     public static final String TYPE_IMAGE = "IMAGE";
     public static final String TYPE_AUDIO = "AUDIO";
     public static final String VIDEO_SIZE = "4";
+    public static final String VIDEO_FOLDER_NAME = "KAVACH";
+    public static final String IMAGE_FOLDER_NAME = "IMAGE";
+    public static final String AUDIO_FOLDER_NAME = "AUDIO";
+    public static final int AUDIO_RECORD_TIMELIMIT = 10000;
 }
