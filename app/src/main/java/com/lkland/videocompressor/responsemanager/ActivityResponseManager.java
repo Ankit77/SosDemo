@@ -2,11 +2,11 @@ package com.lkland.videocompressor.responsemanager;
 
 import com.lkland.videocompressor.video.IVideo;
 
-import app.sosdemo.fragment.MediaFragment;
+import app.sosdemo.fragment.DashboardFragment;
 
 public class ActivityResponseManager extends AbstractResponseManager{
-	protected MediaFragment mFragment;
-	public ActivityResponseManager(MediaFragment fragment) {
+	protected DashboardFragment mFragment;
+	public ActivityResponseManager(DashboardFragment fragment) {
 		this.mFragment = fragment;	
 	}
 

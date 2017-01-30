@@ -5,11 +5,15 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
@@ -17,6 +21,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v13.app.FragmentCompat;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +33,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.lkland.util.FileUtils;
 import com.lkland.util.Logger;
 import com.lkland.videocompressor.compressor.QueuedFFmpegCompressor;
@@ -47,6 +59,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import app.sosdemo.KavachApp;
 import app.sosdemo.R;
 import app.sosdemo.adapter.DashboardAdapter;
 import app.sosdemo.audio.AudioRecorder;
@@ -54,22 +67,26 @@ import app.sosdemo.model.ActionModel;
 import app.sosdemo.util.Constant;
 import app.sosdemo.util.GetFilePath;
 import app.sosdemo.util.Utils;
+import id.zelory.compressor.Compressor;
 
 /**
  * Created by indianic on 28/01/17.
  */
 
-public class MediaFragment extends Fragment implements View.OnClickListener, IQueueList, DashboardAdapter.onActionListner {
+public class DashboardFragment extends Fragment implements View.OnClickListener, IQueueList, DashboardAdapter.onActionListner, LocationListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
     private View view;
     //files
-    private final String WRITE_PERMISSION = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-    public static final int REQUEST_WRITE_ACCESS = 1000;
-
     private final int REQUEST_CAPTURE_IMAGE = 111;
     private final int REQUEST_CAPTURE_VIDEO = 222;
     private final int REQUEST_PICK_IMAGE = 333;
     private final int REQUEST_PICK_VIDEO = 444;
     private final int REQUEST_PICK_FILE = 555;
+    int PERMISSION_ALL = 1;
+
+
+    String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
     protected String filePath = null;
     protected String cameraFilePath;
@@ -79,6 +96,12 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
     private ArrayList<ActionModel> actionList;
     private ProgressDialog progressDialog;
     private AudioRecorder audioRecorder;
+
+    private static final long INTERVAL = 1000 * 10;
+    private static final long FASTEST_INTERVAL = 1000 * 5;
+    private LocationRequest mLocationRequest;
+    private GoogleApiClient mGoogleApiClient;
+
     ServiceConnection conn = new ServiceConnection() {
 
         @Override
@@ -86,7 +109,7 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
             Logger.log("");
             AbstractCompressionService service = ((AbstractCompressionService.LocalBinder) binder).getService();
             mCompressor = (QueuedFFmpegCompressor) service.getCompressor();
-            IResponseManager arm = new ActivityResponseManager(MediaFragment.this);
+            IResponseManager arm = new ActivityResponseManager(DashboardFragment.this);
             OnProgressHandler prh = (OnProgressHandler) mCompressor.getOnProgressListener();
             OnQueueHandler qrh = (OnQueueHandler) mCompressor.getOnQueueListener();
             prh.addResponseManager(arm);
@@ -109,8 +132,21 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
         view = inflater.inflate(R.layout.fragment_dashboard, null);
         init();
         return view;
+    }
 
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mGoogleApiClient != null && !mGoogleApiClient.isConnected())
+            mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected())
+            mGoogleApiClient.disconnect();
     }
 
     @Override
@@ -140,7 +176,6 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
-                Log.d("FINISH", "FINISH");
             }
         });
 
@@ -153,8 +188,6 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
             public void run() {
                 ProgressPaser pp = new ProgressPaser();
                 pp.parse(str);
-                Log.e("Progress", "Per - " + pp.getTime());
-                Log.e("Progress", "Per - " + pp.getTotalTime());
 
             }
 
@@ -176,13 +209,20 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
 
     private void init() {
         rvActionList = (RecyclerView) view.findViewById(R.id.fragment_dashboard_rv_actionlist);
-        if (isWritePermission()) {
+        if (hasPermissions(getActivity(), PERMISSIONS)) {
             loadDashboardAdapter();
         }
     }
 
 
     private void loadDashboardAdapter() {
+        createLocationRequest();
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        mGoogleApiClient.connect();
         loadActiondata();
         dashboardAdapter = new DashboardAdapter(getActivity(), actionList, false);
         dashboardAdapter.setOnactionListner(this);
@@ -256,6 +296,21 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
                             final Uri uri = Uri.fromFile(new File(cameraFilePath));
                             filePath = GetFilePath.getPath(getActivity(), uri);
                             if (!TextUtils.isEmpty(filePath)) {
+
+                                File compressedImage = null;
+                                //compress image
+                                if (Utils.getFileSizeInKB(filePath) > 500) {
+                                    compressedImage = new Compressor.Builder(getActivity())
+                                            .setMaxWidth(640)
+                                            .setMaxHeight(480)
+                                            .setQuality(75)
+                                            .setCompressFormat(Bitmap.CompressFormat.JPEG)
+                                            .setDestinationDirectoryPath(FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.IMAGE_FOLDER_NAME))
+                                            .build()
+                                            .compressToFile(new File(filePath));
+                                } else {
+                                    compressedImage = new File(filePath);
+                                }
                             }
                         }
                     } catch (Exception e) {
@@ -278,13 +333,13 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
                                 return;
                             }
 
-                            Intent intent = new Intent(MediaFragment.this.getActivity(), CompressionService.class);
+                            Intent intent = new Intent(DashboardFragment.this.getActivity(), CompressionService.class);
                             intent.putExtra(CompressionService.TAG_ACTION, CompressionService.FLAG_ACTION_ADD_VIDEO);
                             intent.putExtra(CompressionService.TAG_DATA_INPUT_FILE_PATH, filePath);
                             intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_PATH, outPath);
                             intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_NAME, outName);
                             intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_SIZE, outSize);
-                            MediaFragment.this.getActivity().startService(intent);
+                            DashboardFragment.this.getActivity().startService(intent);
 
                         }
                     } catch (Exception e) {
@@ -302,6 +357,20 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
                         }
                     } else if (requestCode == REQUEST_PICK_IMAGE) {
                         if (!TextUtils.isEmpty(filePath)) {
+                            File compressedImage = null;
+                            //compress image
+                            if (Utils.getFileSizeInKB(filePath) > 500) {
+                                compressedImage = new Compressor.Builder(getActivity())
+                                        .setMaxWidth(640)
+                                        .setMaxHeight(480)
+                                        .setQuality(75)
+                                        .setCompressFormat(Bitmap.CompressFormat.JPEG)
+                                        .setDestinationDirectoryPath(FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.IMAGE_FOLDER_NAME))
+                                        .build()
+                                        .compressToFile(new File(filePath));
+                            } else {
+                                compressedImage = new File(filePath);
+                            }
                         }
                     } else if (requestCode == REQUEST_PICK_VIDEO) {
                         if (!TextUtils.isEmpty(filePath)) {
@@ -318,13 +387,13 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
                                 return;
                             }
 
-                            Intent intent = new Intent(MediaFragment.this.getActivity(), CompressionService.class);
+                            Intent intent = new Intent(DashboardFragment.this.getActivity(), CompressionService.class);
                             intent.putExtra(CompressionService.TAG_ACTION, CompressionService.FLAG_ACTION_ADD_VIDEO);
                             intent.putExtra(CompressionService.TAG_DATA_INPUT_FILE_PATH, filePath);
                             intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_PATH, outPath);
                             intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_NAME, outName);
                             intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_SIZE, outSize);
-                            MediaFragment.this.getActivity().startService(intent);
+                            DashboardFragment.this.getActivity().startService(intent);
                         }
                     }
                 }
@@ -382,17 +451,16 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
 
     //Permission check
 
-    /**
-     * check write access
-     */
-    public boolean isWritePermission() {
-        // Check if the write permission is already available.
-        if (ContextCompat.checkSelfPermission(getActivity(), WRITE_PERMISSION) != PackageManager.PERMISSION_GRANTED) {
-            // Camera permission has not been granted.
-            requestWritePermission();
-            return false;
-        }
 
+    private boolean hasPermissions(Context context, String... permissions) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermission();
+                    return false;
+                }
+            }
+        }
         return true;
     }
 
@@ -401,9 +469,9 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
      * If the permission has been denied previously, a alert will prompt the user to grant the
      * permission, otherwise it is requested directly.
      */
-    private void requestWritePermission() {
+    private void requestPermission() {
         // permission has not been granted yet. Request it directly.
-        FragmentCompat.requestPermissions(this, new String[]{WRITE_PERMISSION}, REQUEST_WRITE_ACCESS);
+        FragmentCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
     }
 
     /**
@@ -413,13 +481,13 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
 
-        if (requestCode == REQUEST_WRITE_ACCESS) {
+        if (requestCode == PERMISSION_ALL) {
             // BEGIN_INCLUDE(permission_result)
             // Received permission result for write permission.
             Log.i("Permission", "Received response for write permission request.");
 
             // Check if the only required permission has been granted
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED && grantResults[3] == PackageManager.PERMISSION_GRANTED) {
                 // write permission has been granted
                 Log.i("Permission", "permission has now been granted. Showing preview.");
                 loadDashboardAdapter();
@@ -516,5 +584,50 @@ public class MediaFragment extends Fragment implements View.OnClickListener, IQu
             }
         });
         builder.show();
+    }
+
+
+    //--------------------LOCATION CODE-----------------------------------
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        startLocationUpdates();
+    }
+
+    protected void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        PendingResult<Status> pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, mLocationRequest, DashboardFragment.this);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        KavachApp.getInstance().setCurrentLocation(location);
+
+    }
+
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 }

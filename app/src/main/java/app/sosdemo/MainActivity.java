@@ -5,7 +5,7 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import app.sosdemo.fragment.MediaFragment;
+import app.sosdemo.fragment.DashboardFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -13,10 +13,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MediaFragment mediaFragment = new MediaFragment();
+        DashboardFragment mediaFragment = new DashboardFragment();
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.container, mediaFragment, MediaFragment.class.getSimpleName());
+        fragmentTransaction.add(R.id.container, mediaFragment, DashboardFragment.class.getSimpleName());
         fragmentTransaction.commit();
 
     }
