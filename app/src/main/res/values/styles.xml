@@ -1,11 +1,23 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="btn" parent="@android:style/Widget.Holo.Light.Button">
+        <item name="android:minWidth">1.0dip</item>
+        <item name="android:minHeight">1.0dip</item>
+    </style>
+
+    <style name="editext_normal" parent="@android:style/Widget.EditText">
+        <item name="android:textSize">@dimen/_12sdp</item>
+        <item name="android:ems">10</item>
+        <item name="android:background">@color/color_white</item>
+        <item name="android:drawablePadding">@dimen/_7sdp</item>
+        <item name="android:inputType">textEmailAddress</item>
+    </style>
 </resources>
