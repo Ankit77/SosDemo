@@ -55,6 +55,7 @@ public class SettingFragemt extends Fragment implements View.OnClickListener {
         });
         tvChangePass = (TextView) view.findViewById(R.id.fragnent_setting_tv_changePass);
         loadContactList();
+        tvChangePass.setOnClickListener(this);
 
     }
 
@@ -62,6 +63,7 @@ public class SettingFragemt extends Fragment implements View.OnClickListener {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!isHidden()) {
+            ((MainActivity) getActivity()).setTitle(getString(R.string.lbl_title_settings));
             ((MainActivity) getActivity()).isshowBackButton(true);
             ((MainActivity) getActivity()).isMenuButton(false);
         }

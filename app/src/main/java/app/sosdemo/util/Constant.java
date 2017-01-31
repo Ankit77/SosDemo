@@ -15,4 +15,10 @@ public class Constant {
     public static final String IMAGE_FOLDER_NAME = "IMAGE";
     public static final String AUDIO_FOLDER_NAME = "AUDIO";
     public static final int AUDIO_RECORD_TIMELIMIT = 10000;
+
+    //PREF
+    public static final String PREF_IS_LOGIN = "IS_LOGIN";
+    public static final String PREF_USERNAME = "USERNAME";
+    public static final String PREF_PASSWORD = "PASSWORD";
+    public static final String PREF_ISREMEMBER = "ISREMEMBER";
 }

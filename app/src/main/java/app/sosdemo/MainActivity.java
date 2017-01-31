@@ -2,6 +2,7 @@ package app.sosdemo;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import app.sosdemo.fragment.DashboardFragment;
 import app.sosdemo.fragment.LoginFragment;
 import app.sosdemo.fragment.SettingFragemt;
+import app.sosdemo.util.Constant;
 import app.sosdemo.util.Utils;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -26,11 +28,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-        LoginFragment loginFragment = new LoginFragment();
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.container, loginFragment, DashboardFragment.class.getSimpleName());
-        fragmentTransaction.commit();
+        if (KavachApp.getInstance().getPref().getBoolean(Constant.PREF_IS_LOGIN, false)) {
+            DashboardFragment dashboardFragment = new DashboardFragment();
+            Utils.replaceNextFragment(R.id.container, this, dashboardFragment);
+        } else {
+            LoginFragment loginFragment = new LoginFragment();
+            Utils.replaceNextFragment(R.id.container, this, loginFragment);
+        }
 
     }
 
@@ -63,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             imgLogout.setVisibility(View.VISIBLE);
         } else {
             imgSetting.setVisibility(View.GONE);
-            imgLogout.setVisibility(View.VISIBLE);
+            imgLogout.setVisibility(View.GONE);
         }
     }
 
@@ -76,8 +80,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (v == imgLogout) {
             DashboardFragment dashboardFragment = (DashboardFragment) getFragmentManager().findFragmentByTag(DashboardFragment.class.getSimpleName());
             if (dashboardFragment != null && dashboardFragment.isVisible()) {
-
+                SharedPreferences.Editor editor = KavachApp.getInstance().getPref().edit();
+                editor.putBoolean(Constant.PREF_IS_LOGIN, false);
+                if (!KavachApp.getInstance().getPref().getBoolean(Constant.PREF_ISREMEMBER, false)) {
+                    editor.putString(Constant.PREF_USERNAME, "");
+                    editor.putString(Constant.PREF_PASSWORD, "");
+                }
+                editor.commit();
+                Utils.replaceNextFragment(R.id.container, MainActivity.this, new LoginFragment());
                 Toast.makeText(MainActivity.this, "Logout Call", Toast.LENGTH_LONG).show();
+                if (getFragmentManager().getBackStackEntryCount() > 0) {
+                    for (int i = 0; i < getFragmentManager().getBackStackEntryCount(); i++) {
+                        getFragmentManager().popBackStack();
+                    }
+                }
             }
 
         } else if (v == imgSetting) {

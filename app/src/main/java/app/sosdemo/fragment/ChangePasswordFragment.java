@@ -1,6 +1,7 @@
 package app.sosdemo.fragment;
 
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -10,8 +11,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import app.sosdemo.KavachApp;
 import app.sosdemo.MainActivity;
 import app.sosdemo.R;
+import app.sosdemo.util.Constant;
 import app.sosdemo.util.Utils;
 
 /**
@@ -49,8 +52,10 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
     public void onClick(View v) {
         if (v == btnChangePass) {
             if (isValid()) {
-                DashboardFragment dashboardFragment = new DashboardFragment();
-                Utils.replaceNextFragment(R.id.container, getActivity(), dashboardFragment);
+                getFragmentManager().popBackStack();
+                SharedPreferences.Editor editor = KavachApp.getInstance().getPref().edit();
+                editor.putString(Constant.PREF_PASSWORD, etNewPassword.getText().toString());
+                editor.commit();
             }
         }
     }

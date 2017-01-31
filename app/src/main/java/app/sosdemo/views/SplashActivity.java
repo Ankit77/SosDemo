@@ -8,11 +8,14 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -26,8 +29,11 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
+import app.sosdemo.KavachApp;
 import app.sosdemo.MainActivity;
 import app.sosdemo.R;
+
+import static java.security.AccessController.getContext;
 
 /**
  * Created by ANKIT on 1/30/2017.
@@ -39,7 +45,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
     protected LocationRequest locationRequest;
     int REQUEST_CHECK_SETTINGS = 100;
     private int LOCATION_PERMISSION_CODE = 23;
-    String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+    String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.READ_PHONE_STATE};
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,6 +60,16 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
     }
 
     private void buildLocation() {
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        String IMEI = telephonyManager.getDeviceId();
+        if (!TextUtils.isEmpty(IMEI)) {
+            KavachApp.getInstance().setIMEI(IMEI);
+        }
+        String android_id = Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        if (!TextUtils.isEmpty(android_id)) {
+            KavachApp.getInstance().setDeviceID(android_id);
+        }
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)

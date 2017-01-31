@@ -34,7 +34,7 @@
                 android:layout_gravity="center_horizontal"
                 android:checked="true"
                 android:text="English "
-                android:textSize="@dimen/_16sdp" />
+                android:textSize="@dimen/_14sdp" />
 
             <RadioButton
                 android:id="@+id/fragnent_setting_rb_hindi"
@@ -43,7 +43,7 @@
                 android:layout_gravity="center_horizontal"
                 android:checked="false"
                 android:text="Hindi     "
-                android:textSize="@dimen/_16sdp" />
+                android:textSize="@dimen/_14sdp" />
 
             <RadioButton
                 android:id="@+id/fragnent_setting_rb_gujarati"
@@ -52,7 +52,7 @@
                 android:layout_gravity="center_horizontal"
                 android:checked="false"
                 android:text="Gujarati"
-                android:textSize="@dimen/_16sdp" />
+                android:textSize="@dimen/_14sdp" />
         </RadioGroup>
 
         <TextView

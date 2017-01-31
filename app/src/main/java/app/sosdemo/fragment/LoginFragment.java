@@ -14,8 +14,10 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import app.sosdemo.KavachApp;
 import app.sosdemo.MainActivity;
 import app.sosdemo.R;
+import app.sosdemo.util.Constant;
 import app.sosdemo.util.Utils;
 
 /**
@@ -52,9 +54,19 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         tvRegister.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
         btnForgotPassword.setOnClickListener(this);
+        chkRememberme.setChecked(KavachApp.getInstance().getPref().getBoolean(Constant.PREF_ISREMEMBER, false));
+        if (KavachApp.getInstance().getPref().getBoolean(Constant.PREF_ISREMEMBER, false)) {
+            etUserName.setText(KavachApp.getInstance().getPref().getString(Constant.PREF_USERNAME, ""));
+            etPassword.setText(KavachApp.getInstance().getPref().getString(Constant.PREF_PASSWORD, ""));
+
+        }
+
         chkRememberme.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferences.Editor editor = KavachApp.getInstance().getPref().edit();
+                editor.putBoolean(Constant.PREF_ISREMEMBER, isChecked);
+                editor.commit();
 
             }
         });
@@ -70,11 +82,18 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_empty_password));
             } else {
 
+                SharedPreferences.Editor editor = KavachApp.getInstance().getPref().edit();
+                editor.putBoolean(Constant.PREF_IS_LOGIN, true);
+                editor.putString(Constant.PREF_USERNAME, etUserName.getText().toString());
+                editor.putString(Constant.PREF_PASSWORD, etPassword.getText().toString());
+                editor.commit();
+                DashboardFragment dashboardFragment = new DashboardFragment();
+                Utils.replaceNextFragment(R.id.container, getActivity(), dashboardFragment);
             }
         } else if (v == btnForgotPassword) {
-
+            Utils.addNextFragmentNoAnim(R.id.container, getActivity(), new ForgotPassFragment(), LoginFragment.this);
         } else if (v == tvRegister) {
-
+            Utils.addNextFragmentNoAnim(R.id.container, getActivity(), new RegisterFragment(), LoginFragment.this);
         }
     }
 
