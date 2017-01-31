@@ -62,4 +62,8 @@
     <string name="alert_register_fail">Registration failed</string>
     <string name="alert_sos_success">SOS send Successfully</string>
     <string name="alert_sos_failed">Failed to send SOS</string>
+    <string name="alert_change_pass_success">Change Password successfully</string>
+    <string name="alert_change_password_failed">Failed to Change Password</string>
+    <string name="alret_fp_success">NewPassword is send to your email address</string>
+    <string name="alert_fp_fail">Fail to Forgot Password</string>
 </resources>

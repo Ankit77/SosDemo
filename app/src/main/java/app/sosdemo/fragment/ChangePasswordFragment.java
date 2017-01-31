@@ -1,7 +1,9 @@
 package app.sosdemo.fragment;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -10,12 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import app.sosdemo.KavachApp;
 import app.sosdemo.MainActivity;
 import app.sosdemo.R;
 import app.sosdemo.util.Constant;
 import app.sosdemo.util.Utils;
+import app.sosdemo.webservice.WSChangePassword;
+import app.sosdemo.webservice.WSLogin;
 
 /**
  * Created by ANKIT on 1/31/2017.
@@ -28,6 +33,7 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
     private EditText etOldPassword;
     private EditText etConfirmPassword;
     private Button btnChangePass;
+    private AsyncChangePassword asyncChangePassword;
 
     @Nullable
     @Override
@@ -45,17 +51,19 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
         etOldPassword = (EditText) view.findViewById(R.id.fragnent_changepassword_et_oldpass);
         etConfirmPassword = (EditText) view.findViewById(R.id.fragnent_changepassword_et_confirm);
         btnChangePass = (Button) view.findViewById(R.id.fragnent_changepassword_btn_submit);
-
+        btnChangePass.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         if (v == btnChangePass) {
             if (isValid()) {
-                getFragmentManager().popBackStack();
-                SharedPreferences.Editor editor = KavachApp.getInstance().getPref().edit();
-                editor.putString(Constant.PREF_PASSWORD, etNewPassword.getText().toString());
-                editor.commit();
+                if (Utils.isNetworkAvailable(getActivity())) {
+                    asyncChangePassword = new AsyncChangePassword();
+                    asyncChangePassword.execute(KavachApp.getInstance().getPref().getString(Constant.PREF_USERNAME, ""), etOldPassword.getText().toString(), etNewPassword.getText().toString());
+                } else {
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
+                }
             }
         }
     }
@@ -75,5 +83,43 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
             return false;
         }
         return true;
+    }
+
+
+    private class AsyncChangePassword extends AsyncTask<String, Void, Boolean> {
+
+        private ProgressDialog progressDialog;
+        private WSChangePassword wsChangePassword;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = Utils.displayProgressDialog(getActivity());
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            wsChangePassword = new WSChangePassword(getActivity());
+            return wsChangePassword.executeService(params[0], params[1], params[2]);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (!isCancelled()) {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                if (aBoolean) {
+                    SharedPreferences.Editor editor = KavachApp.getInstance().getPref().edit();
+                    editor.putString(Constant.PREF_PASSWORD, etNewPassword.getText().toString());
+                    editor.commit();
+                    getFragmentManager().popBackStack();
+                    Toast.makeText(getActivity(), getString(R.string.alert_change_pass_success), Toast.LENGTH_LONG).show();
+                } else {
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_change_password_failed));
+                }
+            }
+        }
     }
 }

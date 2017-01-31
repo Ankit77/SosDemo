@@ -30,6 +30,8 @@ public class WSConstants {
     public static final String METHOD_SOS = "SetSOSMobileService";
     public static final String METHOD_ALERTTYPELIST = "getAlertTypeList";
     public static final String METHOD_EMERGENCY = "getEmergencyCenterService";
+    public static final String METHOD_CHANGEPASSWORD = "ChangeUserPassword";
+    public static final String METHOD_FORGOTPASSWORD = "ForgotUserPassword";
 
     public static final String PARAMS_USERID = "userid";
     public static final String PARAMS_USERPASSWORD = "password";
@@ -64,6 +66,13 @@ public class WSConstants {
     public static final String PARAMS_Long = "Long";
     public static final String PARAMS_AlertType = "AlertType";
     public static final String PARAMS_LogStatus = "LogStatus";
+
+
+    //-------------Change Password------------------------
+
+    public static final String PARAMS_OLDPASSWORD = "oldpassword";
+    public static final String PARAMS_NEWPASSWORD = "newpassword";
+
 
     public static final String PARAMS_SUPERVISORID = "SupervisorID";
     public static final String PARAMS_LAT = "Lat";

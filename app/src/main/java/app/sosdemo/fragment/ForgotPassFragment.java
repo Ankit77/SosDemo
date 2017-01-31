@@ -1,6 +1,9 @@
 package app.sosdemo.fragment;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -9,10 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import app.sosdemo.KavachApp;
 import app.sosdemo.MainActivity;
 import app.sosdemo.R;
+import app.sosdemo.util.Constant;
 import app.sosdemo.util.Utils;
+import app.sosdemo.webservice.WSChangePassword;
+import app.sosdemo.webservice.WSForgotPassword;
 
 /**
  * Created by ANKIT on 1/31/2017.
@@ -44,8 +52,7 @@ public class ForgotPassFragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         if (v == btnSubmit) {
             if (isvalid()) {
-                LoginFragment loginFragment = new LoginFragment();
-                Utils.replaceNextFragment(R.id.container, getActivity(), loginFragment);
+
             }
         }
     }
@@ -60,4 +67,6 @@ public class ForgotPassFragment extends Fragment implements View.OnClickListener
         }
         return true;
     }
+
+
 }

@@ -21,6 +21,7 @@ import app.sosdemo.MainActivity;
 import app.sosdemo.R;
 import app.sosdemo.util.Constant;
 import app.sosdemo.util.Utils;
+import app.sosdemo.webservice.WSForgotPassword;
 import app.sosdemo.webservice.WSLogin;
 
 /**
@@ -36,6 +37,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private TextView tvRegister;
     private CheckBox chkRememberme;
     private AsyncLogin asyncLogin;
+    private AsyncForgotPassword asyncForgotPassword;
 
     @Nullable
     @Override
@@ -95,7 +97,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
             }
         } else if (v == btnForgotPassword) {
-            Utils.addNextFragmentNoAnim(R.id.container, getActivity(), new ForgotPassFragment(), LoginFragment.this);
+            if (Utils.isNetworkAvailable(getActivity())) {
+                asyncForgotPassword = new AsyncForgotPassword();
+                asyncForgotPassword.execute();
+            } else {
+                Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
+            }
         } else if (v == tvRegister) {
             Utils.addNextFragmentNoAnim(R.id.container, getActivity(), new RegisterFragment(), LoginFragment.this);
         }
@@ -142,9 +149,42 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     editor.commit();
                     DashboardFragment dashboardFragment = new DashboardFragment();
                     Utils.replaceNextFragment(R.id.container, getActivity(), dashboardFragment);
-                }else
-                {
-                    Utils.displayDialog(getActivity(),getString(R.string.app_name),getString(R.string.alert_login_failed));
+                } else {
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_login_failed));
+                }
+            }
+        }
+    }
+
+
+    private class AsyncForgotPassword extends AsyncTask<String, Void, Boolean> {
+
+        private ProgressDialog progressDialog;
+        private WSForgotPassword wsForgotPassword;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = Utils.displayProgressDialog(getActivity());
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            wsForgotPassword = new WSForgotPassword(getActivity());
+            return wsForgotPassword.executeService(KavachApp.getInstance().getDeviceID(), KavachApp.getInstance().getIMEI());
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (!isCancelled()) {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                if (aBoolean) {
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_fp_success));
+                } else {
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_fp_fail));
                 }
             }
         }
