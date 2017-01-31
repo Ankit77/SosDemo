@@ -14,6 +14,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import app.sosdemo.MainActivity;
 import app.sosdemo.R;
 import app.sosdemo.util.Utils;
 
@@ -39,6 +40,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     private void init() {
+        ((MainActivity) getActivity()).setTitle(getString(R.string.lbl_title_login));
+        ((MainActivity) getActivity()).isshowBackButton(false);
+        ((MainActivity) getActivity()).isMenuButton(false);
         etPassword = (EditText) view.findViewById(R.id.fragnent_login_et_password);
         etUserName = (EditText) view.findViewById(R.id.fragnent_login_et_username);
         btnLogin = (Button) view.findViewById(R.id.fragnent_login_btn_login);
@@ -74,4 +78,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        ((MainActivity) getActivity()).setTitle(getString(R.string.lbl_title_login));
+        ((MainActivity) getActivity()).isshowBackButton(true);
+        ((MainActivity) getActivity()).isMenuButton(false);
+    }
 }

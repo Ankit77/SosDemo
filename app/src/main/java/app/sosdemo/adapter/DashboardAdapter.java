@@ -54,9 +54,9 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Recy
         if (mList.get(position).getAction().equalsIgnoreCase(Constant.TYPE_VIDEO)) {
             holder.ivImage.setImageResource(R.drawable.ic_videocam);
         } else if (mList.get(position).getAction().equalsIgnoreCase(Constant.TYPE_IMAGE)) {
-
+            holder.ivImage.setImageResource(R.drawable.ic_photo);
         } else if (mList.get(position).getAction().equalsIgnoreCase(Constant.TYPE_AUDIO)) {
-
+            holder.ivImage.setImageResource(R.drawable.ic_mic);
         }
         holder.llMain.setOnClickListener(new View.OnClickListener() {
             @Override

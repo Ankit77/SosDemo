@@ -1,97 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
     android:orientation="vertical">
 
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.0"
-        android:fillViewport="true">
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/_15sdp"
+        android:paddingRight="@dimen/_15sdp"
+        android:paddingTop="@dimen/_10sdp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:text="@string/lbl_sign_in"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/_18sdp" />
+
+        <EditText
+            android:id="@+id/fragnent_login_et_username"
+            style="@style/editext_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:drawableRight="@drawable/ic_username"
+            android:hint="@string/lbl_username"
+            android:inputType="text">
+
+            <requestFocus />
+        </EditText>
+
+        <EditText
+            android:id="@+id/fragnent_login_et_password"
+            style="@style/editext_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_7sdp"
+            android:drawableRight="@drawable/ic_pwd"
+            android:hint="@string/labl_password"
+            android:inputType="textPassword" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingLeft="@dimen/_5sdp"
-            android:paddingRight="@dimen/_5sdp"
-            android:paddingTop="@dimen/_10sdp">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_7sdp"
+            android:gravity="center">
 
-            <ImageView
-                android:layout_width="wrap_content"
+            <CheckBox
+                android:id="@+id/fragnent_login_chk_remember"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/logo_login" />
-
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_3sdp"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:text="@string/lbl_sign_in"
+                android:layout_weight="1.0"
+                android:text="@string/lbl_remember_me"
                 android:textColor="@color/color_white"
-                android:textSize="@dimen/_12sdp" />
-
-            <EditText
-                android:id="@+id/fragnent_login_et_username"
-                style="@style/editext_normal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawableRight="@drawable/ic_username"
-                android:hint="@string/lbl_username">
-
-                <requestFocus />
-            </EditText>
-
-            <EditText
-                android:id="@+id/fragnent_login_et_password"
-                style="@style/editext_normal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_3sdp"
-                android:drawableRight="@drawable/ic_pwd"
-                android:hint="@string/labl_password"
-                android:inputType="textPassword" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_7sdp"
-                android:gravity="center">
-
-                <CheckBox
-                    android:id="@+id/fragnent_login_chk_remember"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.0"
-                    android:text="@string/lbl_remember_me"
-                    android:textColor="@color/color_white"
-                    android:textSize="@dimen/_8sdp" />
-
-                <Button
-                    android:id="@+id/fragnent_login_btn_login"
-                    style="@style/btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/btn_login" />
-            </LinearLayout>
+                android:textSize="@dimen/_10sdp" />
 
             <Button
-                android:id="@+id/fragnent_login_btn_forgotpassword"
-                android:layout_width="match_parent"
+                android:id="@+id/fragnent_login_btn_login"
+                style="@style/btn"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#00000000"
-                android:gravity="right"
-                android:padding="@dimen/_3sdp"
-                android:text="@string/lbl_forgot_password"
-                android:textColor="@color/main_color_gray_dk"
-                android:textSize="@dimen/txt_14sp" />
+                android:background="@drawable/btn_login" />
         </LinearLayout>
-    </ScrollView>
+
+        <Button
+            android:id="@+id/fragnent_login_btn_forgotpassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:background="#00000000"
+            android:gravity="right"
+            android:padding="@dimen/_3sdp"
+            android:text="@string/lbl_forgot_password"
+            android:textColor="@color/main_color_gray_dk"
+            android:textSize="@dimen/txt_14sp" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/fragnent_login_btn_register"
@@ -99,7 +89,9 @@
         android:layout_height="wrap_content"
         android:background="@drawable/reg_bg"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:padding="@dimen/_10sdp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -118,4 +110,4 @@
             android:textSize="@dimen/txt_14sp"
             android:textStyle="bold" />
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

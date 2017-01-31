@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/_15sdp"
+        android:paddingRight="@dimen/_15sdp"
+        android:paddingTop="@dimen/_10sdp">
+
+        <EditText
+            android:id="@+id/fragnent_register_et_email"
+            style="@style/editext_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:hint="@string/lbl_reg_email"
+            android:imeOptions="actionNext"
+            android:inputType="phone"></EditText>
+
+        <EditText
+            android:id="@+id/fragnent_register_et_prefix"
+            style="@style/editext_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:hint="@string/lbl_reg_mr"
+            android:imeOptions="actionNext"
+            android:inputType="text">
+
+            <requestFocus />
+        </EditText>
+
+        <EditText
+            android:id="@+id/fragnent_register_et_firstname"
+            style="@style/editext_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:hint="@string/lbl_reg_fname"
+            android:imeOptions="actionNext"
+            android:inputType="text"></EditText>
+
+        <EditText
+            android:id="@+id/fragnent_register_et_middelename"
+            style="@style/editext_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:hint="@string/lbl_reg_mname"
+            android:imeOptions="actionNext"
+            android:inputType="text"></EditText>
+
+        <EditText
+            android:id="@+id/fragnent_register_et_lastname"
+            style="@style/editext_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:hint="@string/lbl_reg_lname"
+            android:imeOptions="actionNext"
+            android:inputType="text"></EditText>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/label_normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lbl_reg_gender" />
+
+            <RadioGroup
+                android:id="@+id/fragnent_register_rg_gender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/fragnent_register_rb_male"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:checked="false"
+                    android:text="@string/lbl_reg_male"
+                    android:textSize="@dimen/_16sdp" />
+
+                <RadioButton
+                    android:id="@+id/fragnent_register_rb_female"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:checked="false"
+                    android:text="@string/lbl_reg_female"
+                    android:textSize="@dimen/_16sdp" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/fragnent_register_et_address1"
+            style="@style/editext_normal.multiline"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_60sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:gravity="top"
+            android:hint="@string/lbl_reg_addr1"
+            android:imeOptions="actionNext"
+            android:inputType="text"
+            android:minLines="5"></EditText>
+
+        <EditText
+            android:id="@+id/fragnent_register_et_address2"
+            style="@style/editext_normal.multiline"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_60sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:gravity="top"
+            android:hint="@string/lbl_reg_addr2"
+            android:imeOptions="actionNext"
+            android:inputType="text"
+            android:minLines="5"></EditText>
+
+        <EditText
+            android:id="@+id/fragnent_register_et_area"
+            style="@style/editext_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:hint="@string/lbl_reg_area"
+            android:imeOptions="actionNext"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/fragnent_register_et_city"
+            style="@style/editext_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:hint="@string/lbl_reg_city"
+            android:imeOptions="actionNext"
+            android:inputType="text"></EditText>
+
+        <EditText
+            android:id="@+id/fragnent_register_et_pincode"
+            style="@style/editext_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:hint="@string/lbl_reg_pincode"
+            android:imeOptions="actionNext"
+            android:inputType="number"></EditText>
+
+        <EditText
+            android:id="@+id/fragnent_register_et_district"
+            style="@style/editext_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:hint="@string/lbl_reg_distirct"
+            android:imeOptions="actionNext"
+            android:inputType="text"></EditText>
+
+        <EditText
+            android:id="@+id/fragnent_register_et_state"
+            style="@style/editext_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:hint="@string/lbl_reg_state"
+            android:imeOptions="actionNext"
+            android:inputType="text"></EditText>
+
+        <EditText
+            android:id="@+id/fragnent_register_et_landline"
+            style="@style/editext_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:hint="@string/lbl_reg_landline"
+            android:imeOptions="actionNext"
+            android:inputType="phone"></EditText>
+
+        <EditText
+            android:id="@+id/fragnent_register_et_mobile"
+            style="@style/editext_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:hint="@string/lbl_reg_mobile"
+            android:imeOptions="actionNext"
+            android:inputType="phone"></EditText>
+
+        <EditText
+            android:id="@+id/fragnent_register_et_birthdate"
+            style="@style/editext_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:clickable="true"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:hint="@string/lbl_reg_birthdate"
+            android:imeOptions="actionNext"
+            android:inputType="phone"></EditText>
+
+        <Button
+            android:id="@+id/fragnent_register_btn_submit"
+            style="@style/button_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@color/color_actionbar"
+            android:text="Register" />
+    </LinearLayout>
+</ScrollView>
+

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/_15sdp"
+        android:paddingRight="@dimen/_15sdp"
+        android:paddingTop="@dimen/_30sdp">
+
+        <TextView
+            style="@style/label_normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose Language"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/fragnent_setting_rg_language"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/fragnent_setting_rb_english"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:checked="true"
+                android:text="English "
+                android:textSize="@dimen/_16sdp" />
+
+            <RadioButton
+                android:id="@+id/fragnent_setting_rb_hindi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:checked="false"
+                android:text="Hindi     "
+                android:textSize="@dimen/_16sdp" />
+
+            <RadioButton
+                android:id="@+id/fragnent_setting_rb_gujarati"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:checked="false"
+                android:text="Gujarati"
+                android:textSize="@dimen/_16sdp" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/fragnent_setting_tv_changePass"
+            style="@style/label_normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:text="@string/lbl_setting_choose_password"
+            android:textStyle="bold" />
+
+        <TextView
+            style="@style/label_normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="@string/lbl_contactlist"
+            android:textStyle="bold" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/fragnent_setting_rv_contactlist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

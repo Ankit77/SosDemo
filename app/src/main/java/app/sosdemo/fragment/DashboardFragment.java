@@ -60,6 +60,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import app.sosdemo.KavachApp;
+import app.sosdemo.MainActivity;
 import app.sosdemo.R;
 import app.sosdemo.adapter.DashboardAdapter;
 import app.sosdemo.audio.AudioRecorder;
@@ -208,12 +209,24 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
 
 
     private void init() {
+        ((MainActivity) getActivity()).setTitle(getString(R.string.lbl_title_dashboard));
+        ((MainActivity) getActivity()).isshowBackButton(false);
+        ((MainActivity) getActivity()).isMenuButton(true);
         rvActionList = (RecyclerView) view.findViewById(R.id.fragment_dashboard_rv_actionlist);
         if (hasPermissions(getActivity(), PERMISSIONS)) {
             loadDashboardAdapter();
         }
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            ((MainActivity) getActivity()).setTitle(getString(R.string.lbl_title_dashboard));
+            ((MainActivity) getActivity()).isshowBackButton(false);
+            ((MainActivity) getActivity()).isMenuButton(true);
+        }
+    }
 
     private void loadDashboardAdapter() {
         createLocationRequest();
