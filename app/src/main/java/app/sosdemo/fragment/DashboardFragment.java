@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -68,6 +69,7 @@ import app.sosdemo.model.ActionModel;
 import app.sosdemo.util.Constant;
 import app.sosdemo.util.GetFilePath;
 import app.sosdemo.util.Utils;
+import app.sosdemo.webservice.WSSOS;
 import id.zelory.compressor.Compressor;
 
 /**
@@ -102,6 +104,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private static final long FASTEST_INTERVAL = 1000 * 5;
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
+    private AsyncSendSos asyncSendSos;
+    private String mCode;
+    private String mAction;
 
     ServiceConnection conn = new ServiceConnection() {
 
@@ -177,6 +182,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
+                if (Utils.isNetworkAvailable(getActivity())) {
+                    asyncSendSos = new AsyncSendSos();
+                    asyncSendSos.execute("0", KavachApp.getInstance().getDeviceID(), KavachApp.getInstance().getIMEI(), Utils.getCurrentTimeStamp(), "" + KavachApp.getInstance().getCurrentLocation().getLatitude(), "" + KavachApp.getInstance().getCurrentLocation().getLongitude(), mCode, "I");
+                } else {
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
+                }
             }
         });
 
@@ -246,10 +257,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
 
     private void loadActiondata() {
         actionList = new ArrayList<>();
-        actionList.add(new ActionModel("SOS/EMergency", "VIDEO"));
-        actionList.add(new ActionModel("Domestic Violence", "VIDEO"));
-        actionList.add(new ActionModel("Trafic Update", "IMAGE"));
-        actionList.add(new ActionModel("Recording", "AUDIO"));
+        actionList.add(new ActionModel("S", "SOS/EMergency", "V"));
+        actionList.add(new ActionModel("V", "Domestic Violence", "V"));
+        actionList.add(new ActionModel("T", "Trafic Update", "I"));
+//        actionList.add(new ActionModel("Recording", "AUDIO"));
     }
 
     private void chooseImageFileFromStorage() {
@@ -323,6 +334,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                                             .compressToFile(new File(filePath));
                                 } else {
                                     compressedImage = new File(filePath);
+                                }
+                                if (Utils.isNetworkAvailable(getActivity())) {
+                                    asyncSendSos = new AsyncSendSos();
+                                    asyncSendSos.execute("0", KavachApp.getInstance().getDeviceID(), KavachApp.getInstance().getIMEI(), Utils.getCurrentTimeStamp(), "" + KavachApp.getInstance().getCurrentLocation().getLatitude(), "" + KavachApp.getInstance().getCurrentLocation().getLongitude(), mCode, "I");
+                                } else {
+                                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
                                 }
                             }
                         }
@@ -522,7 +539,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
 
 
     @Override
-    public void onClick(String action) {
+    public void onClick(String action, String code) {
+        mAction = action;
+        mCode = code;
         if (action.equalsIgnoreCase(Constant.TYPE_VIDEO)) {
             selectVideoOption();
         } else if (action.equalsIgnoreCase(Constant.TYPE_IMAGE)) {
@@ -642,5 +661,45 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         mLocationRequest.setInterval(INTERVAL);
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    private class AsyncSendSos extends AsyncTask<String, Void, Boolean> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = Utils.displayProgressDialog(getActivity());
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            String TripID = params[0];
+            String MacID = params[1];
+            String SimID = params[2];
+            String TimeStamp = params[3];
+            String Lat = params[4];
+            String Long = params[5];
+            String AlertType = params[6];
+            String LogStatus = params[7];
+
+            WSSOS wssos = new WSSOS(getActivity());
+            return wssos.executeService(TripID, MacID, SimID, TimeStamp, Lat, Long, AlertType, LogStatus);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (!isCancelled()) {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                if (aBoolean) {
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_sos_success));
+                } else {
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_sos_failed));
+                }
+            }
+        }
     }
 }

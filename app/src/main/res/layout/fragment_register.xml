@@ -21,7 +21,7 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:hint="@string/lbl_reg_email"
             android:imeOptions="actionNext"
-            android:inputType="phone"></EditText>
+            android:inputType="textEmailAddress"></EditText>
 
         <EditText
             android:id="@+id/fragnent_register_et_prefix"
@@ -92,6 +92,7 @@
                     android:layout_gravity="center_horizontal"
                     android:checked="false"
                     android:text="@string/lbl_reg_male"
+                    android:tag="M"
                     android:textSize="@dimen/_16sdp" />
 
                 <RadioButton
@@ -101,6 +102,7 @@
                     android:layout_gravity="center_horizontal"
                     android:checked="false"
                     android:text="@string/lbl_reg_female"
+                    android:tag="F"
                     android:textSize="@dimen/_16sdp" />
             </RadioGroup>
         </LinearLayout>
@@ -205,9 +207,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_5sdp"
-            android:clickable="true"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
             android:hint="@string/lbl_reg_birthdate"
             android:imeOptions="actionNext"
             android:inputType="phone"></EditText>

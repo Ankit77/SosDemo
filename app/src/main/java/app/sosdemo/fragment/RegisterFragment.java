@@ -2,6 +2,8 @@ package app.sosdemo.fragment;
 
 import android.app.DatePickerDialog;
 import android.app.Fragment;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -19,9 +21,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import app.sosdemo.KavachApp;
 import app.sosdemo.MainActivity;
 import app.sosdemo.R;
 import app.sosdemo.util.Utils;
+import app.sosdemo.webservice.WSRegister;
 
 /**
  * Created by ANKIT on 1/31/2017.
@@ -51,12 +55,13 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     private DatePickerDialog datePickerDialog;
     private SimpleDateFormat dateFormatter;
     private Calendar newCalendar;
+    private AsyncRegister asyncRegister;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_register, null);
-        dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        dateFormatter = new SimpleDateFormat("yyyy-MMM-dd", Locale.US);
         newCalendar = Calendar.getInstance();
         init();
         return view;
@@ -103,12 +108,34 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             int selectedId = radioSexGroup.getCheckedRadioButtonId();
             radioSexButton = (RadioButton) view.findViewById(selectedId);
             if (isValid()) {
-                LoginFragment loginFragment = new LoginFragment();
-                Utils.addNextFragmentNoAnim(R.id.container, getActivity(), loginFragment, RegisterFragment.this);
+                if (Utils.isNetworkAvailable(getActivity())) {
+                    asyncRegister = new AsyncRegister();
+                    asyncRegister.execute(etPrefix.getText().toString(),
+                            etFirstName.getText().toString(),
+                            etMiddleName.getText().toString(),
+                            etLastName.getText().toString(),
+                            radioSexButton.getTag().toString(),
+                            etAddress1.getText().toString() + "," + etAddress2.getText().toString(),
+                            etArea.getText().toString(),
+                            etCity.getText().toString(),
+                            etPincode.getText().toString(),
+                            etDistrict.getText().toString(),
+                            etState.getText().toString(),
+                            etMobile.getText().toString(),
+                            etLandLine.getText().toString(),
+                            etEmailId.getText().toString(),
+                            etBirthdate.getText().toString(),
+                            KavachApp.getInstance().getDeviceID(),
+                            KavachApp.getInstance().getIMEI()
+                    );
+                } else {
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
+                }
             }
-        } else if (v == etBirthdate) {
-            datePickerDialog.show();
         }
+//        else if (v == etBirthdate) {
+//            datePickerDialog.show();
+//        }
     }
 
     private boolean isValid() {
@@ -160,5 +187,55 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         }
         return true;
 
+    }
+
+    private class AsyncRegister extends AsyncTask<String, Void, Boolean> {
+        WSRegister wsRegister;
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = Utils.displayProgressDialog(getActivity());
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            String prefix = params[0];
+            String firstname = params[1];
+            String middlename = params[2];
+            String lastname = params[3];
+            String gender = params[4];
+            String addres = params[5];
+            String area = params[6];
+            String city = params[7];
+            String pincode = params[8];
+            String district = params[9];
+            String state = params[10];
+            String mobile = params[11];
+            String landline = params[12];
+            String emailaddress = params[13];
+            String dob = params[14];
+            String macid = params[15];
+            String simid = params[16];
+            wsRegister = new WSRegister(getActivity());
+            return wsRegister.executeService(prefix, firstname, middlename, lastname, gender, addres, area, city, pincode, district, state, mobile, landline, emailaddress, dob, macid, simid);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean s) {
+            super.onPostExecute(s);
+            if (!isCancelled()) {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                if (s) {
+                    getFragmentManager().popBackStack();
+                } else {
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_register_fail));
+                }
+            }
+        }
     }
 }

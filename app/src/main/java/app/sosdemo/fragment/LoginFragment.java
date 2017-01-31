@@ -1,7 +1,9 @@
 package app.sosdemo.fragment;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -19,6 +21,7 @@ import app.sosdemo.MainActivity;
 import app.sosdemo.R;
 import app.sosdemo.util.Constant;
 import app.sosdemo.util.Utils;
+import app.sosdemo.webservice.WSLogin;
 
 /**
  * Created by ANKIT on 1/31/2017.
@@ -32,6 +35,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private Button btnForgotPassword;
     private TextView tvRegister;
     private CheckBox chkRememberme;
+    private AsyncLogin asyncLogin;
 
     @Nullable
     @Override
@@ -81,14 +85,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             } else if (TextUtils.isEmpty(etPassword.getText().toString())) {
                 Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_empty_password));
             } else {
+                if (Utils.isNetworkAvailable(getActivity())) {
+                    asyncLogin = new AsyncLogin();
+                    asyncLogin.execute(etUserName.getText().toString(), etPassword.getText().toString());
+                } else {
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
+                }
 
-                SharedPreferences.Editor editor = KavachApp.getInstance().getPref().edit();
-                editor.putBoolean(Constant.PREF_IS_LOGIN, true);
-                editor.putString(Constant.PREF_USERNAME, etUserName.getText().toString());
-                editor.putString(Constant.PREF_PASSWORD, etPassword.getText().toString());
-                editor.commit();
-                DashboardFragment dashboardFragment = new DashboardFragment();
-                Utils.replaceNextFragment(R.id.container, getActivity(), dashboardFragment);
+
             }
         } else if (v == btnForgotPassword) {
             Utils.addNextFragmentNoAnim(R.id.container, getActivity(), new ForgotPassFragment(), LoginFragment.this);
@@ -103,5 +107,46 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         ((MainActivity) getActivity()).setTitle(getString(R.string.lbl_title_login));
         ((MainActivity) getActivity()).isshowBackButton(true);
         ((MainActivity) getActivity()).isMenuButton(false);
+    }
+
+
+    private class AsyncLogin extends AsyncTask<String, Void, Boolean> {
+
+        private ProgressDialog progressDialog;
+        private WSLogin wsLogin;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = Utils.displayProgressDialog(getActivity());
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            wsLogin = new WSLogin(getActivity());
+            return wsLogin.executeService(params[0], params[1]);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (!isCancelled()) {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                if (aBoolean) {
+                    SharedPreferences.Editor editor = KavachApp.getInstance().getPref().edit();
+                    editor.putBoolean(Constant.PREF_IS_LOGIN, true);
+                    editor.putString(Constant.PREF_USERNAME, etUserName.getText().toString());
+                    editor.putString(Constant.PREF_PASSWORD, etPassword.getText().toString());
+                    editor.commit();
+                    DashboardFragment dashboardFragment = new DashboardFragment();
+                    Utils.replaceNextFragment(R.id.container, getActivity(), dashboardFragment);
+                }else
+                {
+                    Utils.displayDialog(getActivity(),getString(R.string.app_name),getString(R.string.alert_login_failed));
+                }
+            }
+        }
     }
 }

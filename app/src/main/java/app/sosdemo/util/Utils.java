@@ -691,8 +691,8 @@ public class Utils {
         return config.locale;
     }
 
-  
-//    public static synchronized void setKeywordListHighlighted(Context context, TextView view, String fulltext, List<String> subtextList) {
+
+    //    public static synchronized void setKeywordListHighlighted(Context context, TextView view, String fulltext, List<String> subtextList) {
 //        view.setText(fulltext, TextView.BufferType.SPANNABLE);
 //        if (subtextList != null && subtextList.size() > 0) {
 //            for (String subtext : subtextList) {
@@ -700,16 +700,30 @@ public class Utils {
 //            }
 //        }
 //    }
-public static long getFileSizeInKB(String path) {
-    // Get file from file name
-    File file = new File(path);
+    public static long getFileSizeInKB(String path) {
+        // Get file from file name
+        File file = new File(path);
 
 // Get length of file in bytes
-    long fileSizeInBytes = file.length();
+        long fileSizeInBytes = file.length();
 // Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
-    long fileSizeInKB = fileSizeInBytes / 1024;
+        long fileSizeInKB = fileSizeInBytes / 1024;
 // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
-    long fileSizeInMB = fileSizeInKB / 1024;
-    return fileSizeInKB;
-}
+        long fileSizeInMB = fileSizeInKB / 1024;
+        return fileSizeInKB;
+    }
+
+    public static String getCurrentTimeStamp() {
+        try {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MMM-dd hh:mm:ss");
+            String currentDateTime = dateFormat.format(new Date()); // Find todays date
+
+            return currentDateTime;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
+        }
+    }
 }

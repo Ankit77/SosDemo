@@ -5,12 +5,22 @@ package app.sosdemo.model;
  */
 
 public class ActionModel {
+    private String Code;
     private String Caption;
     private String Action;
 
-    public ActionModel(String caption, String action) {
+    public ActionModel(String code, String caption, String action) {
         Caption = caption;
         Action = action;
+        Code = code;
+    }
+
+    public String getCode() {
+        return Code;
+    }
+
+    public void setCode(String code) {
+        this.Code = code;
     }
 
     public String getCaption() {

@@ -67,7 +67,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Recy
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
                 if (onactionListner != null) {
-                    onactionListner.onClick(mList.get(position).getAction());
+                    onactionListner.onClick(mList.get(position).getAction(), mList.get(position).getCode());
                 }
 
             }
@@ -95,7 +95,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Recy
     }
 
     public interface onActionListner {
-        public void onClick(String action);
+        public void onClick(String action, String code);
 
     }
 }
