@@ -15,6 +15,9 @@ public class ActionModel {
         Code = code;
     }
 
+    public ActionModel() {
+    }
+
     public String getCode() {
         return Code;
     }

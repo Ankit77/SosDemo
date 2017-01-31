@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.SystemClock;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,12 +52,26 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     @Override
     public void onBindViewHolder(ContactListAdapter.RecyclerViewHolders holder, final int position) {
 
-        holder.tvName.setText(mList.get(position).getName());
+        holder.tvName.setText(mList.get(position).getOrgName());
         holder.tvAddress.setText(mList.get(position).getAddress());
-        holder.tvContactPerson.setText(mList.get(position).getContactperson());
-        holder.tvEmail.setText(mList.get(position).getEmail());
-        holder.tvLandline.setText(mList.get(position).getLandline());
-        holder.tvMobile.setText(mList.get(position).getMobile());
+        holder.tvEmail.setText(mList.get(position).getEmailAddress());
+        if (TextUtils.isEmpty(mList.get(position).getLandline1())) {
+            holder.tvLandline.setText("N/A");
+        } else {
+            holder.tvLandline.setText(mList.get(position).getLandline1());
+        }
+
+        if (TextUtils.isEmpty(mList.get(position).getLandline2())) {
+            holder.tvMobile.setText("N/A");
+        } else {
+            holder.tvMobile.setText(mList.get(position).getLandline2());
+        }
+
+        if (TextUtils.isEmpty(mList.get(position).getFax1())) {
+            holder.tvFax.setText("N/A");
+        } else {
+            holder.tvFax.setText(mList.get(position).getFax1());
+        }
 
 
         holder.tvLandline.setOnClickListener(new View.OnClickListener() {
@@ -67,8 +82,10 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
-                if (onCallListner != null) {
-                    onCallListner.onClick(mList.get(position).getLandline());
+                if (!TextUtils.isEmpty(mList.get(position).getLandline1())) {
+                    if (onCallListner != null) {
+                        onCallListner.onClick(mList.get(position).getLandline1());
+                    }
                 }
 
 
@@ -82,8 +99,10 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
-                if (onCallListner != null) {
-                    onCallListner.onClick(mList.get(position).getMobile());
+                if (TextUtils.isEmpty(mList.get(position).getLandline2())) {
+                    if (onCallListner != null) {
+                        onCallListner.onClick(mList.get(position).getLandline2());
+                    }
                 }
 
             }
@@ -101,8 +120,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         TextView tvName;
         TextView tvAddress;
         TextView tvLandline;
-        TextView tvContactPerson;
         TextView tvMobile;
+        TextView tvFax;
         TextView tvEmail;
 
         RecyclerViewHolders(View itemView) {
@@ -110,8 +129,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             tvName = (TextView) itemView.findViewById(R.id.row_contactlist_tv_name);
             tvAddress = (TextView) itemView.findViewById(R.id.row_contactlist_tv_address);
             tvLandline = (TextView) itemView.findViewById(R.id.row_contactlist_tv_landline);
-            tvContactPerson = (TextView) itemView.findViewById(R.id.row_contactlist_tv_contactperson);
             tvMobile = (TextView) itemView.findViewById(R.id.row_contactlist_tv_mobile);
+            tvFax = (TextView) itemView.findViewById(R.id.row_contactlist_tv_fax);
             tvEmail = (TextView) itemView.findViewById(R.id.row_contactlist_tv_emailid);
 
         }

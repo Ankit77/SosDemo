@@ -41,13 +41,6 @@
             android:gravity="center|left"
             android:text="Name" />
 
-        <TextView
-            android:id="@+id/row_contactlist_tv_contactperson"
-            style="@style/listview_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_3sdp"
-            android:text="Name" />
 
         <TextView
             android:id="@+id/row_contactlist_tv_mobile"
@@ -56,6 +49,16 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_3sdp"
             android:drawableLeft="@drawable/ic_phone"
+            android:drawablePadding="@dimen/_5sdp"
+            android:gravity="center|left"
+            android:text="Name" />
+
+        <TextView
+            android:id="@+id/row_contactlist_tv_fax"
+            style="@style/listview_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_3sdp"
             android:drawablePadding="@dimen/_5sdp"
             android:gravity="center|left"
             android:text="Name" />

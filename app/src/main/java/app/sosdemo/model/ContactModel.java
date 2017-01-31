@@ -5,67 +5,58 @@ package app.sosdemo.model;
  */
 
 public class ContactModel {
-    private String name;
-    private String address;
-    private String landline;
-    private String contactperson;
-    private String mobile;
-    private String email;
+    private String OrgName;
+    private String Address;
+    private String Landline1;
+    private String Landline2;
+    private String Fax1;
+    private String EmailAddress;
 
-    public ContactModel(String name, String address, String landline, String contactperson, String mobile, String email) {
-        this.name = name;
-        this.address = address;
-        this.landline = landline;
-        this.contactperson = contactperson;
-        this.mobile = mobile;
-        this.email = email;
+    public String getOrgName() {
+        return OrgName;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setOrgName(String orgName) {
+        OrgName = orgName;
     }
 
     public String getAddress() {
-        return address;
+        return Address;
     }
 
     public void setAddress(String address) {
-        this.address = address;
+        Address = address;
     }
 
-    public String getLandline() {
-        return landline;
+    public String getLandline1() {
+        return Landline1;
     }
 
-    public void setLandline(String landline) {
-        this.landline = landline;
+    public void setLandline1(String landline1) {
+        Landline1 = landline1;
     }
 
-    public String getContactperson() {
-        return contactperson;
+    public String getLandline2() {
+        return Landline2;
     }
 
-    public void setContactperson(String contactperson) {
-        this.contactperson = contactperson;
+    public void setLandline2(String landline2) {
+        Landline2 = landline2;
     }
 
-    public String getMobile() {
-        return mobile;
+    public String getFax1() {
+        return Fax1;
     }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
+    public void setFax1(String fax1) {
+        Fax1 = fax1;
     }
 
-    public String getEmail() {
-        return email;
+    public String getEmailAddress() {
+        return EmailAddress;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmailAddress(String emailAddress) {
+        EmailAddress = emailAddress;
     }
 }

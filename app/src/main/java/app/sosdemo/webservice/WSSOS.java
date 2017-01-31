@@ -14,9 +14,14 @@ import app.sosdemo.util.Constant;
 public class WSSOS {
     private Context context;
     private boolean isSuccess = false;
+    private int ticket;
 
     public WSSOS(final Context context) {
         this.context = context;
+    }
+
+    public int getTicket() {
+        return ticket;
     }
 
     public boolean isSuccess() {
@@ -54,10 +59,12 @@ public class WSSOS {
                         isSuccess = true;
                         final JSONObject jsonObject = jsonArray.getJSONObject(i);
                         final int success = jsonObject.getInt("Result");
-                        if (success == Constant.SUCCESS) {
-                            return true;
-                        } else {
+                        if (success <= 0) {
                             return false;
+                        } else {
+                            ticket = success;
+                            return true;
+
                         }
 
                     }

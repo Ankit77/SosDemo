@@ -28,6 +28,8 @@ public class WSConstants {
     public static final String METHOD_ANGANAUTHENTICATEUSER = "authenticateLoginData";
     public static final String METHOD_REGISTER = "signupLoginData";
     public static final String METHOD_SOS = "SetSOSMobileService";
+    public static final String METHOD_ALERTTYPELIST = "getAlertTypeList";
+    public static final String METHOD_EMERGENCY = "getEmergencyCenterService";
 
     public static final String PARAMS_USERID = "userid";
     public static final String PARAMS_USERPASSWORD = "password";

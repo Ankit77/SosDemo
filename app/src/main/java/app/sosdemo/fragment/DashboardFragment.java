@@ -6,7 +6,6 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
@@ -24,10 +23,10 @@ import android.support.annotation.Nullable;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,6 +68,7 @@ import app.sosdemo.model.ActionModel;
 import app.sosdemo.util.Constant;
 import app.sosdemo.util.GetFilePath;
 import app.sosdemo.util.Utils;
+import app.sosdemo.webservice.WSGetAlertList;
 import app.sosdemo.webservice.WSSOS;
 import id.zelory.compressor.Compressor;
 
@@ -107,6 +107,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private AsyncSendSos asyncSendSos;
     private String mCode;
     private String mAction;
+    private String TimeStamp;
+    private String ticketNumber;
+    private AyncLoadActionList ayncLoadActionList;
 
     ServiceConnection conn = new ServiceConnection() {
 
@@ -182,12 +185,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
-                if (Utils.isNetworkAvailable(getActivity())) {
-                    asyncSendSos = new AsyncSendSos();
-                    asyncSendSos.execute("0", KavachApp.getInstance().getDeviceID(), KavachApp.getInstance().getIMEI(), Utils.getCurrentTimeStamp(), "" + KavachApp.getInstance().getCurrentLocation().getLatitude(), "" + KavachApp.getInstance().getCurrentLocation().getLongitude(), mCode, "I");
-                } else {
-                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
-                }
             }
         });
 
@@ -225,7 +222,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         ((MainActivity) getActivity()).isMenuButton(true);
         rvActionList = (RecyclerView) view.findViewById(R.id.fragment_dashboard_rv_actionlist);
         if (hasPermissions(getActivity(), PERMISSIONS)) {
-            loadDashboardAdapter();
+//            loadDashboardAdapter();
+            if (Utils.isNetworkAvailable(getActivity())) {
+                ayncLoadActionList = new AyncLoadActionList();
+                ayncLoadActionList.execute();
+            } else {
+                Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
+            }
         }
     }
 
@@ -247,7 +250,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 .addOnConnectionFailedListener(this)
                 .build();
         mGoogleApiClient.connect();
-        loadActiondata();
         dashboardAdapter = new DashboardAdapter(getActivity(), actionList, false);
         dashboardAdapter.setOnactionListner(this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -286,7 +288,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try {
 
-            Uri outputFileUri = getPostImageUri(true);
+            Uri outputFileUri = getPostImageUri(true, ticketNumber, TimeStamp);
             intent1.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
             intent1.putExtra("return-data", true);
             startActivityForResult(intent1, REQUEST_CAPTURE_IMAGE);
@@ -299,7 +301,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         Intent intent1 = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         try {
 
-            Uri outputFileUri = getPostVideoUri(true);
+            Uri outputFileUri = getPostVideoUri(true, ticketNumber, TimeStamp);
             intent1.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
             intent1.putExtra("return-data", true);
             startActivityForResult(intent1, REQUEST_CAPTURE_VIDEO);
@@ -335,12 +337,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                                 } else {
                                     compressedImage = new File(filePath);
                                 }
-                                if (Utils.isNetworkAvailable(getActivity())) {
-                                    asyncSendSos = new AsyncSendSos();
-                                    asyncSendSos.execute("0", KavachApp.getInstance().getDeviceID(), KavachApp.getInstance().getIMEI(), Utils.getCurrentTimeStamp(), "" + KavachApp.getInstance().getCurrentLocation().getLatitude(), "" + KavachApp.getInstance().getCurrentLocation().getLongitude(), mCode, "I");
-                                } else {
-                                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
-                                }
+
                             }
                         }
                     } catch (Exception e) {
@@ -349,12 +346,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 } else if (requestCode == REQUEST_CAPTURE_VIDEO) {
                     try {
 
-                        if (!TextUtils.isEmpty(filePath)) {
+                        if (!TextUtils.isEmpty(cameraFilePath)) {
                             progressDialog = Utils.displayProgressDialog(getActivity());
                             final Uri uri = Uri.fromFile(new File(cameraFilePath));
                             filePath = GetFilePath.getPath(getActivity(), uri);
                             String outPath = FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.VIDEO_FOLDER_NAME);
-                            String outName = "video_" + System.currentTimeMillis();
+                            String outName = ticketNumber + "_" + TimeStamp;
                             String outSize = Constant.VIDEO_SIZE;
                             ValidationFactory validationFactory = new ValidationFactory();
                             int ret = validationFactory.getValidator(filePath, outPath, outName, outSize).validate();
@@ -440,8 +437,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
      * @param canCleanup : Can delete the file if already exists
      * @return : Generated Uri.
      */
-    private Uri getPostImageUri(boolean canCleanup) {
-        final File file = new File(getActivity().getExternalCacheDir() + File.separator + System.currentTimeMillis() + Constant.IMAGE_EXTENSION);
+    private Uri getPostImageUri(boolean canCleanup, String ticket, String timeStamp) {
+        final File file = new File(getActivity().getExternalCacheDir() + File.separator + ticket + "_" + timeStamp + Constant.IMAGE_EXTENSION);
         if (canCleanup) {
             if (file.exists()) {
                 file.delete();
@@ -463,8 +460,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
      * @param canCleanup : Can delete the file if already exists
      * @return : Generated Uri.
      */
-    private Uri getPostVideoUri(boolean canCleanup) {
-        final File file = new File(getActivity().getExternalCacheDir() + File.separator + System.currentTimeMillis() + Constant.VIDEO_EXTENSION);
+    private Uri getPostVideoUri(boolean canCleanup, String ticket, String timeStamp) {
+        final File file = new File(getActivity().getExternalCacheDir() + File.separator + ticket + "_" + timeStamp + Constant.VIDEO_EXTENSION);
         if (canCleanup) {
             if (file.exists()) {
                 file.delete();
@@ -520,7 +517,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED && grantResults[3] == PackageManager.PERMISSION_GRANTED) {
                 // write permission has been granted
                 Log.i("Permission", "permission has now been granted. Showing preview.");
-                loadDashboardAdapter();
+                if (Utils.isNetworkAvailable(getActivity())) {
+                    ayncLoadActionList = new AyncLoadActionList();
+                    ayncLoadActionList.execute();
+                } else {
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
+                }
             } else {
                 Log.i("Permission", "permission was NOT granted.");
                 Toast.makeText(getActivity(), "msg_write_permission_needed", Toast.LENGTH_LONG).show();
@@ -542,80 +544,86 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     public void onClick(String action, String code) {
         mAction = action;
         mCode = code;
-        if (action.equalsIgnoreCase(Constant.TYPE_VIDEO)) {
-            selectVideoOption();
-        } else if (action.equalsIgnoreCase(Constant.TYPE_IMAGE)) {
-            selectImageOption();
+        if (Utils.isNetworkAvailable(getActivity())) {
+            asyncSendSos = new AsyncSendSos();
+            asyncSendSos.execute("0", KavachApp.getInstance().getDeviceID(), KavachApp.getInstance().getIMEI(), Utils.getCurrentTimeStamp(), "" + KavachApp.getInstance().getCurrentLocation().getLatitude(), "" + KavachApp.getInstance().getCurrentLocation().getLongitude(), mCode, "I");
         } else {
-            audioRecorder = new AudioRecorder(FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.AUDIO_FOLDER_NAME) + "/Audio_" + System.currentTimeMillis());
-            try {
-                audioRecorder.start();
-                CountDownTimer countDowntimer = new CountDownTimer(Constant.AUDIO_RECORD_TIMELIMIT, 1000) {
-                    public void onTick(long millisUntilFinished) {
-                    }
-
-                    public void onFinish() {
-                        try {
-                            audioRecorder.stop();
-                        } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-
-
-                    }
-                };
-                countDowntimer.start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
         }
+//        if (action.equalsIgnoreCase(Constant.TYPE_VIDEO)) {
+//            selectVideoOption();
+//        } else if (action.equalsIgnoreCase(Constant.TYPE_IMAGE)) {
+//            selectImageOption();
+//        } else {
+//            audioRecorder = new AudioRecorder(FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.AUDIO_FOLDER_NAME) + "/Audio_" + System.currentTimeMillis());
+//            try {
+//                audioRecorder.start();
+//                CountDownTimer countDowntimer = new CountDownTimer(Constant.AUDIO_RECORD_TIMELIMIT, 1000) {
+//                    public void onTick(long millisUntilFinished) {
+//                    }
+//
+//                    public void onFinish() {
+//                        try {
+//                            audioRecorder.stop();
+//                        } catch (IOException e) {
+//                            // TODO Auto-generated catch block
+//                            e.printStackTrace();
+//                        }
+//
+//
+//                    }
+//                };
+//                countDowntimer.start();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
 
     private void selectImageOption() {
-
-        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Add Photo!");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                if (item == 0) {
-                    captureImage();
-                } else if (item == 1) {
-                    chooseImageFileFromStorage();
-
-                } else if (options[item].equals("Cancel")) {
-                    dialog.dismiss();
-                }
-            }
-        });
-        builder.show();
+        captureImage();
+//        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//        builder.setTitle("Add Photo!");
+//        builder.setItems(options, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int item) {
+//                if (item == 0) {
+//                    captureImage();
+//                } else if (item == 1) {
+//                    chooseImageFileFromStorage();
+//
+//                } else if (options[item].equals("Cancel")) {
+//                    dialog.dismiss();
+//                }
+//            }
+//        });
+//        builder.show();
     }
 
 
     private void selectVideoOption() {
-
-        final CharSequence[] options = {"Take Video", "Choose from Gallery", "Cancel"};
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Add Photo!");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                if (item == 0) {
-                    captureVideo();
-                } else if (item == 1) {
-                    chooseVideoFileFromStorage();
-
-                } else if (options[item].equals("Cancel")) {
-                    dialog.dismiss();
-                }
-            }
-        });
-        builder.show();
+        captureVideo();
+//        final CharSequence[] options = {"Take Video", "Choose from Gallery", "Cancel"};
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//        builder.setTitle("Add Photo!");
+//        builder.setItems(options, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int item) {
+//                if (item == 0) {
+//                    captureVideo();
+//                } else if (item == 1) {
+//                    chooseVideoFileFromStorage();
+//
+//                } else if (options[item].equals("Cancel")) {
+//                    dialog.dismiss();
+//                }
+//            }
+//        });
+//        builder.show();
     }
 
 
@@ -665,6 +673,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
 
     private class AsyncSendSos extends AsyncTask<String, Void, Boolean> {
         ProgressDialog progressDialog;
+        WSSOS wssos;
 
         @Override
         protected void onPreExecute() {
@@ -677,13 +686,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             String TripID = params[0];
             String MacID = params[1];
             String SimID = params[2];
-            String TimeStamp = params[3];
+            TimeStamp = params[3];
             String Lat = params[4];
             String Long = params[5];
             String AlertType = params[6];
             String LogStatus = params[7];
 
-            WSSOS wssos = new WSSOS(getActivity());
+            wssos = new WSSOS(getActivity());
             return wssos.executeService(TripID, MacID, SimID, TimeStamp, Lat, Long, AlertType, LogStatus);
         }
 
@@ -695,10 +704,116 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     progressDialog.dismiss();
                 }
                 if (aBoolean) {
-                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_sos_success));
+
+                    ticketNumber = "" + wssos.getTicket();
+                    if (mAction.equalsIgnoreCase(Constant.TYPE_VIDEO)) {
+                        selectVideoOption();
+                    } else if (mAction.equalsIgnoreCase(Constant.TYPE_IMAGE)) {
+                        selectImageOption();
+                    } else {
+                        audioRecorder = new AudioRecorder(FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.AUDIO_FOLDER_NAME) + "/Audio_" + System.currentTimeMillis());
+                        try {
+                            audioRecorder.start();
+                            CountDownTimer countDowntimer = new CountDownTimer(Constant.AUDIO_RECORD_TIMELIMIT, 1000) {
+                                public void onTick(long millisUntilFinished) {
+                                }
+
+                                public void onFinish() {
+                                    try {
+                                        audioRecorder.stop();
+                                    } catch (IOException e) {
+                                        // TODO Auto-generated catch block
+                                        e.printStackTrace();
+                                    }
+
+
+                                }
+                            };
+                            countDowntimer.start();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+//                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_sos_success));
                 } else {
                     Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_sos_failed));
                 }
+            }
+        }
+    }
+
+//    private class AynsUploadFile extends AsyncTask<String, Void, Void> {
+//        private ProgressDialog progressDialog;
+//        private WSUploadPhoto wsUploadPhoto;
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            progressDialog = Utils.displayProgressDialog(getActivity());
+//        }
+//
+//        @Override
+//        protected Void doInBackground(String... voids) {
+//            try {
+//                wsUploadPhoto = new WSUploadPhoto(voids[1], voids[2], voids[3]);
+//                final FileInputStream fstrm = new FileInputStream(selectedPath);
+//                String finalDay = "" + day;
+//                if (finalDay.length() <= 1) {
+//                    finalDay = "0" + finalDay;
+//                }
+//                String finalMonth = "" + (month + 1);
+//                if (finalMonth.length() <= 1) {
+//                    finalMonth = "0" + finalMonth;
+//                }
+//                final String fileName = "DA_" + year + finalMonth + finalDay + "_" + System.currentTimeMillis() + ".jpg";
+//                wsUploadPhoto.Send_Now(fstrm, fileName);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void result) {
+//            super.onPostExecute(result);
+//            Utils.dismissDialog(progressDialog);
+//            if (!isCancelled()) {
+//                if (getActivity() != null && !getActivity().isFinishing() && isAdded()) {
+//                    Utils.displayAlertDialog(false, "", getString(R.string.msg_successfully_uploaded_photo), getActivity());
+//                }
+//            }
+//        }
+//    }
+
+    private class AyncLoadActionList extends AsyncTask<Void, Void, ArrayList<ActionModel>> {
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = Utils.displayProgressDialog(getActivity());
+        }
+
+        @Override
+        protected ArrayList<ActionModel> doInBackground(Void... params) {
+            WSGetAlertList wsGetAlertList = new WSGetAlertList(getActivity());
+            return wsGetAlertList.executeService();
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<ActionModel> actionModels) {
+            super.onPostExecute(actionModels);
+            if (!isCancelled()) {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                if (actionModels != null && actionModels.size() > 0) {
+                    actionList = new ArrayList<>();
+                    actionList.addAll(actionModels);
+                    loadDashboardAdapter();
+                }
+
             }
         }
     }

@@ -2,11 +2,13 @@ package app.sosdemo.fragment;
 
 import android.Manifest;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -34,6 +36,7 @@ import app.sosdemo.adapter.DashboardAdapter;
 import app.sosdemo.model.ContactModel;
 import app.sosdemo.util.Constant;
 import app.sosdemo.util.Utils;
+import app.sosdemo.webservice.WSContactList;
 
 /**
  * Created by ANKIT on 1/31/2017.
@@ -50,12 +53,19 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
     String[] PERMISSIONS = {Manifest.permission.CALL_PHONE};
     int PERMISSION_ALL = 1;
     private String mPhoneNumber;
+    private AsyncContactList asyncContactList;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_setting, null);
         init();
+        if (Utils.isNetworkAvailable(getActivity())) {
+            asyncContactList = new AsyncContactList();
+            asyncContactList.execute();
+        } else {
+            Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
+        }
         return view;
     }
 
@@ -86,7 +96,7 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
             }
         });
         tvChangePass = (TextView) view.findViewById(R.id.fragnent_setting_tv_changePass);
-        loadContactList();
+
         tvChangePass.setOnClickListener(this);
 
     }
@@ -117,7 +127,6 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
     }
 
     private void loadContactList() {
-        loadContactData();
         contactListAdapter = new ContactListAdapter(getActivity(), contactList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         rvContactList.setLayoutManager(mLayoutManager);
@@ -125,28 +134,6 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
         rvContactList.setAdapter(contactListAdapter);
     }
 
-    private void loadContactData() {
-        contactList = new ArrayList<>();
-        contactList.add(new ContactModel("My Office", "Prahalad Nagar,Ahmedabad", "079-1234567", "Mrunalbhai", "7565747483", "mrunal@gmail.com"));
-        contactList.add(new ContactModel("My Office", "Prahalad Nagar,Ahmedabad", "079-1234567", "Mrunalbhai", "7565747483", "mrunal@gmail.com"));
-        contactList.add(new ContactModel("My Office", "Prahalad Nagar,Ahmedabad", "079-1234567", "Mrunalbhai", "7565747483", "mrunal@gmail.com"));
-        contactList.add(new ContactModel("My Office", "Prahalad Nagar,Ahmedabad", "079-1234567", "Mrunalbhai", "7565747483", "mrunal@gmail.com"));
-        contactList.add(new ContactModel("My Office", "Prahalad Nagar,Ahmedabad", "079-1234567", "Mrunalbhai", "7565747483", "mrunal@gmail.com"));
-        contactList.add(new ContactModel("My Office", "Prahalad Nagar,Ahmedabad", "079-1234567", "Mrunalbhai", "7565747483", "mrunal@gmail.com"));
-        contactList.add(new ContactModel("My Office", "Prahalad Nagar,Ahmedabad", "079-1234567", "Mrunalbhai", "7565747483", "mrunal@gmail.com"));
-        contactList.add(new ContactModel("My Office", "Prahalad Nagar,Ahmedabad", "079-1234567", "Mrunalbhai", "7565747483", "mrunal@gmail.com"));
-        contactList.add(new ContactModel("My Office", "Prahalad Nagar,Ahmedabad", "079-1234567", "Mrunalbhai", "7565747483", "mrunal@gmail.com"));
-        contactList.add(new ContactModel("My Office", "Prahalad Nagar,Ahmedabad", "079-1234567", "Mrunalbhai", "7565747483", "mrunal@gmail.com"));
-        contactList.add(new ContactModel("My Office", "Prahalad Nagar,Ahmedabad", "079-1234567", "Mrunalbhai", "7565747483", "mrunal@gmail.com"));
-        contactList.add(new ContactModel("My Office", "Prahalad Nagar,Ahmedabad", "079-1234567", "Mrunalbhai", "7565747483", "mrunal@gmail.com"));
-        contactList.add(new ContactModel("My Office", "Prahalad Nagar,Ahmedabad", "079-1234567", "Mrunalbhai", "7565747483", "mrunal@gmail.com"));
-        contactList.add(new ContactModel("My Office", "Prahalad Nagar,Ahmedabad", "079-1234567", "Mrunalbhai", "7565747483", "mrunal@gmail.com"));
-        contactList.add(new ContactModel("My Office", "Prahalad Nagar,Ahmedabad", "079-1234567", "Mrunalbhai", "7565747483", "mrunal@gmail.com"));
-        contactList.add(new ContactModel("My Office", "Prahalad Nagar,Ahmedabad", "079-1234567", "Mrunalbhai", "7565747483", "mrunal@gmail.com"));
-        contactList.add(new ContactModel("My Office", "Prahalad Nagar,Ahmedabad", "079-1234567", "Mrunalbhai", "7565747483", "mrunal@gmail.com"));
-        contactList.add(new ContactModel("My Office", "Prahalad Nagar,Ahmedabad", "079-1234567", "Mrunalbhai", "7565747483", "mrunal@gmail.com"));
-        contactList.add(new ContactModel("My Office", "Prahalad Nagar,Ahmedabad", "079-1234567", "Mrunalbhai", "7565747483", "mrunal@gmail.com"));
-    }
 
     private boolean hasPermissions(Context context, String... permissions) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
@@ -221,6 +208,39 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
                 return;
             }
             getActivity().startActivity(intent);
+        }
+    }
+
+    private class AsyncContactList extends AsyncTask<Void, Void, ArrayList<ContactModel>> {
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = Utils.displayProgressDialog(getActivity());
+        }
+
+        @Override
+        protected ArrayList<ContactModel> doInBackground(Void... params) {
+            WSContactList wsContactList = new WSContactList(getActivity());
+            return wsContactList.executeService();
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<ContactModel> contactModels) {
+            super.onPostExecute(contactModels);
+            if (!isCancelled()) {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                if (contactModels != null && contactModels.size() > 0) {
+                    contactList = new ArrayList<>();
+                    contactList.addAll(contactModels);
+                    loadContactList();
+                }
+
+
+            }
         }
     }
 }
