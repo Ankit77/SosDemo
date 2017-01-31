@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#ffd4a270</color>
     <color name="colorPrimaryDark">#ffd4a270</color>
-    <color name="colorAccent">#ff44352d</color>
+    <color name="colorAccent">#ffd4a270</color>
     <color name="color_actionbar">#43342C</color>
     <color name="color_white">#FFFFFF</color>
     <color name="white_smoke">#fff7f7f7</color>

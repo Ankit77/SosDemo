@@ -20,7 +20,7 @@
         <item name="android:ems">10</item>
         <item name="android:background">@color/color_white</item>
         <item name="android:drawablePadding">@dimen/_7sdp</item>
-        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColor">@color/color_actionbar</item>
         <item name="android:textColorHint">@color/main_color_gray_lt</item>
         <item name="android:padding">@dimen/_10sdp</item>
         <item name="android:lines">1</item>

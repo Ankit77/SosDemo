@@ -28,10 +28,10 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     private List<ContactModel> mList;
     private Context context;
     private long mLastClickTime = 0;
-    private DashboardAdapter.onActionListner onactionListner;
+    private onCallListner onCallListner;
 
-    public void setOnactionListner(DashboardAdapter.onActionListner onactionListner) {
-        this.onactionListner = onactionListner;
+    public void setOnCallListner(ContactListAdapter.onCallListner onCallListner) {
+        this.onCallListner = onCallListner;
     }
 
     public ContactListAdapter(Context context, List<ContactModel> list) {
@@ -67,10 +67,10 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
-                Intent intent = new Intent(Intent.ACTION_CALL);
+                if (onCallListner != null) {
+                    onCallListner.onClick(mList.get(position).getLandline());
+                }
 
-                intent.setData(Uri.parse("tel:" + mList.get(position).getLandline()));
-                context.startActivity(intent);
 
             }
         });
@@ -82,11 +82,10 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
+                if (onCallListner != null) {
+                    onCallListner.onClick(mList.get(position).getMobile());
+                }
 
-                Intent intent = new Intent(Intent.ACTION_CALL);
-
-                intent.setData(Uri.parse("tel:" + mList.get(position).getMobile()));
-                context.startActivity(intent);
             }
         });
 
@@ -118,8 +117,9 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         }
     }
 
-    public interface onActionListner {
-        public void onClick(String action);
-
+    public interface onCallListner {
+        public void onClick(String phonenumber);
     }
+
+
 }

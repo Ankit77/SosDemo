@@ -712,5 +712,4 @@ public static long getFileSizeInKB(String path) {
     long fileSizeInMB = fileSizeInKB / 1024;
     return fileSizeInKB;
 }
-
 }
