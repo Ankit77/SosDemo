@@ -26,7 +26,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,15 +54,11 @@ import com.lkland.videocompressor.validations.AbstractCompressionOptionsValidato
 import com.lkland.videocompressor.validations.ValidationFactory;
 import com.lkland.videocompressor.video.IVideo;
 
-import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPReply;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import app.sosdemo.KavachApp;
 import app.sosdemo.MainActivity;
@@ -74,8 +69,10 @@ import app.sosdemo.model.ActionModel;
 import app.sosdemo.util.Constant;
 import app.sosdemo.util.GetFilePath;
 import app.sosdemo.util.Utils;
+import app.sosdemo.webservice.WSConstants;
 import app.sosdemo.webservice.WSGetAlertList;
 import app.sosdemo.webservice.WSSOS;
+import app.sosdemo.webservice.WSUploadPhoto;
 import id.zelory.compressor.Compressor;
 
 /**
@@ -116,7 +113,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private String TimeStamp;
     private String ticketNumber;
     private AyncLoadActionList ayncLoadActionList;
-
+    private int year;
+    private int month;
+    private int day;
     ServiceConnection conn = new ServiceConnection() {
 
         @Override
@@ -226,6 +225,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         ((MainActivity) getActivity()).setTitle(getString(R.string.lbl_title_dashboard));
         ((MainActivity) getActivity()).isshowBackButton(false);
         ((MainActivity) getActivity()).isMenuButton(true);
+        final Calendar calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
         rvActionList = (RecyclerView) view.findViewById(R.id.fragment_dashboard_rv_actionlist);
         if (hasPermissions(getActivity(), PERMISSIONS)) {
 //            loadDashboardAdapter();
@@ -345,7 +348,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                                 }
 
                                 if (Utils.isNetworkAvailable(getActivity())) {
-                                    new AsyncFileUpload().execute(compressedImage.getPath(), compressedImage.getName());
+                                    new AynsUploadPhoto().execute(compressedImage.getPath(), "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
                                 } else {
                                     Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
                                 }
@@ -830,8 +833,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         }
     }
 
-    private class AsyncFileUpload extends AsyncTask<String, Void, Boolean> {
+    private class AynsUploadPhoto extends AsyncTask<String, Void, Void> {
         private ProgressDialog progressDialog;
+        private WSUploadPhoto wsUploadPhoto;
 
         @Override
         protected void onPreExecute() {
@@ -840,61 +844,35 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         }
 
         @Override
-        protected Boolean doInBackground(String... params) {
-            doFileUpload(params[0], params[1]);
-            return true;
+        protected Void doInBackground(String... voids) {
+            try {
+                wsUploadPhoto = new WSUploadPhoto(voids[1], voids[2], voids[3]);
+                final FileInputStream fstrm = new FileInputStream(voids[0]);
+                String finalDay = "" + day;
+                if (finalDay.length() <= 1) {
+                    finalDay = "0" + finalDay;
+                }
+                String finalMonth = "" + (month + 1);
+                if (finalMonth.length() <= 1) {
+                    finalMonth = "0" + finalMonth;
+                }
+                wsUploadPhoto.Send_Now(fstrm, new File(voids[0]).getName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
         }
 
         @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
             if (!isCancelled()) {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
-
             }
         }
-    }
 
-    public void doFileUpload(String filepath, String fileName) {
-        // TODO Auto-generated method stub
-
-        String hostName = "78.47.72.253";
-        String username = "administrator";
-        String password = "ilab@257";
-        String location = filepath;
-        FTPClient ftp = null;
-
-        InputStream in = null;
-        try {
-            ftp = new FTPClient();
-            ftp.connect(hostName);
-            ftp.login(username, password);
-
-            ftp.setFileType(FTP.BINARY_FILE_TYPE);
-
-
-            ftp.changeWorkingDirectory("Nagrik/MediaStorage");
-            // tripid_deviceid
-            int reply = ftp.getReplyCode();
-            System.out.println("Received Reply from FTP Connection:" + reply);
-
-            if (FTPReply.isPositiveCompletion(reply)) {
-                System.out.println("Connected Success");
-            }
-
-            File f1 = new File(location);
-            in = new FileInputStream(f1);
-
-            ftp.storeFile(fileName, in);
-
-            System.out.println("SUCCESS");
-
-            ftp.logout();
-            ftp.disconnect();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

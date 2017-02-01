@@ -32,6 +32,7 @@ public class WSConstants {
     public static final String METHOD_EMERGENCY = "getEmergencyCenterService";
     public static final String METHOD_CHANGEPASSWORD = "ChangeUserPassword";
     public static final String METHOD_FORGOTPASSWORD = "ForgotUserPassword";
+    public static final String METHOD_FILEUPLOAD = "SetFileUpload.aspx";
 
     public static final String PARAMS_USERID = "userid";
     public static final String PARAMS_USERPASSWORD = "password";

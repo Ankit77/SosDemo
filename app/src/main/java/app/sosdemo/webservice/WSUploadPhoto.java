@@ -62,7 +62,7 @@ public class WSUploadPhoto {
             conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
             final DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
             dos.writeBytes(twoHyphens + boundary + lineEnd);
-            dos.writeBytes("Content-Disposition: form-data; name=\"AWCode\"" + lineEnd);
+            dos.writeBytes("Content-Disposition: form-data; name=\"HelpLogID\"" + lineEnd);
             dos.writeBytes(lineEnd);
             dos.writeBytes(awCode);
             dos.writeBytes(lineEnd);
