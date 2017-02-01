@@ -91,6 +91,7 @@
                     android:checked="false"
                     android:text="@string/lbl_reg_male"
                     android:tag="M"
+                    android:theme="@style/WhiteCheck"
                     android:textSize="@dimen/_16sdp" />
 
                 <RadioButton
@@ -100,6 +101,7 @@
                     android:layout_gravity="center_horizontal"
                     android:checked="false"
                     android:text="@string/lbl_reg_female"
+                    android:theme="@style/WhiteCheck"
                     android:tag="F"
                     android:textSize="@dimen/_16sdp" />
             </RadioGroup>

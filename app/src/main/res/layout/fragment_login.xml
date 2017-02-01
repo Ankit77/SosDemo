@@ -60,6 +60,7 @@
                 android:layout_weight="1.0"
                 android:text="@string/lbl_remember_me"
                 android:textColor="@color/color_white"
+                android:theme="@style/WhiteCheck"
                 android:textSize="@dimen/_10sdp" />
 
             <app.sosdemo.common.CustomButton

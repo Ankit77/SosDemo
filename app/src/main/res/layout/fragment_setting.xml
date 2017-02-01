@@ -33,7 +33,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:checked="true"
-                android:text="English "
+                android:theme="@style/WhiteCheck"
+                android:text="@string/lbl_setting_english"
                 android:textSize="@dimen/_14sdp" />
 
             <RadioButton
@@ -42,7 +43,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:checked="false"
-                android:text="Hindi     "
+                android:theme="@style/WhiteCheck"
+                android:text="@string/lbl_setting_hindi"
                 android:textSize="@dimen/_14sdp" />
 
             <RadioButton
@@ -51,7 +53,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:checked="false"
-                android:text="Gujarati"
+                android:text="@string/lbl_setting_gujarati"
+                android:theme="@style/WhiteCheck"
                 android:textSize="@dimen/_14sdp" />
         </RadioGroup>
 

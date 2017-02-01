@@ -54,4 +54,8 @@
         <item name="android:lines">3</item>
         <item name="android:ems">20</item>
     </style>
+
+    <style name="WhiteCheck">
+        <item name="colorAccent">@color/color_actionbar</item>
+    </style>
 </resources>

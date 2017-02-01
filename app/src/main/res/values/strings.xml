@@ -67,4 +67,7 @@
     <string name="alret_fp_success">NewPassword is send to your email address</string>
     <string name="alert_fp_fail">Fail to Forgot Password</string>
     <string name="alret_permision_need">Permission are needed to perform action</string>
+    <string name="lbl_setting_english">English</string>
+    <string name="lbl_setting_hindi">Hindi</string>
+    <string name="lbl_setting_gujarati">Gujarati</string>
 </resources>
