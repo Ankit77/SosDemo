@@ -15,7 +15,7 @@
         android:paddingRight="@dimen/_15sdp"
         android:paddingTop="@dimen/_10sdp">
 
-        <TextView
+        <app.sosdemo.common.CustomTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/_3sdp"
@@ -24,7 +24,7 @@
             android:textColor="@color/color_white"
             android:textSize="@dimen/_18sdp" />
 
-        <EditText
+        <app.sosdemo.common.CustomEditText
             android:id="@+id/fragnent_login_et_username"
             style="@style/editext_normal"
             android:layout_width="match_parent"
@@ -35,9 +35,9 @@
             android:inputType="text">
 
             <requestFocus />
-        </EditText>
+        </app.sosdemo.common.CustomEditText>
 
-        <EditText
+        <app.sosdemo.common.CustomEditText
             android:id="@+id/fragnent_login_et_password"
             style="@style/editext_normal"
             android:layout_width="match_parent"
@@ -62,7 +62,7 @@
                 android:textColor="@color/color_white"
                 android:textSize="@dimen/_10sdp" />
 
-            <Button
+            <app.sosdemo.common.CustomButton
                 android:id="@+id/fragnent_login_btn_login"
                 style="@style/btn"
                 android:layout_width="wrap_content"
@@ -70,7 +70,7 @@
                 android:background="@drawable/btn_login" />
         </LinearLayout>
 
-        <Button
+        <app.sosdemo.common.CustomButton
             android:id="@+id/fragnent_login_btn_forgotpassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
         android:layout_alignParentBottom="true"
         android:padding="@dimen/_10sdp">
 
-        <TextView
+        <app.sosdemo.common.CustomTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/_3sdp"
@@ -101,7 +101,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/txt_14sp" />
 
-        <TextView
+        <app.sosdemo.common.CustomTextView
             android:id="@+id/fragnent_login_tv_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

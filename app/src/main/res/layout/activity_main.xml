@@ -36,7 +36,7 @@
                 android:layout_marginRight="@dimen/_5sdp"
                 android:src="@drawable/ic_arrow_back" />
 
-            <TextView
+            <app.sosdemo.common.CustomTextView
                 android:id="@+id/activity_main_tv_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

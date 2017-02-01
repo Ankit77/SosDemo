@@ -17,10 +17,9 @@
         <ImageView
             android:id="@+id/row_dashboard_iv_image"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/ic_launcher" />
+            android:layout_height="wrap_content" />
 
-        <TextView
+        <app.sosdemo.common.CustomTextView
             android:id="@+id/row_dashboard_tv_name"
             style="@style/listview_text"
             android:layout_width="match_parent"

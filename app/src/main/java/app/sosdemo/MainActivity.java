@@ -1,14 +1,11 @@
 package app.sosdemo;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import app.sosdemo.fragment.DashboardFragment;
 import app.sosdemo.fragment.LoginFragment;
@@ -88,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 editor.commit();
                 Utils.replaceNextFragment(R.id.container, MainActivity.this, new LoginFragment());
-                Toast.makeText(MainActivity.this, "Logout Call", Toast.LENGTH_LONG).show();
                 if (getFragmentManager().getBackStackEntryCount() > 0) {
                     for (int i = 0; i < getFragmentManager().getBackStackEntryCount(); i++) {
                         getFragmentManager().popBackStack();
@@ -101,7 +97,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (dashboardFragment != null && dashboardFragment.isVisible()) {
                 SettingFragemt settingFragemt = new SettingFragemt();
                 Utils.addNextFragmentNoAnim(R.id.container, MainActivity.this, settingFragemt, dashboardFragment);
-                Toast.makeText(MainActivity.this, "Logout Call", Toast.LENGTH_LONG).show();
             }
         }
     }

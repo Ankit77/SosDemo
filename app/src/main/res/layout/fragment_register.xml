@@ -13,7 +13,7 @@
         android:paddingRight="@dimen/_15sdp"
         android:paddingTop="@dimen/_10sdp">
 
-        <EditText
+        <app.sosdemo.common.CustomEditText
             android:id="@+id/fragnent_register_et_email"
             style="@style/editext_normal"
             android:layout_width="match_parent"
@@ -21,9 +21,9 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:hint="@string/lbl_reg_email"
             android:imeOptions="actionNext"
-            android:inputType="textEmailAddress"></EditText>
+            android:inputType="textEmailAddress"></app.sosdemo.common.CustomEditText>
 
-        <EditText
+        <app.sosdemo.common.CustomEditText
             android:id="@+id/fragnent_register_et_prefix"
             style="@style/editext_normal"
             android:layout_width="match_parent"
@@ -32,11 +32,9 @@
             android:hint="@string/lbl_reg_mr"
             android:imeOptions="actionNext"
             android:inputType="text">
+        </app.sosdemo.common.CustomEditText>
 
-            <requestFocus />
-        </EditText>
-
-        <EditText
+        <app.sosdemo.common.CustomEditText
             android:id="@+id/fragnent_register_et_firstname"
             style="@style/editext_normal"
             android:layout_width="match_parent"
@@ -44,9 +42,9 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:hint="@string/lbl_reg_fname"
             android:imeOptions="actionNext"
-            android:inputType="text"></EditText>
+            android:inputType="text"></app.sosdemo.common.CustomEditText>
 
-        <EditText
+        <app.sosdemo.common.CustomEditText
             android:id="@+id/fragnent_register_et_middelename"
             style="@style/editext_normal"
             android:layout_width="match_parent"
@@ -54,9 +52,9 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:hint="@string/lbl_reg_mname"
             android:imeOptions="actionNext"
-            android:inputType="text"></EditText>
+            android:inputType="text"></app.sosdemo.common.CustomEditText>
 
-        <EditText
+        <app.sosdemo.common.CustomEditText
             android:id="@+id/fragnent_register_et_lastname"
             style="@style/editext_normal"
             android:layout_width="match_parent"
@@ -64,7 +62,7 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:hint="@string/lbl_reg_lname"
             android:imeOptions="actionNext"
-            android:inputType="text"></EditText>
+            android:inputType="text"></app.sosdemo.common.CustomEditText>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -73,7 +71,7 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <TextView
+            <app.sosdemo.common.CustomTextView
                 style="@style/label_normal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -107,7 +105,7 @@
             </RadioGroup>
         </LinearLayout>
 
-        <EditText
+        <app.sosdemo.common.CustomEditText
             android:id="@+id/fragnent_register_et_address1"
             style="@style/editext_normal.multiline"
             android:layout_width="match_parent"
@@ -117,9 +115,9 @@
             android:hint="@string/lbl_reg_addr1"
             android:imeOptions="actionNext"
             android:inputType="text"
-            android:minLines="5"></EditText>
+            android:minLines="5"></app.sosdemo.common.CustomEditText>
 
-        <EditText
+        <app.sosdemo.common.CustomEditText
             android:id="@+id/fragnent_register_et_address2"
             style="@style/editext_normal.multiline"
             android:layout_width="match_parent"
@@ -129,9 +127,9 @@
             android:hint="@string/lbl_reg_addr2"
             android:imeOptions="actionNext"
             android:inputType="text"
-            android:minLines="5"></EditText>
+            android:minLines="5"></app.sosdemo.common.CustomEditText>
 
-        <EditText
+        <app.sosdemo.common.CustomEditText
             android:id="@+id/fragnent_register_et_area"
             style="@style/editext_normal"
             android:layout_width="match_parent"
@@ -141,7 +139,7 @@
             android:imeOptions="actionNext"
             android:inputType="text" />
 
-        <EditText
+        <app.sosdemo.common.CustomEditText
             android:id="@+id/fragnent_register_et_city"
             style="@style/editext_normal"
             android:layout_width="match_parent"
@@ -149,9 +147,9 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:hint="@string/lbl_reg_city"
             android:imeOptions="actionNext"
-            android:inputType="text"></EditText>
+            android:inputType="text"></app.sosdemo.common.CustomEditText>
 
-        <EditText
+        <app.sosdemo.common.CustomEditText
             android:id="@+id/fragnent_register_et_pincode"
             style="@style/editext_normal"
             android:layout_width="match_parent"
@@ -159,9 +157,9 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:hint="@string/lbl_reg_pincode"
             android:imeOptions="actionNext"
-            android:inputType="number"></EditText>
+            android:inputType="number"></app.sosdemo.common.CustomEditText>
 
-        <EditText
+        <app.sosdemo.common.CustomEditText
             android:id="@+id/fragnent_register_et_district"
             style="@style/editext_normal"
             android:layout_width="match_parent"
@@ -169,9 +167,9 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:hint="@string/lbl_reg_distirct"
             android:imeOptions="actionNext"
-            android:inputType="text"></EditText>
+            android:inputType="text"></app.sosdemo.common.CustomEditText>
 
-        <EditText
+        <app.sosdemo.common.CustomEditText
             android:id="@+id/fragnent_register_et_state"
             style="@style/editext_normal"
             android:layout_width="match_parent"
@@ -179,9 +177,9 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:hint="@string/lbl_reg_state"
             android:imeOptions="actionNext"
-            android:inputType="text"></EditText>
+            android:inputType="text"></app.sosdemo.common.CustomEditText>
 
-        <EditText
+        <app.sosdemo.common.CustomEditText
             android:id="@+id/fragnent_register_et_landline"
             style="@style/editext_normal"
             android:layout_width="match_parent"
@@ -189,9 +187,9 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:hint="@string/lbl_reg_landline"
             android:imeOptions="actionNext"
-            android:inputType="phone"></EditText>
+            android:inputType="phone"></app.sosdemo.common.CustomEditText>
 
-        <EditText
+        <app.sosdemo.common.CustomEditText
             android:id="@+id/fragnent_register_et_mobile"
             style="@style/editext_normal"
             android:layout_width="match_parent"
@@ -199,9 +197,9 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:hint="@string/lbl_reg_mobile"
             android:imeOptions="actionNext"
-            android:inputType="phone"></EditText>
+            android:inputType="phone"></app.sosdemo.common.CustomEditText>
 
-        <EditText
+        <app.sosdemo.common.CustomEditText
             android:id="@+id/fragnent_register_et_birthdate"
             style="@style/editext_normal"
             android:layout_width="match_parent"
@@ -209,9 +207,9 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:hint="@string/lbl_reg_birthdate"
             android:imeOptions="actionNext"
-            android:inputType="phone"></EditText>
+            android:inputType="phone"></app.sosdemo.common.CustomEditText>
 
-        <Button
+        <app.sosdemo.common.CustomButton
             android:id="@+id/fragnent_register_btn_submit"
             style="@style/button_normal"
             android:layout_width="match_parent"

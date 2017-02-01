@@ -3,25 +3,28 @@ package app.sosdemo.common;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.widget.TextView;
+import android.widget.Button;
 
 import app.sosdemo.KavachApp;
 import app.sosdemo.util.Constant;
 
+/**
+ * Created by indianic on 01/02/17.
+ */
 
-public class CustomTextView extends TextView {
+public class CustomButton extends Button {
 
-    public CustomTextView(Context context) {
+    public CustomButton(Context context) {
         super(context);
         setFont(context);
     }
 
-    public CustomTextView(Context context, AttributeSet attrs) {
+    public CustomButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         setFont(context);
     }
 
-    public CustomTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CustomButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setFont(context);
     }
@@ -33,5 +36,4 @@ public class CustomTextView extends TextView {
             setTypeface(face);
         }
     }
-
 }

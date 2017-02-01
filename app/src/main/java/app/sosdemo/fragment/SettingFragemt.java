@@ -18,10 +18,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,7 +32,6 @@ import app.sosdemo.KavachApp;
 import app.sosdemo.MainActivity;
 import app.sosdemo.R;
 import app.sosdemo.adapter.ContactListAdapter;
-import app.sosdemo.adapter.DashboardAdapter;
 import app.sosdemo.model.ContactModel;
 import app.sosdemo.util.Constant;
 import app.sosdemo.util.Utils;
@@ -75,6 +74,14 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
         ((MainActivity) getActivity()).isMenuButton(false);
         rgLanguage = (RadioGroup) view.findViewById(R.id.fragnent_setting_rg_language);
         rvContactList = (RecyclerView) view.findViewById(R.id.fragnent_setting_rv_contactlist);
+        if (KavachApp.getInstance().getPref().getString(Constant.PREF_LANGUAGE, Constant.LANGUAGE_ENGLISH).equalsIgnoreCase(Constant.LANGUAGE_ENGLISH)) {
+            ((RadioButton) rgLanguage.getChildAt(0)).setChecked(true);
+        } else if (KavachApp.getInstance().getPref().getString(Constant.PREF_LANGUAGE, Constant.LANGUAGE_ENGLISH).equalsIgnoreCase(Constant.LANGUAGE_HINDI)) {
+            ((RadioButton) rgLanguage.getChildAt(1)).setChecked(true);
+        } else {
+            ((RadioButton) rgLanguage.getChildAt(2)).setChecked(true);
+        }
+
         rgLanguage.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {

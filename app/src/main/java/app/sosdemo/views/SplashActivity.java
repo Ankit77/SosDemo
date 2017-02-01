@@ -33,8 +33,6 @@ import app.sosdemo.KavachApp;
 import app.sosdemo.MainActivity;
 import app.sosdemo.R;
 
-import static java.security.AccessController.getContext;
-
 /**
  * Created by ANKIT on 1/30/2017.
  */
@@ -110,11 +108,9 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
             //If permission is granted
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 buildLocation();
-                //Displaying a toast
-                Toast.makeText(this, "Permission granted now you can read the storage", Toast.LENGTH_LONG).show();
             } else {
                 //Displaying another toast if permission is not granted
-                Toast.makeText(this, "Oops you just denied the permission", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.alret_permision_need), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -183,12 +179,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
         if (requestCode == REQUEST_CHECK_SETTINGS) {
 
             if (resultCode == RESULT_OK) {
-
                 runSplash();
-                Toast.makeText(getApplicationContext(), "GPS enabled", Toast.LENGTH_LONG).show();
-            } else {
-
-                Toast.makeText(getApplicationContext(), "GPS is not enabled", Toast.LENGTH_LONG).show();
             }
 
         }

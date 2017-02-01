@@ -16,6 +16,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -26,7 +27,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -266,13 +266,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         rvActionList.setAdapter(dashboardAdapter);
     }
 
-    private void loadActiondata() {
-        actionList = new ArrayList<>();
-        actionList.add(new ActionModel("S", "SOS/EMergency", "V"));
-        actionList.add(new ActionModel("V", "Domestic Violence", "V"));
-        actionList.add(new ActionModel("T", "Trafic Update", "I"));
-//        actionList.add(new ActionModel("Recording", "AUDIO"));
-    }
+
 
     private void chooseImageFileFromStorage() {
         Intent intent = Utils.getFileChooserIntent("image/*");
@@ -348,7 +342,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                                 }
 
                                 if (Utils.isNetworkAvailable(getActivity())) {
-                                    new AynsUploadPhoto().execute(compressedImage.getPath(), "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
+                                    //new AynsUploadPhoto().execute(compressedImage.getPath(), "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
+
+                                    new AynsUploadPhoto().execute(Environment.getExternalStorageDirectory()+"/test.jpeg", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
                                 } else {
                                     Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
                                 }
@@ -526,12 +522,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         if (requestCode == PERMISSION_ALL) {
             // BEGIN_INCLUDE(permission_result)
             // Received permission result for write permission.
-            Log.i("Permission", "Received response for write permission request.");
 
             // Check if the only required permission has been granted
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED && grantResults[3] == PackageManager.PERMISSION_GRANTED) {
                 // write permission has been granted
-                Log.i("Permission", "permission has now been granted. Showing preview.");
                 if (Utils.isNetworkAvailable(getActivity())) {
                     ayncLoadActionList = new AyncLoadActionList();
                     ayncLoadActionList.execute();
@@ -539,8 +533,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
                 }
             } else {
-                Log.i("Permission", "permission was NOT granted.");
-                Toast.makeText(getActivity(), "msg_write_permission_needed", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), R.string.alret_permision_need, Toast.LENGTH_LONG).show();
             }
             // END_INCLUDE(permission_result)
 

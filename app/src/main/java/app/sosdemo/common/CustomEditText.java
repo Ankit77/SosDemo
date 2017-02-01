@@ -3,25 +3,27 @@ package app.sosdemo.common;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.widget.TextView;
+import android.widget.EditText;
 
 import app.sosdemo.KavachApp;
 import app.sosdemo.util.Constant;
 
+/**
+ * Created by indianic on 01/02/17.
+ */
 
-public class CustomTextView extends TextView {
-
-    public CustomTextView(Context context) {
+public class CustomEditText extends EditText {
+    public CustomEditText(Context context) {
         super(context);
         setFont(context);
     }
 
-    public CustomTextView(Context context, AttributeSet attrs) {
+    public CustomEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
         setFont(context);
     }
 
-    public CustomTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CustomEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setFont(context);
     }
@@ -33,5 +35,4 @@ public class CustomTextView extends TextView {
             setTypeface(face);
         }
     }
-
 }

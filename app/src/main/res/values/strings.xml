@@ -66,4 +66,5 @@
     <string name="alert_change_password_failed">Failed to Change Password</string>
     <string name="alret_fp_success">NewPassword is send to your email address</string>
     <string name="alert_fp_fail">Fail to Forgot Password</string>
+    <string name="alret_permision_need">Permission are needed to perform action</string>
 </resources>

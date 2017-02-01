@@ -13,7 +13,7 @@
         android:paddingRight="@dimen/_15sdp"
         android:paddingTop="@dimen/_30sdp">
 
-        <TextView
+        <app.sosdemo.common.CustomTextView
             style="@style/label_normal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
                 android:textSize="@dimen/_14sdp" />
         </RadioGroup>
 
-        <TextView
+        <app.sosdemo.common.CustomTextView
             android:id="@+id/fragnent_setting_tv_changePass"
             style="@style/label_normal"
             android:layout_width="wrap_content"
@@ -64,7 +64,7 @@
             android:text="@string/lbl_setting_choose_password"
             android:textStyle="bold" />
 
-        <TextView
+        <app.sosdemo.common.CustomTextView
             style="@style/label_normal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
