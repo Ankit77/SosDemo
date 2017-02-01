@@ -82,4 +82,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:10.0.1'
     compile 'id.zelory:compressor:1.0.4'
     compile 'com.squareup.okhttp3:okhttp:3.3.1'
+    compile files('src/main/libs/commons-net-1.4.1.jar')
 }

@@ -55,8 +55,14 @@ import com.lkland.videocompressor.validations.AbstractCompressionOptionsValidato
 import com.lkland.videocompressor.validations.ValidationFactory;
 import com.lkland.videocompressor.video.IVideo;
 
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import app.sosdemo.KavachApp;
@@ -336,6 +342,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                                             .compressToFile(new File(filePath));
                                 } else {
                                     compressedImage = new File(filePath);
+                                }
+
+                                if (Utils.isNetworkAvailable(getActivity())) {
+                                    new AsyncFileUpload().execute(compressedImage.getPath(), compressedImage.getName());
+                                } else {
+                                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
                                 }
 
                             }
@@ -815,6 +827,74 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 }
 
             }
+        }
+    }
+
+    private class AsyncFileUpload extends AsyncTask<String, Void, Boolean> {
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = Utils.displayProgressDialog(getActivity());
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            doFileUpload(params[0], params[1]);
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (!isCancelled()) {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+
+            }
+        }
+    }
+
+    public void doFileUpload(String filepath, String fileName) {
+        // TODO Auto-generated method stub
+
+        String hostName = "78.47.72.253";
+        String username = "administrator";
+        String password = "ilab@257";
+        String location = filepath;
+        FTPClient ftp = null;
+
+        InputStream in = null;
+        try {
+            ftp = new FTPClient();
+            ftp.connect(hostName);
+            ftp.login(username, password);
+
+            ftp.setFileType(FTP.BINARY_FILE_TYPE);
+
+
+            ftp.changeWorkingDirectory("Nagrik/MediaStorage");
+            // tripid_deviceid
+            int reply = ftp.getReplyCode();
+            System.out.println("Received Reply from FTP Connection:" + reply);
+
+            if (FTPReply.isPositiveCompletion(reply)) {
+                System.out.println("Connected Success");
+            }
+
+            File f1 = new File(location);
+            in = new FileInputStream(f1);
+
+            ftp.storeFile(fileName, in);
+
+            System.out.println("SUCCESS");
+
+            ftp.logout();
+            ftp.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
