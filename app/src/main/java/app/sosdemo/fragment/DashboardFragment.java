@@ -16,7 +16,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -267,7 +266,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     }
 
 
-
     private void chooseImageFileFromStorage() {
         Intent intent = Utils.getFileChooserIntent("image/*");
         if (intent != null) {
@@ -290,8 +288,11 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private void captureImage() {
         Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try {
-
-            Uri outputFileUri = getPostImageUri(true, ticketNumber, TimeStamp);
+            String timestamp = Utils.getCurrentTimeStamp();
+            timestamp = timestamp.replace("-", "");
+            timestamp = timestamp.replace(":", "");
+            timestamp = timestamp.replace(" ", "");
+            Uri outputFileUri = getPostImageUri(true, ticketNumber, timestamp);
             intent1.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
             intent1.putExtra("return-data", true);
             startActivityForResult(intent1, REQUEST_CAPTURE_IMAGE);
@@ -303,8 +304,11 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private void captureVideo() {
         Intent intent1 = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         try {
-
-            Uri outputFileUri = getPostVideoUri(true, ticketNumber, TimeStamp);
+            String timestamp = Utils.getCurrentTimeStamp();
+            timestamp = timestamp.replace("-", "");
+            timestamp = timestamp.replace(":", "");
+            timestamp = timestamp.replace(" ", "");
+            Uri outputFileUri = getPostVideoUri(true, ticketNumber, timestamp);
             intent1.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
             intent1.putExtra("return-data", true);
             startActivityForResult(intent1, REQUEST_CAPTURE_VIDEO);
@@ -342,9 +346,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                                 }
 
                                 if (Utils.isNetworkAvailable(getActivity())) {
-                                    //new AynsUploadPhoto().execute(compressedImage.getPath(), "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
+                                    new AynsUploadPhoto().execute(compressedImage.getPath(), "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
 
-                                    new AynsUploadPhoto().execute(Environment.getExternalStorageDirectory()+"/test.jpeg", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
+                                    //new AynsUploadPhoto().execute(Environment.getExternalStorageDirectory()+"/test.jpeg", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
                                 } else {
                                     Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
                                 }
@@ -553,6 +557,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         mAction = action;
         mCode = code;
         if (Utils.isNetworkAvailable(getActivity())) {
+
             asyncSendSos = new AsyncSendSos();
             asyncSendSos.execute("0", KavachApp.getInstance().getDeviceID(), KavachApp.getInstance().getIMEI(), Utils.getCurrentTimeStamp(), "" + KavachApp.getInstance().getCurrentLocation().getLatitude(), "" + KavachApp.getInstance().getCurrentLocation().getLongitude(), mCode, "I");
         } else {
