@@ -849,6 +849,11 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 if (finalMonth.length() <= 1) {
                     finalMonth = "0" + finalMonth;
                 }
+//                String name=new File(voids[0]).getName();
+//                name=name.replace(":","");
+//                name=name.replace(" ","");
+//                name=na
+
                 wsUploadPhoto.Send_Now(fstrm, new File(voids[0]).getName());
             } catch (Exception e) {
                 e.printStackTrace();
