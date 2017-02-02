@@ -31,12 +31,12 @@ public class WSUploadPhoto {
         }
     }
 
-    public void Send_Now(FileInputStream fStream, final String fileName) {
+    public String Send_Now(FileInputStream fStream, final String fileName) {
         fileInputStream = fStream;
-        Sending(fileName);
+        return Sending(fileName);
     }
 
-    void Sending(final String fileName) {
+    String Sending(final String fileName) {
 
         String iFileName = fileName;
         String lineEnd = "\r\n";
@@ -115,12 +115,16 @@ public class WSUploadPhoto {
                 b.append((char) ch);
             }
             String s = b.toString();
-            Log.i("Response", s);
+            String response = s.substring(0, 16);
+            Log.i("Response", response);
             dos.close();
+            return response;
         } catch (MalformedURLException ex) {
             Log.e(Tag, "URL error: " + ex.getMessage(), ex);
+            return "";
         } catch (IOException ioe) {
             Log.e(Tag, "IO error: " + ioe.getMessage(), ioe);
+            return "";
         }
     }
 

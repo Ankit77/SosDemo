@@ -53,6 +53,9 @@ import com.lkland.videocompressor.validations.AbstractCompressionOptionsValidato
 import com.lkland.videocompressor.validations.ValidationFactory;
 import com.lkland.videocompressor.video.IVideo;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -191,7 +194,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     progressDialog.dismiss();
                 }
                 if (Utils.isNetworkAvailable(getActivity())) {
-                    new AynsUploadPhoto().execute(compressVideoPath+".mp4", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
+                    new AynsUploadPhoto().execute(compressVideoPath + ".mp4", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
 
                     //new AynsUploadPhoto().execute(Environment.getExternalStorageDirectory()+"/test.jpeg", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
                 } else {
@@ -296,11 +299,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private void captureImage() {
         Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try {
-            String timestamp = Utils.getCurrentTimeStamp();
-            timestamp = timestamp.replace("-", "");
-            timestamp = timestamp.replace(":", "");
-            timestamp = timestamp.replace(" ", "");
-            Uri outputFileUri = getPostImageUri(true, ticketNumber, timestamp);
+
+            Uri outputFileUri = getPostImageUri(true, ticketNumber);
             intent1.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
             intent1.putExtra("return-data", true);
             startActivityForResult(intent1, REQUEST_CAPTURE_IMAGE);
@@ -312,11 +312,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private void captureVideo() {
         Intent intent1 = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         try {
-            String timestamp = Utils.getCurrentTimeStamp();
-            timestamp = timestamp.replace("-", "");
-            timestamp = timestamp.replace(":", "");
-            timestamp = timestamp.replace(" ", "");
-            Uri outputFileUri = getPostVideoUri(true, ticketNumber, timestamp);
+
+            Uri outputFileUri = getPostVideoUri(true, ticketNumber);
             intent1.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
             intent1.putExtra("return-data", true);
             startActivityForResult(intent1, REQUEST_CAPTURE_VIDEO);
@@ -465,8 +462,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
      * @param canCleanup : Can delete the file if already exists
      * @return : Generated Uri.
      */
-    private Uri getPostImageUri(boolean canCleanup, String ticket, String timeStamp) {
-        final File file = new File(getActivity().getExternalCacheDir() + File.separator + ticket + "_" + timeStamp + Constant.IMAGE_EXTENSION);
+    private Uri getPostImageUri(boolean canCleanup, String ticket) {
+        final File file = new File(getActivity().getExternalCacheDir() + File.separator + ticket + Constant.IMAGE_EXTENSION);
         if (canCleanup) {
             if (file.exists()) {
                 file.delete();
@@ -488,8 +485,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
      * @param canCleanup : Can delete the file if already exists
      * @return : Generated Uri.
      */
-    private Uri getPostVideoUri(boolean canCleanup, String ticket, String timeStamp) {
-        final File file = new File(getActivity().getExternalCacheDir() + File.separator + ticket + "_" + timeStamp + Constant.VIDEO_EXTENSION);
+    private Uri getPostVideoUri(boolean canCleanup, String ticket) {
+        final File file = new File(getActivity().getExternalCacheDir() + File.separator + ticket + Constant.VIDEO_EXTENSION);
         if (canCleanup) {
             if (file.exists()) {
                 file.delete();
@@ -844,7 +841,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         }
     }
 
-    private class AynsUploadPhoto extends AsyncTask<String, Void, Void> {
+    private class AynsUploadPhoto extends AsyncTask<String, Void, Boolean> {
         private ProgressDialog progressDialog;
         private WSUploadPhoto wsUploadPhoto;
 
@@ -855,40 +852,60 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         }
 
         @Override
-        protected Void doInBackground(String... voids) {
+        protected Boolean doInBackground(String... voids) {
             try {
                 wsUploadPhoto = new WSUploadPhoto(voids[1], voids[2], voids[3]);
                 final FileInputStream fstrm = new FileInputStream(voids[0]);
-                String finalDay = "" + day;
-                if (finalDay.length() <= 1) {
-                    finalDay = "0" + finalDay;
-                }
-                String finalMonth = "" + (month + 1);
-                if (finalMonth.length() <= 1) {
-                    finalMonth = "0" + finalMonth;
-                }
-//                String name=new File(voids[0]).getName();
-//                name=name.replace(":","");
-//                name=name.replace(" ","");
-//                name=na
-
-                wsUploadPhoto.Send_Now(fstrm, new File(voids[0]).getName());
+                String res = wsUploadPhoto.Send_Now(fstrm, new File(voids[0]).getName());
+                return parseResponse(res);
             } catch (Exception e) {
                 e.printStackTrace();
+                return false;
             }
 
-            return null;
         }
 
         @Override
-        protected void onPostExecute(Void result) {
+        protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
             if (!isCancelled()) {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
+                if (result) {
+
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_fileupload_success));
+                } else {
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_fileupload_failed));
+                }
             }
+
         }
 
+    }
+
+    private boolean parseResponse(String response) {
+
+        if (response != null && response.toString().trim().length() > 0) {
+            try {
+                final JSONArray jsonArray = new JSONArray(response);
+                if (jsonArray != null && jsonArray.length() > 0) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        final JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        final int success = jsonObject.getInt("Result");
+                        if (success <= 0) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+
+                    }
+                }
+                return false;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 }

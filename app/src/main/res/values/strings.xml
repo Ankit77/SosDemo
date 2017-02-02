@@ -77,4 +77,6 @@
     <string name="lbl_ok">Ok</string>
     <string name="lbl_cancel">Cancel</string>
     <string name="lbl_reg_landmark">Landmark</string>
+    <string name="alert_fileupload_success">File Upload Successfully</string>
+    <string name="alert_fileupload_failed">File Upload Failed</string>
 </resources>
