@@ -115,6 +115,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private int year;
     private int month;
     private int day;
+    private String compressVideoPath;
     ServiceConnection conn = new ServiceConnection() {
 
         @Override
@@ -188,6 +189,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             public void run() {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
+                }
+                if (Utils.isNetworkAvailable(getActivity())) {
+                    new AynsUploadPhoto().execute(compressVideoPath+".mp4", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
+
+                    //new AynsUploadPhoto().execute(Environment.getExternalStorageDirectory()+"/test.jpeg", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
+                } else {
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
                 }
             }
         });
@@ -366,7 +374,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                             final Uri uri = Uri.fromFile(new File(cameraFilePath));
                             filePath = GetFilePath.getPath(getActivity(), uri);
                             String outPath = FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.VIDEO_FOLDER_NAME);
-                            String outName = ticketNumber + "_" + TimeStamp;
+                            String timestamp = TimeStamp;
+                            timestamp = timestamp.replace("-", "");
+                            timestamp = timestamp.replace(":", "");
+                            timestamp = timestamp.replace(" ", "");
+                            String outName = ticketNumber + "_" + timestamp;
+                            compressVideoPath = outPath + "/" + outName;
                             String outSize = Constant.VIDEO_SIZE;
                             ValidationFactory validationFactory = new ValidationFactory();
                             int ret = validationFactory.getValidator(filePath, outPath, outName, outSize).validate();
@@ -394,50 +407,50 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    if (requestCode == REQUEST_PICK_FILE) {
-                        if (!TextUtils.isEmpty(filePath)) {
-                        }
-                    } else if (requestCode == REQUEST_PICK_IMAGE) {
-                        if (!TextUtils.isEmpty(filePath)) {
-                            File compressedImage = null;
-                            //compress image
-                            if (Utils.getFileSizeInKB(filePath) > 500) {
-                                compressedImage = new Compressor.Builder(getActivity())
-                                        .setMaxWidth(640)
-                                        .setMaxHeight(480)
-                                        .setQuality(75)
-                                        .setCompressFormat(Bitmap.CompressFormat.JPEG)
-                                        .setDestinationDirectoryPath(FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.IMAGE_FOLDER_NAME))
-                                        .build()
-                                        .compressToFile(new File(filePath));
-                            } else {
-                                compressedImage = new File(filePath);
-                            }
-                        }
-                    } else if (requestCode == REQUEST_PICK_VIDEO) {
-                        if (!TextUtils.isEmpty(filePath)) {
-                            progressDialog = Utils.displayProgressDialog(getActivity());
-                            final Uri uri = Uri.fromFile(new File(filePath));
-                            filePath = GetFilePath.getPath(getActivity(), uri);
-                            String outPath = FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.VIDEO_FOLDER_NAME);
-                            String outName = "video_" + System.currentTimeMillis();
-                            String outSize = Constant.VIDEO_SIZE;
-                            ValidationFactory validationFactory = new ValidationFactory();
-                            int ret = validationFactory.getValidator(filePath, outPath, outName, outSize).validate();
-                            if (ret != AbstractCompressionOptionsValidator.PASS) {
-                                //tvErrorMsg.setText(validationFactory.getErrorMsgPresenter().present(ret));
-                                return;
-                            }
-
-                            Intent intent = new Intent(DashboardFragment.this.getActivity(), CompressionService.class);
-                            intent.putExtra(CompressionService.TAG_ACTION, CompressionService.FLAG_ACTION_ADD_VIDEO);
-                            intent.putExtra(CompressionService.TAG_DATA_INPUT_FILE_PATH, filePath);
-                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_PATH, outPath);
-                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_NAME, outName);
-                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_SIZE, outSize);
-                            DashboardFragment.this.getActivity().startService(intent);
-                        }
-                    }
+//                    if (requestCode == REQUEST_PICK_FILE) {
+//                        if (!TextUtils.isEmpty(filePath)) {
+//                        }
+//                    } else if (requestCode == REQUEST_PICK_IMAGE) {
+//                        if (!TextUtils.isEmpty(filePath)) {
+//                            File compressedImage = null;
+//                            //compress image
+//                            if (Utils.getFileSizeInKB(filePath) > 500) {
+//                                compressedImage = new Compressor.Builder(getActivity())
+//                                        .setMaxWidth(640)
+//                                        .setMaxHeight(480)
+//                                        .setQuality(75)
+//                                        .setCompressFormat(Bitmap.CompressFormat.JPEG)
+//                                        .setDestinationDirectoryPath(FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.IMAGE_FOLDER_NAME))
+//                                        .build()
+//                                        .compressToFile(new File(filePath));
+//                            } else {
+//                                compressedImage = new File(filePath);
+//                            }
+//                        }
+//                    } else if (requestCode == REQUEST_PICK_VIDEO) {
+//                        if (!TextUtils.isEmpty(filePath)) {
+//                            progressDialog = Utils.displayProgressDialog(getActivity());
+//                            final Uri uri = Uri.fromFile(new File(filePath));
+//                            filePath = GetFilePath.getPath(getActivity(), uri);
+//                            String outPath = FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.VIDEO_FOLDER_NAME);
+//                            String outName = "video_" + System.currentTimeMillis();
+//                            String outSize = Constant.VIDEO_SIZE;
+//                            ValidationFactory validationFactory = new ValidationFactory();
+//                            int ret = validationFactory.getValidator(filePath, outPath, outName, outSize).validate();
+//                            if (ret != AbstractCompressionOptionsValidator.PASS) {
+//                                //tvErrorMsg.setText(validationFactory.getErrorMsgPresenter().present(ret));
+//                                return;
+//                            }
+//
+//                            Intent intent = new Intent(DashboardFragment.this.getActivity(), CompressionService.class);
+//                            intent.putExtra(CompressionService.TAG_ACTION, CompressionService.FLAG_ACTION_ADD_VIDEO);
+//                            intent.putExtra(CompressionService.TAG_DATA_INPUT_FILE_PATH, filePath);
+//                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_PATH, outPath);
+//                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_NAME, outName);
+//                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_SIZE, outSize);
+//                            DashboardFragment.this.getActivity().startService(intent);
+//                        }
+//                    }
                 }
             }
         } catch (Exception e) {
