@@ -1,13 +1,15 @@
 package app.sosdemo.fragment;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +58,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     private SimpleDateFormat dateFormatter;
     private Calendar newCalendar;
     private AsyncRegister asyncRegister;
+    private int selectedIndex = 0;
 
     @Nullable
     @Override
@@ -90,6 +93,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         radioSexGroup = (RadioGroup) view.findViewById(R.id.fragnent_register_rg_gender);
         btnRegister.setOnClickListener(this);
         etBirthdate.setOnClickListener(this);
+        etPrefix.setOnClickListener(this);
 
         datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
 
@@ -100,6 +104,47 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
         }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
+    }
+
+    public Dialog onCreateDialogSingleChoice() {
+
+//Initialize the Alert Dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//Source of the data in the DIalog
+        final CharSequence[] array = {getString(R.string.lbl_pre_mr), getString(R.string.lbl_reg_miss), getString(R.string.lbl_reg_mrs)};
+
+// Set the dialog title
+        builder.setTitle(R.string.lbl_reg_prefix)
+// Specify the list array, the items to be selected by default (null for none),
+// and the listener through which to receive callbacks when items are selected
+                .setSingleChoiceItems(array, selectedIndex, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+// TODO Auto-generated method stub
+                        selectedIndex = which;
+                        etPrefix.setText(array[selectedIndex]);
+                    }
+                })
+
+// Set the action buttons
+                .setPositiveButton(R.string.lbl_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+// User clicked OK, so save the result somewhere
+// or return them to the component that opened the dialog
+                        dialog.dismiss();
+
+                    }
+                })
+                .setNegativeButton(R.string.lbl_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+
+        return builder.create();
     }
 
     @Override
@@ -132,10 +177,12 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                     Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
                 }
             }
+        } else if (v == etPrefix) {
+            Dialog dialog = onCreateDialogSingleChoice();
+            dialog.show();
+        } else if (v == etBirthdate) {
+            datePickerDialog.show();
         }
-//        else if (v == etBirthdate) {
-//            datePickerDialog.show();
-//        }
     }
 
     private boolean isValid() {

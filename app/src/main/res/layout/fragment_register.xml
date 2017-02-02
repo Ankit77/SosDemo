@@ -29,10 +29,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_5sdp"
+            android:clickable="true"
+            android:focusable="false"
             android:hint="@string/lbl_reg_mr"
             android:imeOptions="actionNext"
-            android:inputType="text">
-        </app.sosdemo.common.CustomEditText>
+            android:inputType="text"></app.sosdemo.common.CustomEditText>
 
         <app.sosdemo.common.CustomEditText
             android:id="@+id/fragnent_register_et_firstname"
@@ -88,11 +89,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:checked="false"
-                    android:text="@string/lbl_reg_male"
+                    android:checked="true"
                     android:tag="M"
-                    android:theme="@style/WhiteCheck"
-                    android:textSize="@dimen/_16sdp" />
+                    android:text="@string/lbl_reg_male"
+                    android:textSize="@dimen/_16sdp"
+                    android:theme="@style/WhiteCheck" />
 
                 <RadioButton
                     android:id="@+id/fragnent_register_rb_female"
@@ -100,10 +101,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:checked="false"
-                    android:text="@string/lbl_reg_female"
-                    android:theme="@style/WhiteCheck"
                     android:tag="F"
-                    android:textSize="@dimen/_16sdp" />
+                    android:text="@string/lbl_reg_female"
+                    android:textSize="@dimen/_16sdp"
+                    android:theme="@style/WhiteCheck" />
             </RadioGroup>
         </LinearLayout>
 
@@ -121,12 +122,12 @@
 
         <app.sosdemo.common.CustomEditText
             android:id="@+id/fragnent_register_et_address2"
-            style="@style/editext_normal.multiline"
+            style="@style/editext_normal"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_60sdp"
             android:layout_marginTop="@dimen/_5sdp"
             android:gravity="top"
-            android:hint="@string/lbl_reg_addr2"
+            android:hint="@string/lbl_reg_landmark"
             android:imeOptions="actionNext"
             android:inputType="text"
             android:minLines="5"></app.sosdemo.common.CustomEditText>
@@ -207,6 +208,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_5sdp"
+            android:clickable="true"
+            android:focusable="false"
             android:hint="@string/lbl_reg_birthdate"
             android:imeOptions="actionNext"
             android:inputType="phone"></app.sosdemo.common.CustomEditText>

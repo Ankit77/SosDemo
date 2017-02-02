@@ -6,7 +6,7 @@
     <string name="labl_password">Password</string>
     <string name="lbl_remember_me">Remember me</string>
     <string name="lbl_forgot_password">Forgot Password</string>
-    <string name="lbl_no_account">No account?</string>
+    <string name="lbl_no_account">New SignUp?</string>
     <string name="lbl_register_now">Register Now</string>
     <string name="alert_empty_username">Please Enter UserName</string>
     <string name="alret_empty_password">Please Enter Password</string>
@@ -70,4 +70,11 @@
     <string name="alret_permision_need">Permission are needed to perform action</string>
     <string name="lbl_setting_english">English</string>
     <string name="lbl_setting_gujarati">Gujarati</string>
+    <string name="lbl_pre_mr">Mr</string>
+    <string name="lbl_reg_miss">Miss</string>
+    <string name="lbl_reg_mrs">Mrs</string>
+    <string name="lbl_reg_prefix">Select Prefix</string>
+    <string name="lbl_ok">Ok</string>
+    <string name="lbl_cancel">Cancel</string>
+    <string name="lbl_reg_landmark">Landmark</string>
 </resources>
