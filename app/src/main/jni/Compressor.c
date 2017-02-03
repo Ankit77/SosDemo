@@ -76,14 +76,14 @@ JNIEXPORT void JNICALL checkcpu() {
 JNIEXPORT void JNICALL openLibraries(){
     checkcpu();
     LOGI("openLibraries");
-	handle1 = dlopen("/data/data/com.lkland.videocompressor/lib/libavutil-54.so", RTLD_LAZY);
-	handle4 = dlopen("/data/data/com.lkland.videocompressor/lib/libswresample-1.so", RTLD_LAZY);
-	handle2 = dlopen("/data/data/com.lkland.videocompressor/lib/libavcodec-56.so", RTLD_LAZY);
-	handle3 = dlopen("/data/data/com.lkland.videocompressor/lib/libavformat-56.so", RTLD_LAZY);
-	handle5 = dlopen("/data/data/com.lkland.videocompressor/lib/libswscale-3.so", RTLD_LAZY);
-	handle6 = dlopen("/data/data/com.lkland.videocompressor/lib/libpostproc-53.so", RTLD_LAZY);
-	handle7 = dlopen("/data/data/com.lkland.videocompressor/lib/libavfilter-5.so", RTLD_LAZY);
-    handle = dlopen("/data/data/com.lkland.videocompressor/lib/libffmpeg.so", RTLD_LAZY);
+	handle1 = dlopen("/data/data/app.sosdemo/lib/libavutil-54.so", RTLD_LAZY);
+	handle4 = dlopen("/data/data/app.sosdemo/lib/libswresample-1.so", RTLD_LAZY);
+	handle2 = dlopen("/data/data/app.sosdemo/lib/libavcodec-56.so", RTLD_LAZY);
+	handle3 = dlopen("/data/data/app.sosdemo/lib/libavformat-56.so", RTLD_LAZY);
+	handle5 = dlopen("/data/data/app.sosdemo/lib/libswscale-3.so", RTLD_LAZY);
+	handle6 = dlopen("/data/data/app.sosdemo/lib/libpostproc-53.so", RTLD_LAZY);
+	handle7 = dlopen("/data/data/app.sosdemo/lib/libavfilter-5.so", RTLD_LAZY);
+    handle = dlopen("/data/data/app.sosdemo/lib/libffmpeg.so", RTLD_LAZY);
 }
 
 JNIEXPORT void JNICALL closeLibraries() {

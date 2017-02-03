@@ -194,13 +194,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
-                if (Utils.isNetworkAvailable(getActivity())) {
-                    new AynsUploadPhoto().execute(compressVideoPath + ".mp4", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
-
-                    //new AynsUploadPhoto().execute(Environment.getExternalStorageDirectory()+"/test.jpeg", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
-                } else {
-                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
-                }
+//                if (Utils.isNetworkAvailable(getActivity())) {
+//                    new AynsUploadPhoto().execute(compressVideoPath + ".mp4", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
+//
+//                    //new AynsUploadPhoto().execute(Environment.getExternalStorageDirectory()+"/test.jpeg", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
+//                } else {
+//                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
+//                }
             }
         });
 
@@ -373,7 +373,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                             progressDialog = Utils.displayProgressDialog(getActivity());
                             final Uri uri = Uri.fromFile(new File(cameraFilePath));
                             filePath = GetFilePath.getPath(getActivity(), uri);
-                            if (Build.VERSION.SDK_INT > 20) {
+//                            if (Build.VERSION.SDK_INT > 20) {
                                 String outPath = FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.VIDEO_FOLDER_NAME);
                                 String outName = ticketNumber;
                                 compressVideoPath = outPath + "/" + outName;
@@ -392,15 +392,15 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                                 intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_NAME, outName);
                                 intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_SIZE, outSize);
                                 DashboardFragment.this.getActivity().startService(intent);
-                            } else {
-                                if (Utils.isNetworkAvailable(getActivity())) {
-                                    new AynsUploadPhoto().execute(filePath, "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
-
-                                    //new AynsUploadPhoto().execute(Environment.getExternalStorageDirectory()+"/test.jpeg", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
-                                } else {
-                                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
-                                }
-                            }
+//                            } else {
+//                                if (Utils.isNetworkAvailable(getActivity())) {
+//                                    new AynsUploadPhoto().execute(filePath, "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
+//
+//                                    //new AynsUploadPhoto().execute(Environment.getExternalStorageDirectory()+"/test.jpeg", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
+//                                } else {
+//                                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
+//                                }
+//                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
