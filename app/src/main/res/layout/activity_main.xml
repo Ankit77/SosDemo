@@ -11,7 +11,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="58dp"
-        android:background="#43342C"
+        android:background="@color/colorPrimary"
         android:contentInsetEnd="0dp"
         android:contentInsetLeft="0dp"
         android:contentInsetRight="0dp"
@@ -43,7 +43,7 @@
                 android:layout_centerInParent="true"
                 android:gravity="center"
                 android:text="Login"
-                android:textColor="@color/main_color_gray"
+                android:textColor="@color/color_white"
                 android:textSize="@dimen/_18sdp"
                 android:textStyle="bold" />
 
@@ -51,9 +51,9 @@
                 android:id="@+id/activity_main_iv_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/_5sdp"
-                android:layout_toLeftOf="@+id/activity_main_iv_logout"
+                android:layout_marginLeft="@dimen/_5sdp"
                 android:src="@drawable/ic_nav6_sel" />
 
             <ImageView

@@ -24,7 +24,7 @@
     <string name="lbl_reg_state">State</string>
     <string name="lbl_reg_landline">Landline</string>
     <string name="lbl_reg_mobile">Mobile</string>
-    <string name="lbl_reg_birthdate">BirthDate(e.g 2017-Feb-28)</string>
+    <string name="lbl_reg_birthdate">BirthDate</string>
     <string name="lbl_reg_female">Female</string>
     <string name="lbl_reg_male">Male</string>
     <string name="lbl_reg_gender">Gender :</string>
@@ -79,4 +79,6 @@
     <string name="lbl_reg_landmark">Landmark</string>
     <string name="alert_fileupload_success">File Upload Successfully</string>
     <string name="alert_fileupload_failed">File Upload Failed</string>
+    <string name="lbl_login_login">Login</string>
+    <string name="lbl_reg_register">Register</string>
 </resources>

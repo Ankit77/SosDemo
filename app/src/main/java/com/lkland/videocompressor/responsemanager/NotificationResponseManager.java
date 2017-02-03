@@ -34,7 +34,7 @@ public class NotificationResponseManager extends AbstractResponseManager{
 		Notification.Builder builder = new Notification.Builder(mService)
 			.setContentTitle("Video Compressor")
 			.setContentText(msg)
-			.setSmallIcon(R.drawable.ic_launcher)
+			.setSmallIcon(R.mipmap.ic_launcher)
 			.setProgress(pp.getTotalTime(), pp.getTime(), false);
 		mService.startForeground(1115, builder.build());
 		

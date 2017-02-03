@@ -7,7 +7,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg"
+        android:background="@drawable/splash_page_v_bg"
         android:orientation="vertical"
         android:paddingLeft="@dimen/_15sdp"
         android:paddingRight="@dimen/_15sdp"
@@ -25,37 +25,35 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
+            android:gravity="left"
             android:orientation="vertical">
 
             <RadioButton
                 android:id="@+id/fragnent_setting_rb_english"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:checked="true"
-                android:theme="@style/WhiteCheck"
                 android:text="@string/lbl_setting_english"
-                android:textSize="@dimen/_14sdp" />
+                android:textSize="@dimen/_14sdp"
+                android:theme="@style/WhiteCheck" />
 
             <RadioButton
                 android:id="@+id/fragnent_setting_rb_hindi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:checked="false"
-                android:theme="@style/WhiteCheck"
                 android:text="@string/lbl_setting_hindi"
-                android:textSize="@dimen/_14sdp" />
+                android:textSize="@dimen/_14sdp"
+                android:theme="@style/WhiteCheck" />
 
             <RadioButton
                 android:id="@+id/fragnent_setting_rb_gujarati"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:checked="false"
                 android:text="@string/lbl_setting_gujarati"
-                android:theme="@style/WhiteCheck"
-                android:textSize="@dimen/_14sdp" />
+                android:textSize="@dimen/_14sdp"
+                android:theme="@style/WhiteCheck" />
         </RadioGroup>
 
         <app.sosdemo.common.CustomTextView

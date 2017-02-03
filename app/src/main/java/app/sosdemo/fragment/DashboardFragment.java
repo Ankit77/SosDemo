@@ -194,13 +194,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
-//                if (Utils.isNetworkAvailable(getActivity())) {
-//                    new AynsUploadPhoto().execute(compressVideoPath + ".mp4", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
-//
-//                    //new AynsUploadPhoto().execute(Environment.getExternalStorageDirectory()+"/test.jpeg", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
-//                } else {
-//                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
-//                }
+                if (Utils.isNetworkAvailable(getActivity())) {
+                    new AynsUploadPhoto().execute(compressVideoPath + ".mp4", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
+
+                    //new AynsUploadPhoto().execute(Environment.getExternalStorageDirectory()+"/test.jpeg", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
+                } else {
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
+                }
             }
         });
 
@@ -278,21 +278,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     }
 
 
-    private void chooseImageFileFromStorage() {
-        Intent intent = Utils.getFileChooserIntent("image/*");
-        if (intent != null) {
-            startActivityForResult(intent, REQUEST_PICK_IMAGE);
-        }
-
-    }
-
-    private void chooseVideoFileFromStorage() {
-        Intent intent = Utils.getFileChooserIntent("video/*");
-        if (intent != null) {
-            startActivityForResult(intent, REQUEST_PICK_VIDEO);
-        }
-    }
-
     /**
      * Opens camera activity
      */
@@ -353,8 +338,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
 
                                 if (Utils.isNetworkAvailable(getActivity())) {
                                     new AynsUploadPhoto().execute(compressedImage.getPath(), "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
-
-                                    //new AynsUploadPhoto().execute(Environment.getExternalStorageDirectory()+"/test.jpeg", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
                                 } else {
                                     Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
                                 }
@@ -373,34 +356,24 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                             progressDialog = Utils.displayProgressDialog(getActivity());
                             final Uri uri = Uri.fromFile(new File(cameraFilePath));
                             filePath = GetFilePath.getPath(getActivity(), uri);
-//                            if (Build.VERSION.SDK_INT > 20) {
-                                String outPath = FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.VIDEO_FOLDER_NAME);
-                                String outName = ticketNumber;
-                                compressVideoPath = outPath + "/" + outName;
-                                String outSize = Constant.VIDEO_SIZE;
-                                ValidationFactory validationFactory = new ValidationFactory();
-                                int ret = validationFactory.getValidator(filePath, outPath, outName, outSize).validate();
-                                if (ret != AbstractCompressionOptionsValidator.PASS) {
-                                    //tvErrorMsg.setText(validationFactory.getErrorMsgPresenter().present(ret));
-                                    return;
-                                }
+                            String outPath = FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.VIDEO_FOLDER_NAME);
+                            String outName = ticketNumber;
+                            compressVideoPath = outPath + "/" + outName;
+                            String outSize = Constant.VIDEO_SIZE;
+                            ValidationFactory validationFactory = new ValidationFactory();
+                            int ret = validationFactory.getValidator(filePath, outPath, outName, outSize).validate();
+                            if (ret != AbstractCompressionOptionsValidator.PASS) {
+                                //tvErrorMsg.setText(validationFactory.getErrorMsgPresenter().present(ret));
+                                return;
+                            }
 
-                                Intent intent = new Intent(DashboardFragment.this.getActivity(), CompressionService.class);
-                                intent.putExtra(CompressionService.TAG_ACTION, CompressionService.FLAG_ACTION_ADD_VIDEO);
-                                intent.putExtra(CompressionService.TAG_DATA_INPUT_FILE_PATH, filePath);
-                                intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_PATH, outPath);
-                                intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_NAME, outName);
-                                intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_SIZE, outSize);
-                                DashboardFragment.this.getActivity().startService(intent);
-//                            } else {
-//                                if (Utils.isNetworkAvailable(getActivity())) {
-//                                    new AynsUploadPhoto().execute(filePath, "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
-//
-//                                    //new AynsUploadPhoto().execute(Environment.getExternalStorageDirectory()+"/test.jpeg", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
-//                                } else {
-//                                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
-//                                }
-//                            }
+                            Intent intent = new Intent(DashboardFragment.this.getActivity(), CompressionService.class);
+                            intent.putExtra(CompressionService.TAG_ACTION, CompressionService.FLAG_ACTION_ADD_VIDEO);
+                            intent.putExtra(CompressionService.TAG_DATA_INPUT_FILE_PATH, filePath);
+                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_PATH, outPath);
+                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_NAME, outName);
+                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_SIZE, outSize);
+                            DashboardFragment.this.getActivity().startService(intent);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -412,50 +385,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-//                    if (requestCode == REQUEST_PICK_FILE) {
-//                        if (!TextUtils.isEmpty(filePath)) {
-//                        }
-//                    } else if (requestCode == REQUEST_PICK_IMAGE) {
-//                        if (!TextUtils.isEmpty(filePath)) {
-//                            File compressedImage = null;
-//                            //compress image
-//                            if (Utils.getFileSizeInKB(filePath) > 500) {
-//                                compressedImage = new Compressor.Builder(getActivity())
-//                                        .setMaxWidth(640)
-//                                        .setMaxHeight(480)
-//                                        .setQuality(75)
-//                                        .setCompressFormat(Bitmap.CompressFormat.JPEG)
-//                                        .setDestinationDirectoryPath(FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.IMAGE_FOLDER_NAME))
-//                                        .build()
-//                                        .compressToFile(new File(filePath));
-//                            } else {
-//                                compressedImage = new File(filePath);
-//                            }
-//                        }
-//                    } else if (requestCode == REQUEST_PICK_VIDEO) {
-//                        if (!TextUtils.isEmpty(filePath)) {
-//                            progressDialog = Utils.displayProgressDialog(getActivity());
-//                            final Uri uri = Uri.fromFile(new File(filePath));
-//                            filePath = GetFilePath.getPath(getActivity(), uri);
-//                            String outPath = FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.VIDEO_FOLDER_NAME);
-//                            String outName = "video_" + System.currentTimeMillis();
-//                            String outSize = Constant.VIDEO_SIZE;
-//                            ValidationFactory validationFactory = new ValidationFactory();
-//                            int ret = validationFactory.getValidator(filePath, outPath, outName, outSize).validate();
-//                            if (ret != AbstractCompressionOptionsValidator.PASS) {
-//                                //tvErrorMsg.setText(validationFactory.getErrorMsgPresenter().present(ret));
-//                                return;
-//                            }
-//
-//                            Intent intent = new Intent(DashboardFragment.this.getActivity(), CompressionService.class);
-//                            intent.putExtra(CompressionService.TAG_ACTION, CompressionService.FLAG_ACTION_ADD_VIDEO);
-//                            intent.putExtra(CompressionService.TAG_DATA_INPUT_FILE_PATH, filePath);
-//                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_PATH, outPath);
-//                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_NAME, outName);
-//                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_SIZE, outSize);
-//                            DashboardFragment.this.getActivity().startService(intent);
-//                        }
-//                    }
+
                 }
             }
         } catch (Exception e) {
@@ -581,80 +511,16 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         } else {
             Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
         }
-//        if (action.equalsIgnoreCase(Constant.TYPE_VIDEO)) {
-//            selectVideoOption();
-//        } else if (action.equalsIgnoreCase(Constant.TYPE_IMAGE)) {
-//            selectImageOption();
-//        } else {
-//            audioRecorder = new AudioRecorder(FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.AUDIO_FOLDER_NAME) + "/Audio_" + System.currentTimeMillis());
-//            try {
-//                audioRecorder.start();
-//                CountDownTimer countDowntimer = new CountDownTimer(Constant.AUDIO_RECORD_TIMELIMIT, 1000) {
-//                    public void onTick(long millisUntilFinished) {
-//                    }
-//
-//                    public void onFinish() {
-//                        try {
-//                            audioRecorder.stop();
-//                        } catch (IOException e) {
-//                            // TODO Auto-generated catch block
-//                            e.printStackTrace();
-//                        }
-//
-//
-//                    }
-//                };
-//                countDowntimer.start();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
     }
 
 
     private void selectImageOption() {
         captureImage();
-//        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
-//
-//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//        builder.setTitle("Add Photo!");
-//        builder.setItems(options, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int item) {
-//                if (item == 0) {
-//                    captureImage();
-//                } else if (item == 1) {
-//                    chooseImageFileFromStorage();
-//
-//                } else if (options[item].equals("Cancel")) {
-//                    dialog.dismiss();
-//                }
-//            }
-//        });
-//        builder.show();
     }
 
 
     private void selectVideoOption() {
         captureVideo();
-//        final CharSequence[] options = {"Take Video", "Choose from Gallery", "Cancel"};
-//
-//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//        builder.setTitle("Add Photo!");
-//        builder.setItems(options, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int item) {
-//                if (item == 0) {
-//                    captureVideo();
-//                } else if (item == 1) {
-//                    chooseVideoFileFromStorage();
-//
-//                } else if (options[item].equals("Cancel")) {
-//                    dialog.dismiss();
-//                }
-//            }
-//        });
-//        builder.show();
     }
 
 
@@ -734,8 +600,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
-                if (!aBoolean) {
-
+                if (aBoolean) {
 
                     ticketNumber = "" + wssos.getTicket();
 
@@ -774,50 +639,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
             }
         }
     }
-
-//    private class AynsUploadFile extends AsyncTask<String, Void, Void> {
-//        private ProgressDialog progressDialog;
-//        private WSUploadPhoto wsUploadPhoto;
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            progressDialog = Utils.displayProgressDialog(getActivity());
-//        }
-//
-//        @Override
-//        protected Void doInBackground(String... voids) {
-//            try {
-//                wsUploadPhoto = new WSUploadPhoto(voids[1], voids[2], voids[3]);
-//                final FileInputStream fstrm = new FileInputStream(selectedPath);
-//                String finalDay = "" + day;
-//                if (finalDay.length() <= 1) {
-//                    finalDay = "0" + finalDay;
-//                }
-//                String finalMonth = "" + (month + 1);
-//                if (finalMonth.length() <= 1) {
-//                    finalMonth = "0" + finalMonth;
-//                }
-//                final String fileName = "DA_" + year + finalMonth + finalDay + "_" + System.currentTimeMillis() + ".jpg";
-//                wsUploadPhoto.Send_Now(fstrm, fileName);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void result) {
-//            super.onPostExecute(result);
-//            Utils.dismissDialog(progressDialog);
-//            if (!isCancelled()) {
-//                if (getActivity() != null && !getActivity().isFinishing() && isAdded()) {
-//                    Utils.displayAlertDialog(false, "", getString(R.string.msg_successfully_uploaded_photo), getActivity());
-//                }
-//            }
-//        }
-//    }
 
     private class AyncLoadActionList extends AsyncTask<Void, Void, ArrayList<ActionModel>> {
         private ProgressDialog progressDialog;
@@ -884,9 +705,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 }
                 if (result) {
 
-                    //Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_fileupload_success));
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_fileupload_success));
                 } else {
-                    //Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_fileupload_failed));
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_fileupload_failed));
                 }
             }
 

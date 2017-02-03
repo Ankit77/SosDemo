@@ -112,7 +112,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         ((MainActivity) getActivity()).setTitle(getString(R.string.lbl_title_login));
-        ((MainActivity) getActivity()).isshowBackButton(true);
+        ((MainActivity) getActivity()).isshowBackButton(false);
         ((MainActivity) getActivity()).isMenuButton(false);
     }
 
