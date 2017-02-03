@@ -600,7 +600,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
-                if (aBoolean) {
+                if (!aBoolean) {
 
                     ticketNumber = "" + wssos.getTicket();
 
@@ -632,7 +632,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                             e.printStackTrace();
                         }
                     }
-//                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_sos_success));
                 } else {
                     Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_sos_failed));
                 }
@@ -675,6 +674,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private class AynsUploadPhoto extends AsyncTask<String, Void, Boolean> {
         private ProgressDialog progressDialog;
         private WSUploadPhoto wsUploadPhoto;
+        private String filepath;
 
         @Override
         protected void onPreExecute() {
@@ -685,6 +685,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         @Override
         protected Boolean doInBackground(String... voids) {
             try {
+                filepath = voids[0];
                 wsUploadPhoto = new WSUploadPhoto(voids[1], voids[2], voids[3]);
                 final FileInputStream fstrm = new FileInputStream(voids[0]);
                 String res = wsUploadPhoto.Send_Now(fstrm, new File(voids[0]).getName());
@@ -704,7 +705,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     progressDialog.dismiss();
                 }
                 if (result) {
-
+                    File file = new File(filepath);
+                    if (file.exists()) {
+                        file.delete();
+                    }
                     Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_fileupload_success));
                 } else {
                     Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_fileupload_failed));
