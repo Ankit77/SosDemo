@@ -14,7 +14,7 @@ import app.sosdemo.util.Constant;
 public class WSSOS {
     private Context context;
     private boolean isSuccess = false;
-    private int ticket;
+    private int ticket=-1;
 
     public WSSOS(final Context context) {
         this.context = context;
