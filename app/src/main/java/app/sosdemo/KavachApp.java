@@ -31,7 +31,7 @@ public class KavachApp extends Application {
         sInstance = this;
         pref = getSharedPreferences(PREFER_NAME, 0);
         OS = String.valueOf(Build.VERSION.SDK_INT);
-        Utils.setLanguage(this, pref.getString(Constant.PREF_LANGUAGE, Constant.LANGUAGE_ENGLISH));
+        Utils.setLanguage(this, pref.getString(Constant.PREF_LANGUAGE, Constant.LANGUAGE_GUJRATI));
 
     }
 

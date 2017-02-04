@@ -89,7 +89,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             } else {
                 if (Utils.isNetworkAvailable(getActivity())) {
                     asyncLogin = new AsyncLogin();
-                    asyncLogin.execute(etUserName.getText().toString(), etPassword.getText().toString());
+                    asyncLogin.execute(etUserName.getText().toString(), etPassword.getText().toString(), KavachApp.getInstance().getDeviceID(), KavachApp.getInstance().getIMEI());
                 } else {
                     Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
                 }
@@ -131,7 +131,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         @Override
         protected Boolean doInBackground(String... params) {
             wsLogin = new WSLogin(getActivity());
-            return wsLogin.executeService(params[0], params[1]);
+            return wsLogin.executeService(params[0], params[1], params[2], params[3]);
         }
 
         @Override

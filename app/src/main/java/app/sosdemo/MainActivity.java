@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import app.sosdemo.fragment.DashboardFragment;
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView imgSetting;
     private ImageView imgLogout;
     private TextView tvTitle;
+    private RelativeLayout rlmain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void init() {
+        rlmain = (RelativeLayout) findViewById(R.id.activity_main);
         imgBack = (ImageView) findViewById(R.id.activity_main_iv_back);
         imgLogout = (ImageView) findViewById(R.id.activity_main_iv_logout);
         imgSetting = (ImageView) findViewById(R.id.activity_main_iv_setting);
@@ -44,6 +47,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imgBack.setOnClickListener(this);
         imgLogout.setOnClickListener(this);
         imgSetting.setOnClickListener(this);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            rlmain.setBackgroundResource(R.drawable.sub_bg_h);
+        } else {
+            rlmain.setBackgroundResource(R.drawable.sub_bg_v);
+        }
 
     }
 
@@ -114,5 +122,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            rlmain.setBackgroundResource(R.drawable.sub_bg_v);
+        } else {
+            rlmain.setBackgroundResource(R.drawable.sub_bg_h);
+        }
     }
 }

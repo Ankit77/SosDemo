@@ -600,7 +600,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
-                if (!aBoolean) {
+                if (aBoolean) {
 
                     ticketNumber = "" + wssos.getTicket();
 

@@ -10,7 +10,7 @@ public class Constant {
     public static final String TYPE_VIDEO = "V";
     public static final String TYPE_IMAGE = "I";
     public static final String TYPE_AUDIO = "A";
-    public static final String LANGUAGE_GUJRATI = "gu-rIN";
+    public static final String LANGUAGE_GUJRATI = "fr";
     public static final String LANGUAGE_HINDI = "hi";
     public static final String LANGUAGE_ENGLISH = "en";
     public static final String VIDEO_SIZE = "4";

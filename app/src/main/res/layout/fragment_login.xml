@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/splash_page_v_bg"
+    android:background="@android:color/transparent"
     android:orientation="vertical">
 
 
@@ -60,7 +60,7 @@
                 android:layout_weight="1.0"
                 android:text="@string/lbl_remember_me"
                 android:textColor="@color/color_white"
-                android:textSize="@dimen/_10sdp"
+                android:textSize="@dimen/remember_me_textsize"
                 android:theme="@style/WhiteCheck" />
 
             <app.sosdemo.common.CustomButton
@@ -68,7 +68,9 @@
                 style="@style/button_normal"
                 android:layout_width="@dimen/_100sdp"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/_1sdp"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:padding="@dimen/_5sdp"
                 android:text="@string/lbl_login_login"
                 android:textSize="@dimen/_14sdp"
 
@@ -85,7 +87,7 @@
             android:padding="@dimen/_3sdp"
             android:text="@string/lbl_forgot_password"
             android:textColor="@color/color_white"
-            android:textSize="@dimen/txt_14sp" />
+            android:textSize="@dimen/remember_me_textsize" />
     </LinearLayout>
 
     <LinearLayout
@@ -104,7 +106,7 @@
             android:layout_marginRight="@dimen/_3sdp"
             android:text="@string/lbl_no_account"
             android:textColor="@color/white"
-            android:textSize="@dimen/txt_14sp" />
+            android:textSize="@dimen/remember_me_textsize" />
 
         <app.sosdemo.common.CustomTextView
             android:id="@+id/fragnent_login_tv_register"
@@ -112,7 +114,7 @@
             android:layout_height="wrap_content"
             android:text="@string/lbl_register_now"
             android:textColor="@color/color_white"
-            android:textSize="@dimen/txt_14sp"
+            android:textSize="@dimen/remember_me_textsize"
             android:textStyle="bold" />
     </LinearLayout>
 </RelativeLayout>

@@ -30,7 +30,7 @@ public class CustomTextView extends TextView {
         if (KavachApp.getInstance().getPref().getString(Constant.PREF_LANGUAGE, Constant.LANGUAGE_ENGLISH).equalsIgnoreCase(Constant.LANGUAGE_GUJRATI)) {
             Typeface face = Typeface.createFromAsset(context.getAssets(),
                     "fonts/gujarati.ttf");
-            setTypeface(face);
+            //setTypeface(face);
         }
     }
 

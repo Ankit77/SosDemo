@@ -56,7 +56,7 @@
     <string name="lbl_title_login">लॉग इन करें</string>
     <string name="lbl_title_register">रजिस्टर</string>
     <string name="lbl_title_settings">सेटिंग्स</string>
-    <string name="lbl_contactlist">संपर्क सूची</string>
+    <string name="lbl_contactlist"><u>संपर्क सूची</u></string>
     <string name="alert_permision_callphone">कॉल फ़ोन अनुमति की जरूरत है</string>
     <string name="alret_internet">इंटरनेट कनेक्शन की जाँच करें</string>
     <string name="alert_login_failed">प्रमाणीकरण विफल होना</string>
@@ -81,4 +81,5 @@
     <string name="alert_fileupload_failed">फ़ाइल अपलोड विफल</string>
     <string name="lbl_login_login">लॉग इन करें</string>
     <string name="lbl_reg_register">रजिस्टर</string>
+    <string name="lbl_choose_language">ભાષા પસંદ કરો</string>
 </resources>

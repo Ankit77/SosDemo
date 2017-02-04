@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -39,6 +41,7 @@ import app.sosdemo.R;
 
 public class SplashActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<LocationSettingsResult> {
 
+    private RelativeLayout rlMain;
     protected GoogleApiClient mGoogleApiClient;
     protected LocationRequest locationRequest;
     int REQUEST_CHECK_SETTINGS = 100;
@@ -49,6 +52,12 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        rlMain = (RelativeLayout) findViewById(R.id.activity_splash_rlmain);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            rlMain.setBackgroundResource(R.drawable.splash_page_h_bg);
+        } else {
+            rlMain.setBackgroundResource(R.drawable.splash_page_v_bg);
+        }
         if (hasPermissions(this, PERMISSIONS)) {
             buildLocation();
         } else {
@@ -206,4 +215,13 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
         }, 3000);
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            rlMain.setBackgroundResource(R.drawable.splash_page_v_bg);
+        } else {
+            rlMain.setBackgroundResource(R.drawable.cancel_button);
+        }
+    }
 }

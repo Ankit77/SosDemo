@@ -28,9 +28,9 @@ public class WSLogin {
     /**
      * Method to execute service and parse response.
      */
-    public boolean executeService(final String userName, final String password) {
+    public boolean executeService(final String userName, final String password, final String macid, final String simid) {
         try {
-            final String url = WSConstants.BASE_URL + WSConstants.METHOD_ANGANAUTHENTICATEUSER + generateRequest(userName, password);
+            final String url = WSConstants.BASE_URL + WSConstants.METHOD_ANGANAUTHENTICATEUSER + generateRequest(userName, password, macid, simid);
             String response = new WSUtil().callServiceHttpGet(url);
             response = response.replace(WSConstants.CONST_REPLACE_STRING1, "");
             response = response.replace(WSConstants.CONST_REPLACE_STRING2, "");
@@ -73,7 +73,7 @@ public class WSLogin {
     }
 
 
-    private String generateRequest(final String userName, final String password) {
+    private String generateRequest(final String userName, final String password, final String macid, final String simid) {
         final StringBuilder builder = new StringBuilder();
         builder.append(WSConstants.URL_QUESTION_MARK);
         builder.append(WSConstants.PARAMS_USERID);
@@ -83,6 +83,14 @@ public class WSLogin {
         builder.append(WSConstants.PARAMS_USERPASSWORD);
         builder.append(WSConstants.URL_EQUALS_TO);
         builder.append(password);
+        builder.append(WSConstants.URL_AND);
+        builder.append(WSConstants.PARAMS_MACID);
+        builder.append(WSConstants.URL_EQUALS_TO);
+        builder.append(macid);
+        builder.append(WSConstants.URL_AND);
+        builder.append(WSConstants.PARAMS_SIMID);
+        builder.append(WSConstants.URL_EQUALS_TO);
+        builder.append(simid);
         return builder.toString();
 
     }

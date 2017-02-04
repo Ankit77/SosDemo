@@ -53,18 +53,19 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
     int PERMISSION_ALL = 1;
     private String mPhoneNumber;
     private AsyncContactList asyncContactList;
+    private TextView tvContact;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_setting, null);
         init();
-        if (Utils.isNetworkAvailable(getActivity())) {
-            asyncContactList = new AsyncContactList();
-            asyncContactList.execute();
-        } else {
-            Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
-        }
+//        if (Utils.isNetworkAvailable(getActivity())) {
+//            asyncContactList = new AsyncContactList();
+//            asyncContactList.execute();
+//        } else {
+//            Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
+//        }
         return view;
     }
 
@@ -72,14 +73,17 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
         ((MainActivity) getActivity()).setTitle(getString(R.string.lbl_title_settings));
         ((MainActivity) getActivity()).isshowBackButton(true);
         ((MainActivity) getActivity()).isMenuButton(false);
+        tvContact = (TextView) view.findViewById(R.id.fragment_setting_tvContact);
         rgLanguage = (RadioGroup) view.findViewById(R.id.fragnent_setting_rg_language);
         rvContactList = (RecyclerView) view.findViewById(R.id.fragnent_setting_rv_contactlist);
         if (KavachApp.getInstance().getPref().getString(Constant.PREF_LANGUAGE, Constant.LANGUAGE_ENGLISH).equalsIgnoreCase(Constant.LANGUAGE_ENGLISH)) {
             ((RadioButton) rgLanguage.getChildAt(0)).setChecked(true);
         } else if (KavachApp.getInstance().getPref().getString(Constant.PREF_LANGUAGE, Constant.LANGUAGE_ENGLISH).equalsIgnoreCase(Constant.LANGUAGE_HINDI)) {
             ((RadioButton) rgLanguage.getChildAt(1)).setChecked(true);
-        } else {
+        } else if (KavachApp.getInstance().getPref().getString(Constant.PREF_LANGUAGE, Constant.LANGUAGE_ENGLISH).equalsIgnoreCase(Constant.LANGUAGE_GUJRATI)) {
             ((RadioButton) rgLanguage.getChildAt(2)).setChecked(true);
+        } else {
+            ((RadioButton) rgLanguage.getChildAt(0)).setChecked(true);
         }
 
         rgLanguage.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -105,6 +109,7 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
         tvChangePass = (TextView) view.findViewById(R.id.fragnent_setting_tv_changePass);
 
         tvChangePass.setOnClickListener(this);
+        tvContact.setOnClickListener(this);
 
     }
 
@@ -130,6 +135,10 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
         if (v == tvChangePass) {
             ChangePasswordFragment changePasswordFragment = new ChangePasswordFragment();
             Utils.addNextFragmentNoAnim(R.id.container, getActivity(), changePasswordFragment, SettingFragemt.this);
+        } else if (v == tvContact) {
+            ContactListFragment alertdFragment = new ContactListFragment();
+            // Show Alert DialogFragment
+            alertdFragment.show(getFragmentManager(), getString(R.string.lbl_contactlist));
         }
     }
 
