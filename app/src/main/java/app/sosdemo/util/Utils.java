@@ -716,7 +716,7 @@ public class Utils {
     public static String getCurrentTimeStamp() {
         try {
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MMM-dd hh:mm:ss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MMM-dd hh:mm:ss",Locale.US);
             String currentDateTime = dateFormat.format(new Date()); // Find todays date
 
             return currentDateTime;
