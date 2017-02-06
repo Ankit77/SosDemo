@@ -1,6 +1,7 @@
 package app.sosdemo.views;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -21,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -46,12 +48,14 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
     protected LocationRequest locationRequest;
     int REQUEST_CHECK_SETTINGS = 100;
     private int LOCATION_PERMISSION_CODE = 23;
-    String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.READ_PHONE_STATE};
+    String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO};
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        boolean issuccess = checkGooglePlayServicesAvailable();
         rlMain = (RelativeLayout) findViewById(R.id.activity_splash_rlmain);
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             rlMain.setBackgroundResource(R.drawable.splash_page_h_bg);
@@ -100,6 +104,22 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
         return true;
     }
 
+    private boolean checkGooglePlayServicesAvailable() {
+        final int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+        if (status == ConnectionResult.SUCCESS) {
+            return true;
+        }
+
+
+        if (GooglePlayServicesUtil.isUserRecoverableError(status)) {
+            final Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(status, this, 1);
+            if (errorDialog != null) {
+                errorDialog.show();
+            }
+        }
+
+        return false;
+    }
 
     //Requesting permission
     private void requestLocationPermission() {
@@ -115,7 +135,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
         if (requestCode == LOCATION_PERMISSION_CODE) {
 
             //If permission is granted
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED && grantResults[3] == PackageManager.PERMISSION_GRANTED) {
                 buildLocation();
             } else {
                 //Displaying another toast if permission is not granted

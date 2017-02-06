@@ -298,7 +298,7 @@ public class Camera2VideoFragment extends Fragment
                     public void run() {
                         stopRecordingVideo();
                     }
-                }, 10000);
+                }, Constant.VIDEO_RECORD_TIMELIMIT);
             }
         }, 3000);
     }

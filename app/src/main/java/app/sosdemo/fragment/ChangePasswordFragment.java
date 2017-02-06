@@ -78,7 +78,7 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
         } else if (TextUtils.isEmpty(etConfirmPassword.getText().toString())) {
             Utils.displayDialog(getActivity(), getString(R.string.app_name), "Please enter confirm password");
             return false;
-        } else if (!etOldPassword.getText().toString().equalsIgnoreCase(etConfirmPassword.getText().toString())) {
+        } else if (!etNewPassword.getText().toString().equalsIgnoreCase(etConfirmPassword.getText().toString())) {
             Utils.displayDialog(getActivity(), getString(R.string.app_name), "Old password and Confirm password are not same");
             return false;
         }

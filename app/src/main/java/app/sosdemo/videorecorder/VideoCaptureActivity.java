@@ -2,6 +2,7 @@ package app.sosdemo.videorecorder;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
@@ -17,9 +18,11 @@ import android.view.SurfaceView;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.IOException;
 
 import app.sosdemo.R;
+import app.sosdemo.util.Constant;
 
 /**
  * Created by indianic on 06/02/17.
@@ -32,7 +35,7 @@ public class VideoCaptureActivity extends AppCompatActivity {
     private SurfaceHolder surfaceHolder;
     boolean recording;
     private String ticket;
-
+    private String videopath="";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +65,9 @@ public class VideoCaptureActivity extends AppCompatActivity {
 //            }
 //        }, 3000);
     }
-
+    private String getVideoFilePath(Context context, String ticket) {
+        return context.getExternalCacheDir() + File.separator + ticket + Constant.VIDEO_EXTENSION;
+    }
     private int getCamreaId() {
         int cameraId = -1;
         int numberOfCameras = Camera.getNumberOfCameras();
@@ -159,7 +164,8 @@ public class VideoCaptureActivity extends AppCompatActivity {
 
         mediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
 
-        mediaRecorder.setOutputFile("/sdcard/myvideo.mp4");
+        videopath=getVideoFilePath(VideoCaptureActivity.this,ticket);
+        mediaRecorder.setOutputFile(videopath);
 //        mediaRecorder.setMaxDuration(10000); // Set max duration 60 sec.
 //        mediaRecorder.setMaxFileSize(5000000); // Set max file size 5M
 
@@ -264,10 +270,13 @@ public class VideoCaptureActivity extends AppCompatActivity {
                                 if (mediaRecorder != null) {
                                     mediaRecorder.stop();  // stop the recording
                                     releaseMediaRecorder(mCamera);
-                                    finish();
+                                    Intent intent = new Intent();
+                                    intent.putExtra("FILEPATH", videopath);
+                                    setResult(2, intent);
+                                    finish();//finishing activity
                                 }
                             }
-                        }, 60000);
+                        }, 10000);
                     }
                 }, 2000);
 
