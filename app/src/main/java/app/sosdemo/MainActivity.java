@@ -1,5 +1,6 @@
 package app.sosdemo;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -14,6 +15,9 @@ import app.sosdemo.fragment.LoginFragment;
 import app.sosdemo.fragment.SettingFragemt;
 import app.sosdemo.util.Constant;
 import app.sosdemo.util.Utils;
+import app.sosdemo.util.WriteLog;
+import app.sosdemo.videorecorder.CameraActivity;
+import app.sosdemo.videorecorder.VideoCaptureActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -128,4 +132,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             rlmain.setBackgroundResource(R.drawable.sub_bg_h);
         }
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // check if the request code is same as what is passed  here it is 2
+        WriteLog.E("FILEPATH", "DONE");
+        if (requestCode == 2) {
+            String filepath = data.getStringExtra("FILEPATH");
+            WriteLog.E("FILEPATH", filepath);
+            DashboardFragment dashboardFragment = (DashboardFragment) getFragmentManager().findFragmentByTag(DashboardFragment.class.getSimpleName());
+            if (dashboardFragment != null && dashboardFragment.isVisible()) {
+                dashboardFragment.startVideoCompress(filepath);
+            }
+        }
+    }
+
+    public void recordVideoActivity(String ticket) {
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+            intent.putExtra("TICKET",ticket);
+            startActivityForResult(intent, 2);// Activity is started with requestCode 2
+        } else {
+            Intent intent = new Intent(MainActivity.this, VideoCaptureActivity.class);
+            intent.putExtra("TICKET",ticket);
+            startActivityForResult(intent, 2);// Activity is started with requestCode 2
+        }
+    }
+
 }
