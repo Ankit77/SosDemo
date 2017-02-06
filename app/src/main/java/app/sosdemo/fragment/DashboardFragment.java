@@ -69,6 +69,7 @@ import app.sosdemo.R;
 import app.sosdemo.adapter.DashboardAdapter;
 import app.sosdemo.audio.AudioRecorder;
 import app.sosdemo.model.ActionModel;
+import app.sosdemo.service.UpoadFileService;
 import app.sosdemo.util.Constant;
 import app.sosdemo.util.GetFilePath;
 import app.sosdemo.util.Utils;
@@ -195,7 +196,14 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     progressDialog.dismiss();
                 }
                 if (Utils.isNetworkAvailable(getActivity())) {
-                    new AynsUploadPhoto().execute(compressVideoPath + ".mp4", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
+                    Intent intent = new Intent(getActivity(), UpoadFileService.class);
+
+                    intent.putExtra("FILEPATH", compressVideoPath + ".mp4");
+                    intent.putExtra("URL", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD);
+                    intent.putExtra("AWCODE", ticketNumber);
+                    intent.putExtra("DATETIME", TimeStamp);
+                    getActivity().startService(intent);
+//                    new AynsUploadPhoto().execute(compressVideoPath + ".mp4", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
 
                     //new AynsUploadPhoto().execute(Environment.getExternalStorageDirectory()+"/test.jpeg", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
                 } else {
@@ -337,7 +345,14 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                                 }
 
                                 if (Utils.isNetworkAvailable(getActivity())) {
-                                    new AynsUploadPhoto().execute(compressedImage.getPath(), "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
+                                    Intent intent = new Intent(getActivity(), UpoadFileService.class);
+
+                                    intent.putExtra("FILEPATH", compressedImage.getPath());
+                                    intent.putExtra("URL", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD);
+                                    intent.putExtra("AWCODE", ticketNumber);
+                                    intent.putExtra("DATETIME", TimeStamp);
+                                    getActivity().startService(intent);
+                                    //new AynsUploadPhoto().execute(compressedImage.getPath(), "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
                                 } else {
                                     Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
                                 }
@@ -351,30 +366,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     try {
 
 
-                        if (!TextUtils.isEmpty(cameraFilePath)) {
-
-                            progressDialog = Utils.displayProgressDialog(getActivity());
-                            final Uri uri = Uri.fromFile(new File(cameraFilePath));
-                            filePath = GetFilePath.getPath(getActivity(), uri);
-                            String outPath = FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.VIDEO_FOLDER_NAME);
-                            String outName = ticketNumber;
-                            compressVideoPath = outPath + "/" + outName;
-                            String outSize = Constant.VIDEO_SIZE;
-                            ValidationFactory validationFactory = new ValidationFactory();
-                            int ret = validationFactory.getValidator(filePath, outPath, outName, outSize).validate();
-                            if (ret != AbstractCompressionOptionsValidator.PASS) {
-                                //tvErrorMsg.setText(validationFactory.getErrorMsgPresenter().present(ret));
-                                return;
-                            }
-
-                            Intent intent = new Intent(DashboardFragment.this.getActivity(), CompressionService.class);
-                            intent.putExtra(CompressionService.TAG_ACTION, CompressionService.FLAG_ACTION_ADD_VIDEO);
-                            intent.putExtra(CompressionService.TAG_DATA_INPUT_FILE_PATH, filePath);
-                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_PATH, outPath);
-                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_NAME, outName);
-                            intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_SIZE, outSize);
-                            DashboardFragment.this.getActivity().startService(intent);
-                        }
+//                        if (!TextUtils.isEmpty(cameraFilePath)) {
+//
+//                            startVideoCompress(cameraFilePath);
+//                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -391,6 +386,28 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void startVideoCompress(String videopath) {
+        progressDialog = Utils.displayProgressDialog(getActivity());
+        String outPath = FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.VIDEO_FOLDER_NAME);
+        String outName = ticketNumber;
+        compressVideoPath = outPath + "/" + outName;
+        String outSize = Constant.VIDEO_SIZE;
+        ValidationFactory validationFactory = new ValidationFactory();
+        int ret = validationFactory.getValidator(videopath, outPath, outName, outSize).validate();
+        if (ret != AbstractCompressionOptionsValidator.PASS) {
+            //tvErrorMsg.setText(validationFactory.getErrorMsgPresenter().present(ret));
+            return;
+        }
+
+        Intent intent = new Intent(DashboardFragment.this.getActivity(), CompressionService.class);
+        intent.putExtra(CompressionService.TAG_ACTION, CompressionService.FLAG_ACTION_ADD_VIDEO);
+        intent.putExtra(CompressionService.TAG_DATA_INPUT_FILE_PATH, videopath);
+        intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_PATH, outPath);
+        intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_NAME, outName);
+        intent.putExtra(CompressionService.TAG_DATA_OUTPUT_FILE_SIZE, outSize);
+        DashboardFragment.this.getActivity().startService(intent);
     }
 
     /**
@@ -605,7 +622,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     ticketNumber = "" + wssos.getTicket();
 
                     if (mAction.equalsIgnoreCase(Constant.TYPE_VIDEO)) {
-                        selectVideoOption();
+                        ((MainActivity) getActivity()).recordVideoActivity(ticketNumber);
+
                     } else if (mAction.equalsIgnoreCase(Constant.TYPE_IMAGE)) {
                         selectImageOption();
                     } else {
