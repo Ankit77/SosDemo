@@ -16,8 +16,7 @@ import app.sosdemo.fragment.SettingFragemt;
 import app.sosdemo.util.Constant;
 import app.sosdemo.util.Utils;
 import app.sosdemo.util.WriteLog;
-import app.sosdemo.videorecorder.CameraActivity;
-import app.sosdemo.videorecorder.VideoCaptureActivity;
+import app.sosdemo.video.ui.VideoRecordingActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -151,12 +150,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void recordVideoActivity(String ticket) {
         if (android.os.Build.VERSION.SDK_INT >= 21) {
-            Intent intent = new Intent(MainActivity.this, CameraActivity.class);
-            intent.putExtra("TICKET",ticket);
+            Intent intent = new Intent(MainActivity.this, VideoRecordingActivity.class);
+            intent.putExtra("TICKET", ticket);
             startActivityForResult(intent, 2);// Activity is started with requestCode 2
         } else {
-            Intent intent = new Intent(MainActivity.this, VideoCaptureActivity.class);
-            intent.putExtra("TICKET",ticket);
+            Intent intent = new Intent(MainActivity.this, VideoRecordingActivity.class);
+            intent.putExtra("TICKET", ticket);
             startActivityForResult(intent, 2);// Activity is started with requestCode 2
         }
     }

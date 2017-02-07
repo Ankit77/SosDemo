@@ -17,4 +17,7 @@
     <color name="gray_light">#ffdcd8d8</color>
     <color name="main_gray_dk">#ff8a7b7b</color>
     <color name="main_gray_lt">#ffb9abab</color>
+    <color name="color_tab_normal">#1d7cb0</color>
+    <color name="color_tab_selected">#991d7cb0</color>
+    <color name="app_main_color">#1d7cb0</color>
 </resources>

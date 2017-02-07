@@ -83,6 +83,12 @@
     <string name="lbl_reg_register">Register</string>
     <string name="lbl_choose_language">Choose Language</string>
 
+    <!--later entry-->
     <string name="permission_request">This sample needs permission for camera and audio recording.</string>
     <string name="camera_error">This device doesn\'t support Camera2 API.</string>
+    <string name="alert_video_problem">Prolem when saving video data, please try again</string>
+    <string name="alert_camera_not_support">Camera service not available</string>
+
+    <string name="x_mbs">%1$sMB</string>
+    <string name="x_kbs">%1$sKB</string>
 </resources>

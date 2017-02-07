@@ -82,4 +82,6 @@
     <string name="lbl_login_login">પ્રવેશ</string>
     <string name="lbl_reg_register">નોંધણી</string>
     <string name="lbl_choose_language">ભાષા પસંદ કરો</string>
+    <string name="alert_video_problem">Prolem when saving video data, please try again</string>
+    <string name="alert_camera_not_support">Camera service not available</string>
 </resources>
