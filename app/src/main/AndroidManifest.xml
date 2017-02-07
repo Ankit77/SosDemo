@@ -65,6 +65,12 @@
         <service android:name=".service.UpoadFileService"></service>
 
         <service android:name="com.lkland.videocompressor.services.CompressionService"></service>
+
+        <receiver android:name=".receiver.ConnectivityChangeReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

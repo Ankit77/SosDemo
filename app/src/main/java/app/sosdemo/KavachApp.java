@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Build;
 
+import app.sosdemo.database.DatabaseHelper;
 import app.sosdemo.util.Constant;
 import app.sosdemo.util.Utils;
 
@@ -20,6 +21,7 @@ public class KavachApp extends Application {
     private String OS;
     private SharedPreferences pref;
     private static final String PREFER_NAME = "AndroidExamplePref";
+    private DatabaseHelper databaseHelper;
 
     public static KavachApp getInstance() {
         return sInstance;
@@ -31,6 +33,8 @@ public class KavachApp extends Application {
         sInstance = this;
         pref = getSharedPreferences(PREFER_NAME, 0);
         OS = String.valueOf(Build.VERSION.SDK_INT);
+        databaseHelper = new DatabaseHelper(getApplicationContext());
+        databaseHelper.openDataBase();
         Utils.setLanguage(this, pref.getString(Constant.PREF_LANGUAGE, Constant.LANGUAGE_ENGLISH));
 
     }
@@ -43,6 +47,9 @@ public class KavachApp extends Application {
         return OS;
     }
 
+    public DatabaseHelper getDatabaseHelper() {
+        return databaseHelper;
+    }
 
     public Location getCurrentLocation() {
         return currentLocation;

@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+import app.sosdemo.KavachApp;
+import app.sosdemo.model.FileModel;
 import app.sosdemo.webservice.WSUploadPhoto;
 
 /**
@@ -42,6 +44,12 @@ public class UpoadFileService extends IntentService {
                     if (file.exists()) {
                         file.delete();
                     }
+                } else {
+                    FileModel fileModel = new FileModel();
+                    fileModel.setFilepath(filepath);
+                    fileModel.setAwcode(awcode);
+                    fileModel.setDatetime(datetime);
+                    KavachApp.getInstance().getDatabaseHelper().insertSMS(fileModel);
                 }
 
                 //doFileUpload(filepath, new File(filepath).getName());

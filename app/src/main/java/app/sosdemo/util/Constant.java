@@ -5,6 +5,7 @@ package app.sosdemo.util;
  */
 
 public class Constant {
+
     public static final String IMAGE_EXTENSION = ".jpg";
     public static final String VIDEO_EXTENSION = ".mp4";
     public static final String TYPE_VIDEO = "V";
@@ -22,6 +23,7 @@ public class Constant {
     public static final int SUCCESS = 1;
     public static final int FAILURE = 0;
     public static final String AUDIO_RECORD_BASEURL = "kawach.ilabindia.com";
+    public static final String FILEUPLOAD_URL = "kawach.ilabindia.com";
     //PREF
     public static final String PREF_IS_LOGIN = "IS_LOGIN";
     public static final String PREF_USERNAME = "USERNAME";
