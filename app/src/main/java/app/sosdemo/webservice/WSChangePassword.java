@@ -15,6 +15,7 @@ public class WSChangePassword {
 
     private Context context;
     private boolean isSuccess = false;
+    private String message;
 
     public WSChangePassword(final Context context) {
         this.context = context;
@@ -22,6 +23,10 @@ public class WSChangePassword {
 
     public boolean isSuccess() {
         return isSuccess;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     /**
@@ -55,6 +60,7 @@ public class WSChangePassword {
                         isSuccess = true;
                         final JSONObject jsonObject = jsonArray.getJSONObject(i);
                         final int success = jsonObject.getInt("Result");
+                        message = jsonObject.getString("Message");
                         if (success == Constant.SUCCESS) {
                             return true;
                         } else {

@@ -14,9 +14,14 @@ import app.sosdemo.util.Constant;
 public class WSRegister {
     private Context context;
     private boolean isSuccess = false;
+    private String message = "";
 
     public WSRegister(final Context context) {
         this.context = context;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public boolean isSuccess() {
@@ -54,6 +59,7 @@ public class WSRegister {
                         isSuccess = true;
                         final JSONObject jsonObject = jsonArray.getJSONObject(i);
                         final int success = jsonObject.getInt("Result");
+                        message = jsonObject.getString("Message");
                         if (success == Constant.SUCCESS) {
                             return true;
                         } else {

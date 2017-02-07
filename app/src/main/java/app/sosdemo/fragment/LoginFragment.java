@@ -141,7 +141,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
-                if (aBoolean) {
+                if (!aBoolean) {
                     SharedPreferences.Editor editor = KavachApp.getInstance().getPref().edit();
                     editor.putBoolean(Constant.PREF_IS_LOGIN, true);
                     editor.putString(Constant.PREF_USERNAME, etUserName.getText().toString());
@@ -150,7 +150,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     DashboardFragment dashboardFragment = new DashboardFragment();
                     Utils.replaceNextFragment(R.id.container, getActivity(), dashboardFragment);
                 } else {
-                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_login_failed));
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), wsLogin.getMessage());
                 }
             }
         }
@@ -182,9 +182,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     progressDialog.dismiss();
                 }
                 if (aBoolean) {
-                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_fp_success));
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), wsForgotPassword.getMessage());
                 } else {
-                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_fp_fail));
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), wsForgotPassword.getMessage());
                 }
             }
         }

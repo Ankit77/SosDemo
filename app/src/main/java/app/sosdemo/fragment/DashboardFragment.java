@@ -117,10 +117,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private String TimeStamp;
     private String ticketNumber;
     private AyncLoadActionList ayncLoadActionList;
-    private int year;
-    private int month;
-    private int day;
     private String compressVideoPath;
+    private String originalvideopath;
     ServiceConnection conn = new ServiceConnection() {
 
         @Override
@@ -195,14 +193,18 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
+                //delete original videopath
+                File file = new File(originalvideopath);
+                if (file.exists())
+                    file.delete();
                 if (Utils.isNetworkAvailable(getActivity())) {
                     Intent intent = new Intent(getActivity(), UpoadFileService.class);
-
                     intent.putExtra("FILEPATH", compressVideoPath + ".mp4");
                     intent.putExtra("URL", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD);
                     intent.putExtra("AWCODE", ticketNumber);
                     intent.putExtra("DATETIME", TimeStamp);
                     getActivity().startService(intent);
+
 //                    new AynsUploadPhoto().execute(compressVideoPath + ".mp4", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
 
                     //new AynsUploadPhoto().execute(Environment.getExternalStorageDirectory()+"/test.jpeg", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD, ticketNumber, TimeStamp);
@@ -244,10 +246,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         ((MainActivity) getActivity()).setTitle(getString(R.string.lbl_title_dashboard));
         ((MainActivity) getActivity()).isshowBackButton(false);
         ((MainActivity) getActivity()).isMenuButton(true);
-        final Calendar calendar = Calendar.getInstance();
-        year = calendar.get(Calendar.YEAR);
-        month = calendar.get(Calendar.MONTH);
-        day = calendar.get(Calendar.DAY_OF_MONTH);
         rvActionList = (RecyclerView) view.findViewById(R.id.fragment_dashboard_rv_actionlist);
         if (hasPermissions(getActivity(), PERMISSIONS)) {
 //            loadDashboardAdapter();
@@ -343,6 +341,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                                 } else {
                                     compressedImage = new File(filePath);
                                 }
+                                //Delete file
+                                File file = new File(filePath);
+                                file.delete();
 
                                 if (Utils.isNetworkAvailable(getActivity())) {
                                     Intent intent = new Intent(getActivity(), UpoadFileService.class);
@@ -362,17 +363,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } else if (requestCode == REQUEST_CAPTURE_VIDEO) {
-                    try {
-
-
-//                        if (!TextUtils.isEmpty(cameraFilePath)) {
-//
-//                            startVideoCompress(cameraFilePath);
-//                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                 } else {
                     final Uri selectedImageUri = data.getData();
                     try {
@@ -389,6 +379,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     }
 
     public void startVideoCompress(String videopath) {
+        originalvideopath = videopath;
         progressDialog = Utils.displayProgressDialog(getActivity());
         String outPath = FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.VIDEO_FOLDER_NAME);
         String outName = ticketNumber;

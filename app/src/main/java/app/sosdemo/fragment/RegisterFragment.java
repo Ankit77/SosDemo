@@ -18,6 +18,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -279,8 +280,9 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 }
                 if (s) {
                     getFragmentManager().popBackStack();
+                    Toast.makeText(getActivity(), wsRegister.getMessage(), Toast.LENGTH_LONG).show();
                 } else {
-                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_register_fail));
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), wsRegister.getMessage());
                 }
             }
         }

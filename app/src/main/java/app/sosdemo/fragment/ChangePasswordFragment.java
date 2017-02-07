@@ -115,9 +115,9 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
                     editor.putString(Constant.PREF_PASSWORD, etNewPassword.getText().toString());
                     editor.commit();
                     getFragmentManager().popBackStack();
-                    Toast.makeText(getActivity(), getString(R.string.alert_change_pass_success), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), wsChangePassword.getMessage(), Toast.LENGTH_LONG).show();
                 } else {
-                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_change_password_failed));
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), wsChangePassword.getMessage());
                 }
             }
         }

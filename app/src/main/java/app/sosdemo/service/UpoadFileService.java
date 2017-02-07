@@ -36,7 +36,13 @@ public class UpoadFileService extends IntentService {
                 WSUploadPhoto wsUploadPhoto = new WSUploadPhoto(url, awcode, datetime);
                 final FileInputStream fstrm = new FileInputStream(filepath);
                 String res = wsUploadPhoto.Send_Now(fstrm, new File(filepath).getName());
-                parseResponse(res);
+                boolean issuccess = parseResponse(res);
+                if (issuccess) {
+                    File file = new File(filepath);
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                }
 
                 //doFileUpload(filepath, new File(filepath).getName());
             } catch (Exception e) {
