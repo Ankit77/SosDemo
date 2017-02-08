@@ -49,7 +49,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
     int REQUEST_CHECK_SETTINGS = 100;
     private int LOCATION_PERMISSION_CODE = 23;
     String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA,
-            Manifest.permission.RECORD_AUDIO};
+            Manifest.permission.RECORD_AUDIO, Manifest.permission.SEND_SMS};
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

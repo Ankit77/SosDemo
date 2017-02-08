@@ -54,14 +54,9 @@ import com.lkland.videocompressor.validations.AbstractCompressionOptionsValidato
 import com.lkland.videocompressor.validations.ValidationFactory;
 import com.lkland.videocompressor.video.IVideo;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import app.sosdemo.KavachApp;
 import app.sosdemo.MainActivity;
@@ -69,14 +64,15 @@ import app.sosdemo.R;
 import app.sosdemo.adapter.DashboardAdapter;
 import app.sosdemo.audio.AudioRecorder;
 import app.sosdemo.model.ActionModel;
+import app.sosdemo.model.BroadcastModel;
 import app.sosdemo.service.UpoadFileService;
 import app.sosdemo.util.Constant;
 import app.sosdemo.util.GetFilePath;
 import app.sosdemo.util.Utils;
+import app.sosdemo.webservice.WSBroadcast;
 import app.sosdemo.webservice.WSConstants;
 import app.sosdemo.webservice.WSGetAlertList;
 import app.sosdemo.webservice.WSSOS;
-import app.sosdemo.webservice.WSUploadPhoto;
 import id.zelory.compressor.Compressor;
 
 /**
@@ -269,6 +265,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     }
 
     private void loadDashboardAdapter() {
+
+        dashboardAdapter = new DashboardAdapter(getActivity(), actionList, false);
+        dashboardAdapter.setOnactionListner(this);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        rvActionList.setLayoutManager(mLayoutManager);
+        rvActionList.setAdapter(dashboardAdapter);
         createLocationRequest();
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addApi(LocationServices.API)
@@ -276,11 +278,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 .addOnConnectionFailedListener(this)
                 .build();
         mGoogleApiClient.connect();
-        dashboardAdapter = new DashboardAdapter(getActivity(), actionList, false);
-        dashboardAdapter.setOnactionListner(this);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        rvActionList.setLayoutManager(mLayoutManager);
-        rvActionList.setAdapter(dashboardAdapter);
     }
 
 
@@ -512,6 +509,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     public void onClick(String action, String code) {
         mAction = action;
         mCode = code;
+        String message = "MACID - " + KavachApp.getInstance().getDeviceID() + ",SIMID - " + KavachApp.getInstance().getIMEI() + ",ALERT TYPE - " + mCode + ",LATITUDE - " + KavachApp.getInstance().getCurrentLocation().getLatitude() + ",LONGITUDE - " + KavachApp.getInstance().getCurrentLocation().getLongitude();
+        Utils.sendSMS(Constant.SMS_CONTACT, message, getActivity());
         if (Utils.isNetworkAvailable(getActivity())) {
 
             asyncSendSos = new AsyncSendSos();
@@ -670,88 +669,47 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
+                new AyncLoadBroadCast().execute();
                 if (actionModels != null && actionModels.size() > 0) {
                     actionList = new ArrayList<>();
                     actionList.addAll(actionModels);
                     loadDashboardAdapter();
+
                 }
 
             }
         }
     }
 
-    private class AynsUploadPhoto extends AsyncTask<String, Void, Boolean> {
-        private ProgressDialog progressDialog;
-        private WSUploadPhoto wsUploadPhoto;
-        private String filepath;
+    private class AyncLoadBroadCast extends AsyncTask<Void, Void, BroadcastModel> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = Utils.displayProgressDialog(getActivity());
         }
 
         @Override
-        protected Boolean doInBackground(String... voids) {
-            try {
-                filepath = voids[0];
-                wsUploadPhoto = new WSUploadPhoto(voids[1], voids[2], voids[3]);
-                final FileInputStream fstrm = new FileInputStream(voids[0]);
-                String res = wsUploadPhoto.Send_Now(fstrm, new File(voids[0]).getName());
-                return parseResponse(res);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-
+        protected BroadcastModel doInBackground(Void... params) {
+            WSBroadcast wsBroadcast = new WSBroadcast(getActivity());
+            return wsBroadcast.executeService();
         }
 
         @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
+        protected void onPostExecute(BroadcastModel broadcastModel) {
+            super.onPostExecute(broadcastModel);
             if (!isCancelled()) {
-                if (progressDialog != null && progressDialog.isShowing()) {
-                    progressDialog.dismiss();
+                if (broadcastModel != null) {
+                    showFooter(broadcastModel);
                 }
-                if (result) {
-                    File file = new File(filepath);
-                    if (file.exists()) {
-                        file.delete();
-                    }
-                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_fileupload_success));
-                } else {
-                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alert_fileupload_failed));
-                }
-            }
 
+            }
         }
+    }
+
+    private void showFooter(BroadcastModel broadcastModel) {
 
     }
 
-    private boolean parseResponse(String response) {
-
-        if (response != null && response.toString().trim().length() > 0) {
-            try {
-                final JSONArray jsonArray = new JSONArray(response);
-                if (jsonArray != null && jsonArray.length() > 0) {
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        final JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        final int success = jsonObject.getInt("Result");
-                        if (success <= 0) {
-                            return false;
-                        } else {
-                            return true;
-                        }
-
-                    }
-                }
-                return false;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return false;
-    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {

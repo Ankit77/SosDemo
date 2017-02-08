@@ -157,6 +157,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public void deleteAllData() {
+        if (!database.isOpen()) {
+            openDataBase();
+        }
+        try {
+            database.delete(DBUtils.FILE_TABLE, null, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close();
+        }
+    }
+
     //--------------------------------SMS END------------------------------------
 
 }

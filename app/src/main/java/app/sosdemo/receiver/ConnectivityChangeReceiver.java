@@ -8,19 +8,12 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
-import com.lkland.util.FileUtils;
-
-import java.io.File;
 import java.util.ArrayList;
 
 import app.sosdemo.KavachApp;
-import app.sosdemo.R;
 import app.sosdemo.model.FileModel;
 import app.sosdemo.service.UpoadFileService;
-import app.sosdemo.util.Constant;
 import app.sosdemo.webservice.WSConstants;
-
-import static android.R.attr.path;
 
 
 public class ConnectivityChangeReceiver extends BroadcastReceiver {
@@ -33,34 +26,30 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
                 .getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
         if (networkInfo != null) {
 
-            if (firstConnect) {
-                // do subroutines here
-                if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+            // do subroutines here
+            if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
 
-                    //get the different network states
-                    if (networkInfo.getState() == NetworkInfo.State.CONNECTED) {
-                        Log.e(ConnectivityChangeReceiver.class.getSimpleName(), "Connect");
-                        ArrayList<FileModel> filelist = KavachApp.getInstance().getDatabaseHelper().getFileList();
-                        if (filelist.size() > 0) {
-                            for (int i = 0; i < filelist.size(); i++) {
-                                Intent intent1 = new Intent(context, UpoadFileService.class);
-                                intent1.putExtra("FILEPATH", filelist.get(i).getFilepath());
-                                intent1.putExtra("URL", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD);
-                                intent1.putExtra("AWCODE", filelist.get(i).getAwcode());
-                                intent1.putExtra("DATETIME", filelist.get(i).getDatetime());
-                                context.startService(intent);
-                                KavachApp.getInstance().getDatabaseHelper().deleteSMS(filelist.get(i).getAwcode());
-                            }
+                //get the different network states
+                if (networkInfo.getState() == NetworkInfo.State.CONNECTED) {
+                    Log.e(ConnectivityChangeReceiver.class.getSimpleName(), "Connect");
+                    ArrayList<FileModel> filelist = KavachApp.getInstance().getDatabaseHelper().getFileList();
+                    if (filelist.size() > 0) {
+                        for (int i = 0; i < filelist.size(); i++) {
+                            Intent intent1 = new Intent(context, UpoadFileService.class);
+                            intent1.putExtra("FILEPATH", filelist.get(i).getFilepath());
+                            intent1.putExtra("URL", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD);
+                            intent1.putExtra("AWCODE", filelist.get(i).getAwcode());
+                            intent1.putExtra("DATETIME", filelist.get(i).getDatetime());
+                            context.startService(intent);
+                            KavachApp.getInstance().getDatabaseHelper().deleteSMS(filelist.get(i).getAwcode());
                         }
-
-                    } else {
-                        Log.e(ConnectivityChangeReceiver.class.getSimpleName(), "disconnect");
                     }
+
+                } else {
+                    Log.e(ConnectivityChangeReceiver.class.getSimpleName(), "disconnect");
                 }
-                firstConnect = false;
-            } else {
-                firstConnect = true;
             }
+
 
         }
 

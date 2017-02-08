@@ -3,6 +3,7 @@ package app.sosdemo.adapter;
 import android.content.Context;
 import android.os.SystemClock;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import app.sosdemo.KavachApp;
 import app.sosdemo.R;
 import app.sosdemo.model.ActionModel;
 import app.sosdemo.util.Constant;
@@ -50,7 +52,27 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Recy
     @Override
     public void onBindViewHolder(DashboardAdapter.RecyclerViewHolders holder, final int position) {
 
-        holder.tvCaption.setText(mList.get(position).getCaption());
+        if (KavachApp.getInstance().getPref().getString(Constant.PREF_LANGUAGE, Constant.LANGUAGE_ENGLISH).equalsIgnoreCase(Constant.LANGUAGE_ENGLISH)) {
+
+            holder.tvCaption.setText(mList.get(position).getCaption());
+        } else if (KavachApp.getInstance().getPref().getString(Constant.PREF_LANGUAGE, Constant.LANGUAGE_ENGLISH).equalsIgnoreCase(Constant.LANGUAGE_HINDI)) {
+            if (TextUtils.isEmpty(mList.get(position).getCaption_hi())) {
+                holder.tvCaption.setText(mList.get(position).getCaption());
+            } else {
+                holder.tvCaption.setText(mList.get(position).getCaption_hi());
+            }
+
+        } else if (KavachApp.getInstance().getPref().getString(Constant.PREF_LANGUAGE, Constant.LANGUAGE_ENGLISH).equalsIgnoreCase(Constant.LANGUAGE_GUJRATI)) {
+            if (TextUtils.isEmpty(mList.get(position).getCaption_gu())) {
+                holder.tvCaption.setText(mList.get(position).getCaption());
+            } else {
+                holder.tvCaption.setText(mList.get(position).getCaption_gu());
+            }
+        } else {
+            holder.tvCaption.setText(mList.get(position).getCaption());
+        }
+
+
         if (mList.get(position).getAction().equalsIgnoreCase(Constant.TYPE_VIDEO)) {
             holder.ivImage.setImageResource(R.drawable.ic_videocam);
         } else if (mList.get(position).getAction().equalsIgnoreCase(Constant.TYPE_IMAGE)) {

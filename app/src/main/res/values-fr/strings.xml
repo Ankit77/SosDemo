@@ -16,7 +16,6 @@
     <string name="lbl_reg_mname">પિતાનું નામ</string>
     <string name="lbl_reg_lname">છેલ્લું નામ</string>
     <string name="lbl_reg_addr1">સરનામાં રેખા 1</string>
-    <string name="lbl_reg_addr2">સરનામાં રેખા 2</string>
     <string name="lbl_reg_area">વિસ્તાર</string>
     <string name="lbl_reg_city">સિટી</string>
     <string name="lbl_reg_pincode">પીન કોડ</string>
@@ -61,7 +60,6 @@
     <string name="alret_internet">ઇન્ટરનેટ કનેક્શન તપાસો</string>
     <string name="alert_login_failed">પ્રમાણીકરણ નિષ્ફળ થયું</string>
     <string name="alert_register_fail">રજીસ્ટ્રેશન નિષ્ફળ</string>
-    <string name="alert_sos_success">SOS સફળતાપૂર્વક મોકલી</string>
     <string name="alert_sos_failed">SOS મોકલવામાં નિષ્ફળ</string>
     <string name="alert_change_pass_success">પાસવર્ડ સફળતાપૂર્વક બદલો</string>
     <string name="alert_change_password_failed">પાસવર્ડ બદલવા માટે નિષ્ફળ</string>
@@ -84,4 +82,10 @@
     <string name="lbl_choose_language">ભાષા પસંદ કરો</string>
     <string name="alert_video_problem">Prolem when saving video data, please try again</string>
     <string name="alert_camera_not_support">Camera service not available</string>
+    <string name="lbl_setting_hindi">Hindi</string>
+    <string name="permission_request">This sample needs permission for camera and audio recording.</string>
+    <string name="camera_error">This device doesn\'t support Camera2 API.</string>
+
+    <string name="x_mbs">%1$sMB</string>
+    <string name="lbl_send_alert_via_sms">Send Alert Via SMS</string>
 </resources>

@@ -7,6 +7,8 @@ package app.sosdemo.model;
 public class ActionModel {
     private String Code;
     private String Caption;
+    private String Caption_hi;
+    private String Caption_gu;
     private String Action;
 
     public ActionModel(String code, String caption, String action) {
@@ -40,5 +42,21 @@ public class ActionModel {
 
     public void setAction(String action) {
         Action = action;
+    }
+
+    public String getCaption_hi() {
+        return Caption_hi;
+    }
+
+    public void setCaption_hi(String caption_hi) {
+        Caption_hi = caption_hi;
+    }
+
+    public String getCaption_gu() {
+        return Caption_gu;
+    }
+
+    public void setCaption_gu(String caption_gu) {
+        Caption_gu = caption_gu;
     }
 }

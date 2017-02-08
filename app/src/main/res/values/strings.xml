@@ -15,7 +15,6 @@
     <string name="lbl_reg_mname">Middle Name</string>
     <string name="lbl_reg_lname">Last Name</string>
     <string name="lbl_reg_addr1">Address Line 1</string>
-    <string name="lbl_reg_addr2">Address Line 2</string>
     <string name="lbl_reg_area">Area</string>
     <string name="lbl_reg_city">City</string>
     <string name="lbl_reg_pincode">Pincode</string>
@@ -60,7 +59,6 @@
     <string name="alret_internet">Please check internet connection</string>
     <string name="alert_login_failed">authentication failed</string>
     <string name="alert_register_fail">Registration failed</string>
-    <string name="alert_sos_success">SOS send Successfully</string>
     <string name="alert_sos_failed">Failed to send SOS</string>
     <string name="alert_change_pass_success">Change Password successfully</string>
     <string name="alert_change_password_failed">Failed to Change Password</string>
@@ -90,5 +88,5 @@
     <string name="alert_camera_not_support">Camera service not available</string>
 
     <string name="x_mbs">%1$sMB</string>
-    <string name="x_kbs">%1$sKB</string>
+    <string name="lbl_send_alert_via_sms">Send Alert Via SMS</string>
 </resources>

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,6 +20,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.telephony.SmsManager;
 import android.text.TextUtils;
 import android.transition.ChangeImageTransform;
 import android.transition.Fade;
@@ -34,11 +36,14 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 import app.sosdemo.R;
+import app.sosdemo.receiver.SmsDeliveredReceiver;
+import app.sosdemo.receiver.SmsSentReceiver;
 
 /**
  * Created by indianic on 28/01/17.
@@ -725,5 +730,36 @@ public class Utils {
 
             return null;
         }
+    }
+
+    public static void sendSMS(String phoneNumber, String message, Context context) {
+        ArrayList<PendingIntent> sentPendingIntents = new ArrayList<PendingIntent>();
+        ArrayList<PendingIntent> deliveredPendingIntents = new ArrayList<PendingIntent>();
+
+        Intent intent = new Intent(context, SmsSentReceiver.class);
+        intent.putExtra("sms_number", phoneNumber);
+        intent.putExtra("sms_text", message);
+        intent.putExtra("sms_time", String.valueOf(System.currentTimeMillis()));
+
+        PendingIntent sentPI = PendingIntent.getBroadcast(context, 0,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent deliveredPI = PendingIntent.getBroadcast(context, 0,
+                new Intent(context, SmsDeliveredReceiver.class), 0);
+        try {
+            SmsManager sms = SmsManager.getDefault();
+            ArrayList<String> mSMSMessage = sms.divideMessage(message);
+            for (int i = 0; i < mSMSMessage.size(); i++) {
+                sentPendingIntents.add(i, sentPI);
+                deliveredPendingIntents.add(i, deliveredPI);
+            }
+            sms.sendMultipartTextMessage(phoneNumber, null, mSMSMessage,
+                    sentPendingIntents, deliveredPendingIntents);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
+
     }
 }

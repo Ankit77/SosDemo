@@ -16,7 +16,6 @@
     <string name="lbl_reg_mname">मध्य नाम</string>
     <string name="lbl_reg_lname">अंतिम नाम</string>
     <string name="lbl_reg_addr1">पता पंक्ति 1</string>
-    <string name="lbl_reg_addr2">पता पंक्ति 2</string>
     <string name="lbl_reg_area">क्षेत्र</string>
     <string name="lbl_reg_city">शहर</string>
     <string name="lbl_reg_pincode">पिन कोड</string>
@@ -61,7 +60,6 @@
     <string name="alret_internet">इंटरनेट कनेक्शन की जाँच करें</string>
     <string name="alert_login_failed">प्रमाणीकरण विफल होना</string>
     <string name="alert_register_fail">पंजीकरण विफल</string>
-    <string name="alert_sos_success">एसओएस सफलतापूर्वक भेजने</string>
     <string name="alert_sos_failed">एसओएस भेजने में विफल</string>
     <string name="alert_change_pass_success">पासवर्ड सफलतापूर्वक बदलें</string>
     <string name="alert_change_password_failed">पासवर्ड बदलने में विफल</string>
@@ -84,4 +82,5 @@
     <string name="lbl_choose_language">ભાષા પસંદ કરો</string>
     <string name="alert_video_problem">Prolem when saving video data, please try again</string>
     <string name="alert_camera_not_support">Camera service not available</string>
+    <string name="lbl_send_alert_via_sms">Send Alert Via SMS</string>
 </resources>

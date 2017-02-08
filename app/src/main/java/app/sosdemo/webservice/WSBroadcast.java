@@ -5,19 +5,17 @@ import android.content.Context;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
-import app.sosdemo.model.ActionModel;
+import app.sosdemo.model.BroadcastModel;
 
 /**
- * Created by ANKIT on 2/1/2017.
+ * Created by indianic on 08/02/17.
  */
 
-public class WSGetAlertList {
+public class WSBroadcast {
     private Context context;
     private boolean isSuccess = false;
 
-    public WSGetAlertList(final Context context) {
+    public WSBroadcast(final Context context) {
         this.context = context;
     }
 
@@ -28,9 +26,9 @@ public class WSGetAlertList {
     /**
      * Method to execute service and parse response.
      */
-    public ArrayList<ActionModel> executeService() {
+    public BroadcastModel executeService() {
         try {
-            final String url = WSConstants.BASE_URL + WSConstants.METHOD_ALERTTYPELIST;
+            final String url = WSConstants.BASE_URL + WSConstants.METHOD_BROADCAST;
             String response = new WSUtil().callServiceHttpGet(url);
             response = response.replace(WSConstants.CONST_REPLACE_STRING1, "");
             response = response.replace(WSConstants.CONST_REPLACE_STRING2, "");
@@ -47,29 +45,28 @@ public class WSGetAlertList {
      *
      * @param response
      */
-    private ArrayList<ActionModel> parseResponse(final String response) {
+    private BroadcastModel parseResponse(final String response) {
 
         if (response != null && response.toString().trim().length() > 0) {
-            ArrayList<ActionModel> actionList = new ArrayList<>();
+            BroadcastModel broadcastModel = new BroadcastModel();
+
             try {
                 final JSONArray jsonArray = new JSONArray(response);
                 if (jsonArray != null && jsonArray.length() > 0) {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         isSuccess = true;
                         final JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        ActionModel actionModel = new ActionModel();
-                        actionModel.setCode(jsonObject.getString("pkID"));
-                        actionModel.setAction(jsonObject.getString("FileMode"));
-                        actionModel.setCaption(jsonObject.getString("AlertType"));
-                        actionModel.setCaption_gu(jsonObject.getString("AlertTypeGujarati"));
-                        actionModel.setCaption_hi(jsonObject.getString("AlertTypeHindi"));
-                        actionList.add(actionModel);
+
+                        broadcastModel.setBroadcastEN(jsonObject.getString("Message"));
+                        broadcastModel.setBroadcastGU(jsonObject.getString("MessageGujarati"));
+                        broadcastModel.setBroadcastHI(jsonObject.getString("MessageHindi"));
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                return null;
             }
-            return actionList;
+            return broadcastModel;
         }
         return null;
     }

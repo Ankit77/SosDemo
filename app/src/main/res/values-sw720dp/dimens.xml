@@ -1,16 +1,6 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="txt_7sp">7.0sp</dimen>
-    <dimen name="txt_12sp">12.0sp</dimen>
-    <dimen name="txt_13sp">13.0sp</dimen>
-    <dimen name="txt_14sp">14.0sp</dimen>
-    <dimen name="txt_15sp">15.0sp</dimen>
-    <dimen name="txt_16sp">16.0sp</dimen>
-    <dimen name="txt_18sp">18.0sp</dimen>
-    <dimen name="txt_20sp">20.0sp</dimen>
     <dimen name="actionbar_height">@dimen/_40sdp</dimen>
     <dimen name="remember_me_textsize">@dimen/_12sdp</dimen>
     <dimen name="edittext_font_size">@dimen/_14sdp</dimen>

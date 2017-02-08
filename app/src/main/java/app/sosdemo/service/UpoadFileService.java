@@ -39,7 +39,7 @@ public class UpoadFileService extends IntentService {
                 final FileInputStream fstrm = new FileInputStream(filepath);
                 String res = wsUploadPhoto.Send_Now(fstrm, new File(filepath).getName());
                 boolean issuccess = parseResponse(res);
-                if (issuccess) {
+                if (!issuccess) {
                     File file = new File(filepath);
                     if (file.exists()) {
                         file.delete();

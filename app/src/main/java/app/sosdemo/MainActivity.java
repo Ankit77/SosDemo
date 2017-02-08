@@ -87,8 +87,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 getFragmentManager().popBackStack();
             }
         } else if (v == imgLogout) {
+
             DashboardFragment dashboardFragment = (DashboardFragment) getFragmentManager().findFragmentByTag(DashboardFragment.class.getSimpleName());
             if (dashboardFragment != null && dashboardFragment.isVisible()) {
+                KavachApp.getInstance().getDatabaseHelper().deleteAllData();
                 SharedPreferences.Editor editor = KavachApp.getInstance().getPref().edit();
                 editor.putBoolean(Constant.PREF_IS_LOGIN, false);
                 if (!KavachApp.getInstance().getPref().getBoolean(Constant.PREF_ISREMEMBER, false)) {
