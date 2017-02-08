@@ -30,6 +30,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -115,6 +117,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     private AyncLoadActionList ayncLoadActionList;
     private String compressVideoPath;
     private String originalvideopath;
+    private TextView tvBroadcast;
+    private LinearLayout llBroadcast;
     ServiceConnection conn = new ServiceConnection() {
 
         @Override
@@ -242,6 +246,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         ((MainActivity) getActivity()).setTitle(getString(R.string.lbl_title_dashboard));
         ((MainActivity) getActivity()).isshowBackButton(false);
         ((MainActivity) getActivity()).isMenuButton(true);
+        llBroadcast = (LinearLayout) view.findViewById(R.id.fragment_dashboard_ll_broadcast);
+        tvBroadcast = (TextView) view.findViewById(R.id.fragment_dashboard_tv_broadcast);
+        tvBroadcast.setSelected(true);
         rvActionList = (RecyclerView) view.findViewById(R.id.fragment_dashboard_rv_actionlist);
         if (hasPermissions(getActivity(), PERMISSIONS)) {
 //            loadDashboardAdapter();
@@ -707,7 +714,29 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     }
 
     private void showFooter(BroadcastModel broadcastModel) {
+        if (broadcastModel != null) {
 
+            llBroadcast.setVisibility(View.VISIBLE);
+            if (KavachApp.getInstance().getPref().getString(Constant.PREF_LANGUAGE, Constant.LANGUAGE_ENGLISH).equalsIgnoreCase(Constant.LANGUAGE_ENGLISH)) {
+
+                tvBroadcast.setText(broadcastModel.getBroadcastEN());
+            } else if (KavachApp.getInstance().getPref().getString(Constant.PREF_LANGUAGE, Constant.LANGUAGE_ENGLISH).equalsIgnoreCase(Constant.LANGUAGE_HINDI)) {
+                if (TextUtils.isEmpty(broadcastModel.getBroadcastHI())) {
+                    tvBroadcast.setText(broadcastModel.getBroadcastEN());
+                } else {
+                    tvBroadcast.setText(broadcastModel.getBroadcastHI());
+                }
+
+            } else if (KavachApp.getInstance().getPref().getString(Constant.PREF_LANGUAGE, Constant.LANGUAGE_ENGLISH).equalsIgnoreCase(Constant.LANGUAGE_GUJRATI)) {
+                if (TextUtils.isEmpty(broadcastModel.getBroadcastGU())) {
+                    tvBroadcast.setText(broadcastModel.getBroadcastEN());
+                } else {
+                    tvBroadcast.setText(broadcastModel.getBroadcastGU());
+                }
+            }
+        } else {
+            llBroadcast.setVisibility(View.GONE);
+        }
     }
 
 
