@@ -6,4 +6,5 @@
     <dimen name="edittext_font_size">@dimen/_14sdp</dimen>
     <dimen name="radio_font_size">@dimen/_16sdp</dimen>
     <dimen name="listview_text_size">@dimen/_14sdp</dimen>
+    <dimen name="listview_text_title_size">@dimen/_18sdp</dimen>
 </resources>

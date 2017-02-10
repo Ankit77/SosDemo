@@ -3,75 +3,103 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="@dimen/_5sdp">
+    android:padding="@dimen/_5sdp">
 
-    <LinearLayout
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/shape"
-        android:orientation="vertical"
-        android:padding="@dimen/_5sdp">
+        android:layout_gravity="center"
+        card_view:cardBackgroundColor="@android:color/white"
+        card_view:cardCornerRadius="1dp">
 
-        <app.sosdemo.common.CustomTextView
-            android:id="@+id/row_contactlist_tv_name"
-            style="@style/listview_text"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Name" />
+            android:orientation="vertical"
+            android:padding="@dimen/_5sdp">
 
-        <app.sosdemo.common.CustomTextView
-            android:id="@+id/row_contactlist_tv_address"
-            style="@style/listview_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_3sdp"
-            android:drawableLeft="@drawable/ic_location"
-            android:drawablePadding="@dimen/_5sdp"
-            android:gravity="center|left"
-            android:text="Name" />
+            <app.sosdemo.common.CustomTextView
+                android:id="@+id/row_contactlist_tv_name"
+                style="@style/listview_text.title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:textStyle="bold" />
 
-        <app.sosdemo.common.CustomTextView
-            android:id="@+id/row_contactlist_tv_landline"
-            style="@style/listview_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_3sdp"
-            android:drawableLeft="@drawable/ic_phone"
-            android:drawablePadding="@dimen/_5sdp"
-            android:gravity="center|left"
-            android:text="Name" />
+            <app.sosdemo.common.CustomTextView
+                android:id="@+id/row_contactlist_tv_address"
+                style="@style/listview_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:drawableLeft="@drawable/ic_location_black"
+                android:drawablePadding="@dimen/_5sdp"
+                android:gravity="center|left"
+                android:text="Name" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <app.sosdemo.common.CustomTextView
+                    android:id="@+id/row_contactlist_tv_landline"
+                    style="@style/listview_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/ic_phone_black"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:ellipsize="end"
+                    android:gravity="center|left"
+                    android:lines="1"
+                    android:text="Name" />
 
 
-        <app.sosdemo.common.CustomTextView
-            android:id="@+id/row_contactlist_tv_mobile"
-            style="@style/listview_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_3sdp"
-            android:drawableLeft="@drawable/ic_phone"
-            android:drawablePadding="@dimen/_5sdp"
-            android:gravity="center|left"
-            android:text="Name" />
+                <app.sosdemo.common.CustomTextView
+                    android:id="@+id/row_contactlist_tv_mobile"
+                    style="@style/listview_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/ic_phone_black"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:ellipsize="end"
+                    android:gravity="center|left"
+                    android:lines="1"
+                    android:text="Name" />
+            </LinearLayout>
 
-        <app.sosdemo.common.CustomTextView
-            android:id="@+id/row_contactlist_tv_fax"
-            style="@style/listview_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_3sdp"
-            android:drawablePadding="@dimen/_5sdp"
-            android:gravity="center|left"
-            android:text="Name" />
 
-        <app.sosdemo.common.CustomTextView
-            android:id="@+id/row_contactlist_tv_emailid"
-            style="@style/listview_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_3sdp"
-            android:drawableLeft="@drawable/ic_mail"
-            android:drawablePadding="@dimen/_5sdp"
-            android:gravity="center|left"
-            android:text="Name" />
-    </LinearLayout>
+            <app.sosdemo.common.CustomTextView
+                android:id="@+id/row_contactlist_tv_fax"
+                style="@style/listview_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:drawableLeft="@drawable/ic_print_black"
+                android:drawablePadding="@dimen/_5sdp"
+                android:ellipsize="end"
+                android:gravity="center|left"
+                android:lines="1"
+                android:text="Name" />
+
+            <app.sosdemo.common.CustomTextView
+                android:id="@+id/row_contactlist_tv_emailid"
+                style="@style/listview_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:drawableLeft="@drawable/ic_mail_black"
+                android:drawablePadding="@dimen/_5sdp"
+                android:ellipsize="end"
+                android:gravity="center|left"
+                android:lines="1"
+                android:text="Name" />
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 </LinearLayout>

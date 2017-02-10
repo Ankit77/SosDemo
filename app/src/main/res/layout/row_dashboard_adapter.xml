@@ -12,7 +12,7 @@
         android:background="@drawable/shape"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/_5sdp">
+        android:padding="@dimen/_15sdp">
 
         <ImageView
             android:id="@+id/row_dashboard_iv_image"
@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/_10sdp"
             android:text="Name"
+            android:textColor="@android:color/white"
             android:textSize="@dimen/_14sdp"
             android:textStyle="bold" />
     </LinearLayout>

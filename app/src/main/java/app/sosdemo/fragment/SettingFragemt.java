@@ -136,9 +136,11 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
             ChangePasswordFragment changePasswordFragment = new ChangePasswordFragment();
             Utils.addNextFragmentNoAnim(R.id.container, getActivity(), changePasswordFragment, SettingFragemt.this);
         } else if (v == tvContact) {
-            ContactListFragment alertdFragment = new ContactListFragment();
+            ContactListFragment contactListFragment = new ContactListFragment();
             // Show Alert DialogFragment
-            alertdFragment.show(getFragmentManager(), getString(R.string.lbl_contactlist));
+//            alertdFragment.show(getFragmentManager(), getString(R.string.lbl_contactlist));
+//            ChangePasswordFragment changePasswordFragment = new ChangePasswordFragment();
+            Utils.addNextFragmentNoAnim(R.id.container, getActivity(), contactListFragment, SettingFragemt.this);
         }
     }
 

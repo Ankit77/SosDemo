@@ -52,6 +52,11 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Recy
     @Override
     public void onBindViewHolder(DashboardAdapter.RecyclerViewHolders holder, final int position) {
 
+        if (position == 0) {
+            holder.llMain.setBackgroundResource(R.drawable.shape_red);
+        } else {
+            holder.llMain.setBackgroundResource(R.drawable.shape);
+        }
         if (KavachApp.getInstance().getPref().getString(Constant.PREF_LANGUAGE, Constant.LANGUAGE_ENGLISH).equalsIgnoreCase(Constant.LANGUAGE_ENGLISH)) {
 
             holder.tvCaption.setText(mList.get(position).getCaption());

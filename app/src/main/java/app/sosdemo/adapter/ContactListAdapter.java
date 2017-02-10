@@ -1,24 +1,20 @@
 package app.sosdemo.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.SystemClock;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import java.util.List;
 
 import app.sosdemo.R;
-import app.sosdemo.model.ActionModel;
 import app.sosdemo.model.ContactModel;
-import app.sosdemo.util.Constant;
 
 /**
  * Created by ANKIT on 1/31/2017.
@@ -30,6 +26,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     private Context context;
     private long mLastClickTime = 0;
     private onCallListner onCallListner;
+    private int lastPosition = -1;
 
     public void setOnCallListner(ContactListAdapter.onCallListner onCallListner) {
         this.onCallListner = onCallListner;
@@ -51,10 +48,16 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     @Override
     public void onBindViewHolder(ContactListAdapter.RecyclerViewHolders holder, final int position) {
-
+        final int itemType = getItemViewType(position);
+        if (position > lastPosition) {
+            Animation animation = AnimationUtils.loadAnimation(context,
+                    R.anim.up_from_bottom
+            );
+            holder.itemView.startAnimation(animation);
+        }
+        lastPosition = position;
         holder.tvName.setText(mList.get(position).getOrgName());
         holder.tvAddress.setText(mList.get(position).getAddress());
-        holder.tvEmail.setText(mList.get(position).getEmailAddress());
         if (TextUtils.isEmpty(mList.get(position).getLandline1())) {
             holder.tvLandline.setText("N/A");
         } else {
@@ -72,7 +75,11 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         } else {
             holder.tvFax.setText(mList.get(position).getFax1());
         }
-
+        if (TextUtils.isEmpty(mList.get(position).getEmailAddress())) {
+            holder.tvEmail.setText("N/A");
+        } else {
+            holder.tvEmail.setText(mList.get(position).getEmailAddress());
+        }
 
         holder.tvLandline.setOnClickListener(new View.OnClickListener() {
             @Override

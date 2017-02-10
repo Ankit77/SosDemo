@@ -31,6 +31,6 @@ public class Constant {
     public static final String PREF_ISREMEMBER = "ISREMEMBER";
     public static final String PREF_LANGUAGE = "LANGUAGE";
 
-    public static final String SMS_CONTACT = "7405235483";
+    public static final String SMS_CONTACT = "";
 
 }

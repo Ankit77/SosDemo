@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import app.sosdemo.MainActivity;
 import app.sosdemo.R;
 import app.sosdemo.adapter.ContactListAdapter;
 import app.sosdemo.model.ContactModel;
@@ -66,6 +67,9 @@ public class ContactListFragment extends DialogFragment implements ContactListAd
     }
 
     private void init() {
+        ((MainActivity) getActivity()).setTitle(getString(R.string.lbl_contactlist));
+        ((MainActivity) getActivity()).isshowBackButton(true);
+        ((MainActivity) getActivity()).isMenuButton(false);
         rvContactList = (RecyclerView) view.findViewById(R.id.fragnent_contactList_rv_contactlist);
         if (Utils.isNetworkAvailable(getActivity())) {
             asyncContactList = new AsyncContactList();

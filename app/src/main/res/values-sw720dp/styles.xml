@@ -36,12 +36,7 @@
 
     </style>
 
-    <style name="listview_text" parent="@android:style/Widget.TextView">
 
-        <item name="android:textSize">@dimen/listview_text_size</item>
-        <item name="android:textColor">@color/white</item>
-
-    </style>
 
     <style name="button_normal" parent="@android:style/Widget.Button">
         <item name="android:textSize">@dimen/_16sdp</item>
