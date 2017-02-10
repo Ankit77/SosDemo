@@ -48,14 +48,14 @@
     <string name="alert_empty_landline">લેન્ડલાઇન દાખલ કરો</string>
     <string name="alert_empty_mobile">મોબાઇલ દાખલ કરો</string>
     <string name="alert_empty_birthday">જન્મદિવસ દાખલ કરો</string>
-    <string name="lbl_setting_choose_password"><u>પાસવર્ડ બદલો</u></string>
+    <string name="lbl_setting_choose_password">પાસવર્ડ બદલ</string>
     <string name="lbl_title_changepassword">પાસવર્ડ બદલો</string>
     <string name="lbl_title_dashboard">ડેશબોર્ડ</string>
     <string name="lbl_title_forgotpass">પાસવર્ડ ભૂલી ગયા છો</string>
     <string name="lbl_title_login">પ્રવેશ</string>
     <string name="lbl_title_register">નોંધણી</string>
     <string name="lbl_title_settings">સેટિંગ્સ</string>
-    <string name="lbl_contactlist"><u>સંપર્ક સૂચિ</u></string>
+    <string name="lbl_contactlist">સંપર્ક સૂચિ</string>
     <string name="alert_permision_callphone">કૉલ ફોન પરવાનગી જરૂરી છે</string>
     <string name="alret_internet">ઇન્ટરનેટ કનેક્શન તપાસો</string>
     <string name="alert_login_failed">પ્રમાણીકરણ નિષ્ફળ થયું</string>

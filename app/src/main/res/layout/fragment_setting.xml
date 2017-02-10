@@ -61,20 +61,25 @@
         <app.sosdemo.common.CustomTextView
             android:id="@+id/fragnent_setting_tv_changePass"
             style="@style/label_normal"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_20sdp"
+            android:background="@drawable/button_border"
+            android:gravity="center"
+            android:padding="@dimen/_10sdp"
             android:text="@string/lbl_setting_choose_password"
             android:textStyle="bold" />
 
         <app.sosdemo.common.CustomTextView
             android:id="@+id/fragment_setting_tvContact"
             style="@style/label_normal"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:background="@drawable/button_border"
+            android:gravity="center"
+            android:padding="@dimen/_10sdp"
             android:text="@string/lbl_contactlist"
-
             android:textStyle="bold" />
 
         <android.support.v7.widget.RecyclerView

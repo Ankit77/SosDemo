@@ -342,12 +342,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
                                             .setDestinationDirectoryPath(FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.IMAGE_FOLDER_NAME))
                                             .build()
                                             .compressToFile(new File(filePath));
+                                    //Delete file
+                                    File file = new File(filePath);
+                                    file.delete();
                                 } else {
                                     compressedImage = new File(filePath);
                                 }
-                                //Delete file
-                                File file = new File(filePath);
-                                file.delete();
+
 
                                 if (Utils.isNetworkAvailable(getActivity())) {
                                     Intent intent = new Intent(getActivity(), UpoadFileService.class);

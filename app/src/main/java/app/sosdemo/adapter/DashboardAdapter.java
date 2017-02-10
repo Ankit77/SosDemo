@@ -54,8 +54,10 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Recy
 
         if (position == 0) {
             holder.llMain.setBackgroundResource(R.drawable.shape_red);
+        } else if (position == 1) {
+            holder.llMain.setBackgroundResource(R.drawable.shape_blue);
         } else {
-            holder.llMain.setBackgroundResource(R.drawable.shape);
+            holder.llMain.setBackgroundResource(R.drawable.shape_yelllow);
         }
         if (KavachApp.getInstance().getPref().getString(Constant.PREF_LANGUAGE, Constant.LANGUAGE_ENGLISH).equalsIgnoreCase(Constant.LANGUAGE_ENGLISH)) {
 

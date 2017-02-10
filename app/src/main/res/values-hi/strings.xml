@@ -48,14 +48,14 @@
     <string name="alert_empty_landline">लैंडलाइन दर्ज करें</string>
     <string name="alert_empty_mobile">मोबाइल दर्ज करें</string>
     <string name="alert_empty_birthday">जन्मदिन दर्ज करें</string>
-    <string name="lbl_setting_choose_password"><u>पासवर्ड बदलें</u></string>
+    <string name="lbl_setting_choose_password">पासवर्ड बदलें</string>
     <string name="lbl_title_changepassword">पासवर्ड बदलें</string>
     <string name="lbl_title_dashboard">डैशबोर्ड</string>
     <string name="lbl_title_forgotpass">पासवर्ड भूल गए</string>
     <string name="lbl_title_login">लॉग इन करें</string>
     <string name="lbl_title_register">रजिस्टर</string>
     <string name="lbl_title_settings">सेटिंग्स</string>
-    <string name="lbl_contactlist"><u>संपर्क सूची</u></string>
+    <string name="lbl_contactlist">संपर्क सूची</string>
     <string name="alert_permision_callphone">कॉल फ़ोन अनुमति की जरूरत है</string>
     <string name="alret_internet">इंटरनेट कनेक्शन की जाँच करें</string>
     <string name="alert_login_failed">प्रमाणीकरण विफल होना</string>
