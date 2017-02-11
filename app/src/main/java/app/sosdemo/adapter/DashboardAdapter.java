@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -53,10 +53,13 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Recy
     public void onBindViewHolder(DashboardAdapter.RecyclerViewHolders holder, final int position) {
 
         if (position == 0) {
+            holder.imgIMageType.setImageResource(R.drawable.ic_sos);
             holder.llMain.setBackgroundResource(R.drawable.shape_red);
         } else if (position == 1) {
+            holder.imgIMageType.setImageResource(R.drawable.ic_domestic);
             holder.llMain.setBackgroundResource(R.drawable.shape_blue);
         } else {
+            holder.imgIMageType.setImageResource(R.drawable.ic_traffic);
             holder.llMain.setBackgroundResource(R.drawable.shape_yelllow);
         }
         if (KavachApp.getInstance().getPref().getString(Constant.PREF_LANGUAGE, Constant.LANGUAGE_ENGLISH).equalsIgnoreCase(Constant.LANGUAGE_ENGLISH)) {
@@ -112,13 +115,15 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Recy
 
         ImageView ivImage;
         TextView tvCaption;
-        LinearLayout llMain;
+        RelativeLayout llMain;
+        ImageView imgIMageType;
 
         RecyclerViewHolders(View itemView) {
             super(itemView);
+            imgIMageType = (ImageView) itemView.findViewById(R.id.row_dashboard_iv_imagetype);
             ivImage = (ImageView) itemView.findViewById(R.id.row_dashboard_iv_image);
             tvCaption = (TextView) itemView.findViewById(R.id.row_dashboard_tv_name);
-            llMain = (LinearLayout) itemView.findViewById(R.id.row_dashboard_ll_main);
+            llMain = (RelativeLayout) itemView.findViewById(R.id.row_dashboard_ll_main);
 
         }
     }

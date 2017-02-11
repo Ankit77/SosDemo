@@ -19,6 +19,7 @@ public class KavachApp extends Application {
     private String IMEI;
     private String DeviceID;
     private String OS;
+    private String simNumber;
     private SharedPreferences pref;
     private static final String PREFER_NAME = "AndroidExamplePref";
     private DatabaseHelper databaseHelper;
@@ -74,5 +75,13 @@ public class KavachApp extends Application {
 
     public void setDeviceID(String deviceID) {
         DeviceID = deviceID;
+    }
+
+    public String getSimNumber() {
+        return simNumber;
+    }
+
+    public void setSimNumber(String simNumber) {
+        this.simNumber = simNumber;
     }
 }

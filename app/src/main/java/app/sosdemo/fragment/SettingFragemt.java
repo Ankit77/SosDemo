@@ -1,6 +1,7 @@
 package app.sosdemo.fragment;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v13.app.FragmentCompat;
@@ -18,6 +20,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +29,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import app.sosdemo.KavachApp;
@@ -34,6 +39,7 @@ import app.sosdemo.R;
 import app.sosdemo.adapter.ContactListAdapter;
 import app.sosdemo.model.ContactModel;
 import app.sosdemo.util.Constant;
+import app.sosdemo.util.GetFilePath;
 import app.sosdemo.util.Utils;
 import app.sosdemo.webservice.WSContactList;
 
@@ -54,6 +60,8 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
     private String mPhoneNumber;
     private AsyncContactList asyncContactList;
     private TextView tvContact;
+    private final int REQUEST_CAPTURE_IMAGE = 111;
+    private String cameraFilePath;
 
     @Nullable
     @Override
@@ -128,6 +136,48 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
             ((MainActivity) getActivity()).isshowBackButton(true);
             ((MainActivity) getActivity()).isMenuButton(false);
         }
+    }
+
+    /**
+     * Opens camera activity
+     */
+
+    private void captureImage() {
+        Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        try {
+
+            Uri outputFileUri = getPostImageUri(true);
+            intent1.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+            intent1.putExtra("return-data", true);
+            startActivityForResult(intent1, REQUEST_CAPTURE_IMAGE);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * Gets Uri of image to capture. An External Cache Directory is created and
+     * a file for current_post is created in it, this method Uri for it.
+     *
+     * @param canCleanup : Can delete the file if already exists
+     * @return : Generated Uri.
+     */
+    private Uri getPostImageUri(boolean canCleanup) {
+        final File file = new File(getActivity().getExternalCacheDir() + File.separator + System.currentTimeMillis() + Constant.IMAGE_EXTENSION);
+        if (canCleanup) {
+            if (file.exists()) {
+                file.delete();
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        cameraFilePath = file.getAbsolutePath();
+        return Uri.fromFile(file);
     }
 
     @Override
@@ -259,6 +309,32 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
 
 
             }
+        }
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        try {
+            if (resultCode == Activity.RESULT_OK) {
+                // Callback from Gallery
+                if (requestCode == REQUEST_CAPTURE_IMAGE) {
+                    try {
+                        if (!TextUtils.isEmpty(cameraFilePath)) {
+                            final Uri uri = Uri.fromFile(new File(cameraFilePath));
+                            String filePath = GetFilePath.getPath(getActivity(), uri);
+                            if (!TextUtils.isEmpty(filePath)) {
+
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

@@ -95,6 +95,9 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         btnRegister.setOnClickListener(this);
         etBirthdate.setOnClickListener(this);
         etPrefix.setOnClickListener(this);
+        if (!TextUtils.isEmpty(KavachApp.getInstance().getSimNumber())) {
+            etMobile.setText(KavachApp.getInstance().getSimNumber());
+        }
 
         datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
 

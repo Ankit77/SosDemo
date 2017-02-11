@@ -88,9 +88,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
     //files
     private final int REQUEST_CAPTURE_IMAGE = 111;
     private final int REQUEST_CAPTURE_VIDEO = 222;
-    private final int REQUEST_PICK_IMAGE = 333;
-    private final int REQUEST_PICK_VIDEO = 444;
-    private final int REQUEST_PICK_FILE = 555;
     int PERMISSION_ALL = 1;
 
 

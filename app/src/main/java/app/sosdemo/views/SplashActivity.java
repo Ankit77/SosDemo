@@ -81,6 +81,10 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
         if (!TextUtils.isEmpty(android_id)) {
             KavachApp.getInstance().setDeviceID(android_id);
         }
+        String myPhoneNumber = telephonyManager.getLine1Number();
+        if (!TextUtils.isEmpty(myPhoneNumber)) {
+            KavachApp.getInstance().setSimNumber(myPhoneNumber);
+        }
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)

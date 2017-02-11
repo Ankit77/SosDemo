@@ -38,6 +38,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private CheckBox chkRememberme;
     private AsyncLogin asyncLogin;
     private AsyncForgotPassword asyncForgotPassword;
+    private TextView tvRegisterlbl;
 
     @Nullable
     @Override
@@ -56,8 +57,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         btnLogin = (Button) view.findViewById(R.id.fragnent_login_btn_login);
         btnForgotPassword = (Button) view.findViewById(R.id.fragnent_login_btn_forgotpassword);
         tvRegister = (TextView) view.findViewById(R.id.fragnent_login_tv_register);
+        tvRegisterlbl = (TextView) view.findViewById(R.id.fragnent_login_tv_register_lbl);
         chkRememberme = (CheckBox) view.findViewById(R.id.fragnent_login_chk_remember);
         tvRegister.setOnClickListener(this);
+        tvRegisterlbl.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
         btnForgotPassword.setOnClickListener(this);
         chkRememberme.setChecked(KavachApp.getInstance().getPref().getBoolean(Constant.PREF_ISREMEMBER, false));
@@ -103,7 +106,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             } else {
                 Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
             }
-        } else if (v == tvRegister) {
+        } else if (v == tvRegister || v == tvRegisterlbl) {
             Utils.addNextFragmentNoAnim(R.id.container, getActivity(), new RegisterFragment(), LoginFragment.this);
         }
     }
@@ -141,7 +144,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
-                if (aBoolean) {
+                if (!aBoolean) {
                     SharedPreferences.Editor editor = KavachApp.getInstance().getPref().edit();
                     editor.putBoolean(Constant.PREF_IS_LOGIN, true);
                     editor.putString(Constant.PREF_USERNAME, etUserName.getText().toString());
