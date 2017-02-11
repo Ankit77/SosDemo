@@ -19,7 +19,7 @@ public class Constant {
     public static final String IMAGE_FOLDER_NAME = "IMAGE";
     public static final String AUDIO_FOLDER_NAME = "AUDIO";
     public static final int AUDIO_RECORD_TIMELIMIT = 10000;
-    public static final int VIDEO_RECORD_TIMELIMIT = 10000;
+    public static final int VIDEO_RECORD_TIMELIMIT = 12000;
     public static final int SUCCESS = 1;
     public static final int FAILURE = 0;
     public static final String AUDIO_RECORD_BASEURL = "kawach.ilabindia.com";

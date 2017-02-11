@@ -81,11 +81,11 @@
     <string name="lbl_reg_register">નોંધણી</string>
     <string name="lbl_choose_language">ભાષા પસંદ કરો</string>
     <string name="alert_video_problem">Prolem when saving video data, please try again</string>
-    <string name="alert_camera_not_support">Camera service not available</string>
+    <string name="alert_camera_not_support">કેમેરા સેવા ઉપલબ્ધ નથી</string>
     <string name="lbl_setting_hindi">Hindi</string>
     <string name="permission_request">This sample needs permission for camera and audio recording.</string>
     <string name="camera_error">This device doesn\'t support Camera2 API.</string>
 
     <string name="x_mbs">%1$sMB</string>
-    <string name="lbl_send_alert_via_sms">Send Alert Via SMS</string>
+    <string name="lbl_send_alert_via_sms">મોકલો ચેતવણી મારફતે SMS</string>
 </resources>

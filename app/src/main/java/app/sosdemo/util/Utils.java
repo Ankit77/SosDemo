@@ -406,7 +406,6 @@ public class Utils {
         Locale locale = new Locale(languageCode);
         Locale.setDefault(locale);
         Configuration config = new Configuration();
-        config.setLayoutDirection(locale);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             setSystemLocale(config, locale);
         } else {

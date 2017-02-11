@@ -40,7 +40,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
                             intent1.putExtra("URL", "http://kawach.ilabindia.com/" + WSConstants.METHOD_FILEUPLOAD);
                             intent1.putExtra("AWCODE", filelist.get(i).getAwcode());
                             intent1.putExtra("DATETIME", filelist.get(i).getDatetime());
-                            context.startService(intent);
+                            context.startService(intent1);
                             KavachApp.getInstance().getDatabaseHelper().deleteSMS(filelist.get(i).getAwcode());
                         }
                     }

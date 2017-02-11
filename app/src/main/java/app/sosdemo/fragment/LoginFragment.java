@@ -144,7 +144,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
-                if (!aBoolean) {
+                if (aBoolean) {
                     SharedPreferences.Editor editor = KavachApp.getInstance().getPref().edit();
                     editor.putBoolean(Constant.PREF_IS_LOGIN, true);
                     editor.putString(Constant.PREF_USERNAME, etUserName.getText().toString());

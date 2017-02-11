@@ -7,4 +7,6 @@
     <dimen name="radio_font_size">@dimen/_16sdp</dimen>
     <dimen name="listview_text_size">@dimen/_14sdp</dimen>
     <dimen name="listview_text_title_size">@dimen/_18sdp</dimen>
+    <dimen name="image_height">@dimen/_120sdp</dimen>
+    <dimen name="image_button_height">@dimen/_30sdp</dimen>
 </resources>

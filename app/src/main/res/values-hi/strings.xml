@@ -81,6 +81,6 @@
     <string name="lbl_reg_register">रजिस्टर</string>
     <string name="lbl_choose_language">ભાષા પસંદ કરો</string>
     <string name="alert_video_problem">Prolem when saving video data, please try again</string>
-    <string name="alert_camera_not_support">Camera service not available</string>
-    <string name="lbl_send_alert_via_sms">Send Alert Via SMS</string>
+    <string name="alert_camera_not_support">कैमरा सेवा उपलब्ध नहीं</string>
+    <string name="lbl_send_alert_via_sms">भेजें चेतावनी के माध्यम से एसएमएस</string>
 </resources>

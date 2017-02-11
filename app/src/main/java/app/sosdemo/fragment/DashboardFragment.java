@@ -555,6 +555,11 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         }
         PendingResult<Status> pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, DashboardFragment.this);
+        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (mLastLocation != null) {
+            KavachApp.getInstance().setCurrentLocation(mLastLocation);
+        }
     }
 
     @Override

@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -24,12 +26,17 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -37,6 +44,7 @@ import app.sosdemo.KavachApp;
 import app.sosdemo.MainActivity;
 import app.sosdemo.R;
 import app.sosdemo.adapter.ContactListAdapter;
+import app.sosdemo.common.ExifUtil;
 import app.sosdemo.model.ContactModel;
 import app.sosdemo.util.Constant;
 import app.sosdemo.util.GetFilePath;
@@ -62,6 +70,9 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
     private TextView tvContact;
     private final int REQUEST_CAPTURE_IMAGE = 111;
     private String cameraFilePath;
+    private ImageView imgImageUser;
+    private ImageView imgImageEdit;
+
 
     @Nullable
     @Override
@@ -81,6 +92,8 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
         ((MainActivity) getActivity()).setTitle(getString(R.string.lbl_title_settings));
         ((MainActivity) getActivity()).isshowBackButton(true);
         ((MainActivity) getActivity()).isMenuButton(false);
+        imgImageUser = (ImageView) view.findViewById(R.id.fragment_setting_imgUser);
+        imgImageEdit = (ImageView) view.findViewById(R.id.fragment_setting_imgEdit);
         tvContact = (TextView) view.findViewById(R.id.fragment_setting_tvContact);
         rgLanguage = (RadioGroup) view.findViewById(R.id.fragnent_setting_rg_language);
         rvContactList = (RecyclerView) view.findViewById(R.id.fragnent_setting_rv_contactlist);
@@ -118,6 +131,13 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
 
         tvChangePass.setOnClickListener(this);
         tvContact.setOnClickListener(this);
+        imgImageEdit.setOnClickListener(this);
+
+        Glide.with(getActivity()).load("http://api.androidhive.info/images/glide/medium/deadpool.jpg")
+                .thumbnail(0.5f).placeholder(R.drawable.ic_user)
+                .crossFade()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imgImageUser);
 
     }
 
@@ -191,6 +211,8 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
 //            alertdFragment.show(getFragmentManager(), getString(R.string.lbl_contactlist));
 //            ChangePasswordFragment changePasswordFragment = new ChangePasswordFragment();
             Utils.addNextFragmentNoAnim(R.id.container, getActivity(), contactListFragment, SettingFragemt.this);
+        } else if (v == imgImageEdit) {
+            captureImage();
         }
     }
 
@@ -323,10 +345,20 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
                     try {
                         if (!TextUtils.isEmpty(cameraFilePath)) {
                             final Uri uri = Uri.fromFile(new File(cameraFilePath));
-                            String filePath = GetFilePath.getPath(getActivity(), uri);
-                            if (!TextUtils.isEmpty(filePath)) {
-
+                            if (!android.os.Build.MANUFACTURER.equalsIgnoreCase("samsung")) {
+                                imgImageUser.setImageURI(uri);
+                            } else {
+                                String filePath = GetFilePath.getPath(getActivity(), uri);
+//                            if (!TextUtils.isEmpty(filePath)) {
+                                BitmapFactory.Options options = new BitmapFactory.Options();
+                                options.inSampleSize = 8;
+                                Bitmap local = BitmapFactory.decodeStream(new FileInputStream(filePath), null, options);
+                                local = ExifUtil.rotateBitmap(filePath, local);
+                                imgImageUser.setImageBitmap(local);
                             }
+
+
+//                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

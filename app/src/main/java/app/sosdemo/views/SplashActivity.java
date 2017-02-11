@@ -36,6 +36,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import app.sosdemo.KavachApp;
 import app.sosdemo.MainActivity;
 import app.sosdemo.R;
+import app.sosdemo.util.WriteLog;
 
 /**
  * Created by ANKIT on 1/30/2017.
@@ -166,12 +167,12 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        WriteLog.E(SplashActivity.class.getSimpleName(),"error");
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        WriteLog.E(SplashActivity.class.getSimpleName(),"error");
     }
 
     @Override
