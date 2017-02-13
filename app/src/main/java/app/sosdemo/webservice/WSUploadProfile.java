@@ -63,13 +63,13 @@ public class WSUploadProfile {
             conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
             final DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
             dos.writeBytes(twoHyphens + boundary + lineEnd);
-            dos.writeBytes("Content-Disposition: form-data; name=\"MacId\"" + lineEnd);
+            dos.writeBytes("Content-Disposition: form-data; name=\"MacID\"" + lineEnd);
             dos.writeBytes(lineEnd);
             dos.writeBytes(macid);
             dos.writeBytes(lineEnd);
             dos.writeBytes(twoHyphens + boundary + lineEnd);
 
-            dos.writeBytes("Content-Disposition: form-data; name=\"SimId\"" + lineEnd);
+            dos.writeBytes("Content-Disposition: form-data; name=\"SimID\"" + lineEnd);
             dos.writeBytes(lineEnd);
             dos.writeBytes(simid);
             dos.writeBytes(lineEnd);
