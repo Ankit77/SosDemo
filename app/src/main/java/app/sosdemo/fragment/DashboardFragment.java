@@ -517,7 +517,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener,
         String message = "MACID - " + KavachApp.getInstance().getDeviceID() + ",SIMID - " + KavachApp.getInstance().getIMEI() + ",ALERT TYPE - " + mCode + ",LATITUDE - " + KavachApp.getInstance().getCurrentLocation().getLatitude() + ",LONGITUDE - " + KavachApp.getInstance().getCurrentLocation().getLongitude();
         Utils.sendSMS(Constant.SMS_CONTACT, message, getActivity());
         if (Utils.isNetworkAvailable(getActivity())) {
-
+            if (KavachApp.getInstance().getCurrentLocation() == null) {
+                Location location = new Location("current");
+                location.setLatitude(0.00);
+                location.setLongitude(0.00);
+                KavachApp.getInstance().setCurrentLocation(location);
+            }
             asyncSendSos = new AsyncSendSos();
             asyncSendSos.execute("0", KavachApp.getInstance().getDeviceID(), KavachApp.getInstance().getIMEI(), Utils.getCurrentTimeStamp(), "" + KavachApp.getInstance().getCurrentLocation().getLatitude(), "" + KavachApp.getInstance().getCurrentLocation().getLongitude(), mCode, "I");
         } else {

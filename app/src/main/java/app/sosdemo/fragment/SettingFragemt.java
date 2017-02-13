@@ -23,6 +23,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -50,6 +52,7 @@ import app.sosdemo.util.Constant;
 import app.sosdemo.util.GetFilePath;
 import app.sosdemo.util.Utils;
 import app.sosdemo.webservice.WSContactList;
+import app.sosdemo.webservice.WSUploadProfile;
 
 /**
  * Created by ANKIT on 1/31/2017.
@@ -344,21 +347,38 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
                 if (requestCode == REQUEST_CAPTURE_IMAGE) {
                     try {
                         if (!TextUtils.isEmpty(cameraFilePath)) {
+                            Bitmap bitmap = null;
                             final Uri uri = Uri.fromFile(new File(cameraFilePath));
+                            String filePath = GetFilePath.getPath(getActivity(), uri);
                             if (!android.os.Build.MANUFACTURER.equalsIgnoreCase("samsung")) {
                                 imgImageUser.setImageURI(uri);
+                                bitmap = BitmapFactory.decodeFile(filePath);
                             } else {
-                                String filePath = GetFilePath.getPath(getActivity(), uri);
+
 //                            if (!TextUtils.isEmpty(filePath)) {
                                 BitmapFactory.Options options = new BitmapFactory.Options();
                                 options.inSampleSize = 8;
                                 Bitmap local = BitmapFactory.decodeStream(new FileInputStream(filePath), null, options);
                                 local = ExifUtil.rotateBitmap(filePath, local);
                                 imgImageUser.setImageBitmap(local);
+                                bitmap = local;
+
+
+                            }
+                            if (bitmap != null) {
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+                                byte[] b = baos.toByteArray();
+                                String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                                if (Utils.isNetworkAvailable(getActivity())) {
+                                    AsyncUploadProfile asyncUploadProfile = new AsyncUploadProfile();
+                                    asyncUploadProfile.execute(KavachApp.getInstance().getDeviceID(), KavachApp.getInstance().getIMEI(), encodedImage);
+                                } else {
+                                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
+                                }
+
                             }
 
-
-//                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -367,6 +387,39 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private class AsyncUploadProfile extends AsyncTask<String, Void, Boolean> {
+        private ProgressDialog progressDialog;
+        private WSUploadProfile wsUploadProfile;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = Utils.displayProgressDialog(getActivity());
+        }
+
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            wsUploadProfile = new WSUploadProfile(getActivity());
+            return wsUploadProfile.executeService(strings[0], strings[1], strings[2]);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (!isCancelled()) {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                if (aBoolean) {
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), wsUploadProfile.getMessage());
+                } else {
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), wsUploadProfile.getMessage());
+                }
+            }
         }
     }
 }
