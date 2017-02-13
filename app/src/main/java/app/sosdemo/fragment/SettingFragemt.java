@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -23,7 +22,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +33,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.lkland.util.FileUtils;
 
-import java.io.ByteArrayOutputStream;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -46,13 +47,14 @@ import app.sosdemo.KavachApp;
 import app.sosdemo.MainActivity;
 import app.sosdemo.R;
 import app.sosdemo.adapter.ContactListAdapter;
-import app.sosdemo.common.ExifUtil;
 import app.sosdemo.model.ContactModel;
 import app.sosdemo.util.Constant;
 import app.sosdemo.util.GetFilePath;
 import app.sosdemo.util.Utils;
+import app.sosdemo.webservice.WSConstants;
 import app.sosdemo.webservice.WSContactList;
 import app.sosdemo.webservice.WSUploadProfile;
+import id.zelory.compressor.Compressor;
 
 /**
  * Created by ANKIT on 1/31/2017.
@@ -350,34 +352,51 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
                             Bitmap bitmap = null;
                             final Uri uri = Uri.fromFile(new File(cameraFilePath));
                             String filePath = GetFilePath.getPath(getActivity(), uri);
-                            if (!android.os.Build.MANUFACTURER.equalsIgnoreCase("samsung")) {
-                                imgImageUser.setImageURI(uri);
-                                bitmap = BitmapFactory.decodeFile(filePath);
+                            File compressedImage = null;
+                            //compress image
+                            if (Utils.getFileSizeInKB(filePath) > 500) {
+                                compressedImage = new Compressor.Builder(getActivity())
+                                        .setMaxWidth(640)
+                                        .setMaxHeight(480)
+                                        .setQuality(75)
+                                        .setCompressFormat(Bitmap.CompressFormat.JPEG)
+                                        .setDestinationDirectoryPath(FileUtils.createFolderInExternalStorageDirectory(getString(R.string.app_name) + "/" + Constant.IMAGE_FOLDER_NAME))
+                                        .build()
+                                        .compressToFile(new File(filePath));
+                                //Delete file
+                                File file = new File(filePath);
+                                file.delete();
                             } else {
-
-//                            if (!TextUtils.isEmpty(filePath)) {
-                                BitmapFactory.Options options = new BitmapFactory.Options();
-                                options.inSampleSize = 8;
-                                Bitmap local = BitmapFactory.decodeStream(new FileInputStream(filePath), null, options);
-                                local = ExifUtil.rotateBitmap(filePath, local);
-                                imgImageUser.setImageBitmap(local);
-                                bitmap = local;
-
-
+                                compressedImage = new File(filePath);
                             }
-                            if (bitmap != null) {
-                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
-                                byte[] b = baos.toByteArray();
-                                String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-                                if (Utils.isNetworkAvailable(getActivity())) {
-                                    AsyncUploadProfile asyncUploadProfile = new AsyncUploadProfile();
-                                    asyncUploadProfile.execute(KavachApp.getInstance().getDeviceID(), KavachApp.getInstance().getIMEI(), encodedImage);
-                                } else {
-                                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
-                                }
-
+//                            if (!android.os.Build.MANUFACTURER.equalsIgnoreCase("samsung")) {
+//                                imgImageUser.setImageURI(uri);
+//                                bitmap = BitmapFactory.decodeFile(filePath);
+//                            } else {
+//
+////                            if (!TextUtils.isEmpty(filePath)) {
+//                                BitmapFactory.Options options = new BitmapFactory.Options();
+//                                options.inSampleSize = 8;
+//                                Bitmap local = BitmapFactory.decodeStream(new FileInputStream(filePath), null, options);
+//                                local = ExifUtil.rotateBitmap(filePath, local);
+//                                imgImageUser.setImageBitmap(local);
+//                                bitmap = local;
+//
+//
+//                            }
+//                            if (bitmap != null) {
+//                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+//                                byte[] b = baos.toByteArray();
+//                                String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                            if (Utils.isNetworkAvailable(getActivity())) {
+                                AsyncUploadProfile asyncUploadProfile = new AsyncUploadProfile();
+                                asyncUploadProfile.execute(KavachApp.getInstance().getDeviceID(), KavachApp.getInstance().getIMEI(), compressedImage.getPath());
+                            } else {
+                                Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
                             }
+
+//                            }
 
                         }
                     } catch (Exception e) {
@@ -403,8 +422,18 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
 
         @Override
         protected Boolean doInBackground(String... strings) {
-            wsUploadProfile = new WSUploadProfile(getActivity());
-            return wsUploadProfile.executeService(strings[0], strings[1], strings[2]);
+            try {
+                String url = "http://kawach.ilabindia.com/" + WSConstants.METHOD_PROFILE;
+                wsUploadProfile = new WSUploadProfile(url, strings[0], strings[1]);
+                final FileInputStream fstrm = new FileInputStream(strings[2]);
+                String res = wsUploadProfile.Send_Now(fstrm, new File(strings[2]).getName());
+                boolean issuccess = parseResponse(res);
+                return issuccess;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+
         }
 
         @Override
@@ -414,12 +443,37 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
-                if (aBoolean) {
-                    Utils.displayDialog(getActivity(), getString(R.string.app_name), wsUploadProfile.getMessage());
-                } else {
-                    Utils.displayDialog(getActivity(), getString(R.string.app_name), wsUploadProfile.getMessage());
-                }
+//                if (aBoolean) {
+//                    Utils.displayDialog(getActivity(), getString(R.string.app_name), wsUploadProfile.getMessage());
+//                } else {
+//                    Utils.displayDialog(getActivity(), getString(R.string.app_name), wsUploadProfile.getMessage());
+//                }
             }
         }
+    }
+
+    private boolean parseResponse(String response) {
+
+        if (response != null && response.toString().trim().length() > 0) {
+            try {
+                final JSONArray jsonArray = new JSONArray(response);
+                if (jsonArray != null && jsonArray.length() > 0) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        final JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        final int success = jsonObject.getInt("Result");
+                        if (success <= 0) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+
+                    }
+                }
+                return false;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 }
