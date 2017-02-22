@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -369,6 +370,8 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
                             } else {
                                 compressedImage = new File(filePath);
                             }
+                            Bitmap bitmap1 = BitmapFactory.decodeFile(compressedImage.getAbsolutePath());
+                            imgImageUser.setImageBitmap(bitmap1);
 //                            if (!android.os.Build.MANUFACTURER.equalsIgnoreCase("samsung")) {
 //                                imgImageUser.setImageURI(uri);
 //                                bitmap = BitmapFactory.decodeFile(filePath);
