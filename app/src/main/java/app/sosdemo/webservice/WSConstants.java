@@ -35,6 +35,7 @@ public class WSConstants {
     public static final String METHOD_FILEUPLOAD = "SetFileUpload.aspx";
     public static final String METHOD_BROADCAST = "getMessageBroadcast";
     public static final String METHOD_PROFILE = "MemberProfileAndroidUpload.aspx";
+    public static final String METHOD_PROFILE_GET = "getMemberProfileAndroidUpload.aspx";
 
     public static final String PARAMS_USERID = "userid";
     public static final String PARAMS_USERPASSWORD = "password";

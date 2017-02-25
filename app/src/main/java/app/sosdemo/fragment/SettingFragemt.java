@@ -10,6 +10,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -23,6 +25,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +44,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -54,6 +58,7 @@ import app.sosdemo.util.GetFilePath;
 import app.sosdemo.util.Utils;
 import app.sosdemo.webservice.WSConstants;
 import app.sosdemo.webservice.WSContactList;
+import app.sosdemo.webservice.WSGetProfilePicture;
 import app.sosdemo.webservice.WSUploadProfile;
 import id.zelory.compressor.Compressor;
 
@@ -78,6 +83,7 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
     private String cameraFilePath;
     private ImageView imgImageUser;
     private ImageView imgImageEdit;
+    private AsyncGetProfilePic asyncGetProfilePic;
 
 
     @Nullable
@@ -85,12 +91,6 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_setting, null);
         init();
-//        if (Utils.isNetworkAvailable(getActivity())) {
-//            asyncContactList = new AsyncContactList();
-//            asyncContactList.execute();
-//        } else {
-//            Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
-//        }
         return view;
     }
 
@@ -145,6 +145,9 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imgImageUser);
 
+        asyncGetProfilePic = new AsyncGetProfilePic();
+        asyncGetProfilePic.execute();
+
     }
 
     private void resetActivity() {
@@ -191,7 +194,7 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
      * @return : Generated Uri.
      */
     private Uri getPostImageUri(boolean canCleanup) {
-        final File file = new File(getActivity().getExternalCacheDir() + File.separator + System.currentTimeMillis() + Constant.IMAGE_EXTENSION);
+        final File file = new File(getActivity().getExternalCacheDir() + File.separator + KavachApp.getInstance().getDeviceID() + Constant.IMAGE_EXTENSION);
         if (canCleanup) {
             if (file.exists()) {
                 file.delete();
@@ -353,6 +356,15 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
                             Bitmap bitmap = null;
                             final Uri uri = Uri.fromFile(new File(cameraFilePath));
                             String filePath = GetFilePath.getPath(getActivity(), uri);
+
+
+                            if (android.os.Build.MANUFACTURER.equalsIgnoreCase("samsung")) {
+                                imgImageUser.setImageURI(uri);
+                                bitmap = decodeFile(filePath);
+                                if (bitmap != null) {
+                                    filePath = SaveImage(bitmap);
+                                }
+                            }
                             File compressedImage = null;
                             //compress image
                             if (Utils.getFileSizeInKB(filePath) > 500) {
@@ -372,26 +384,6 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
                             }
                             Bitmap bitmap1 = BitmapFactory.decodeFile(compressedImage.getAbsolutePath());
                             imgImageUser.setImageBitmap(bitmap1);
-//                            if (!android.os.Build.MANUFACTURER.equalsIgnoreCase("samsung")) {
-//                                imgImageUser.setImageURI(uri);
-//                                bitmap = BitmapFactory.decodeFile(filePath);
-//                            } else {
-//
-////                            if (!TextUtils.isEmpty(filePath)) {
-//                                BitmapFactory.Options options = new BitmapFactory.Options();
-//                                options.inSampleSize = 8;
-//                                Bitmap local = BitmapFactory.decodeStream(new FileInputStream(filePath), null, options);
-//                                local = ExifUtil.rotateBitmap(filePath, local);
-//                                imgImageUser.setImageBitmap(local);
-//                                bitmap = local;
-//
-//
-//                            }
-//                            if (bitmap != null) {
-//                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
-//                                byte[] b = baos.toByteArray();
-//                                String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
                             if (Utils.isNetworkAvailable(getActivity())) {
                                 AsyncUploadProfile asyncUploadProfile = new AsyncUploadProfile();
                                 asyncUploadProfile.execute(KavachApp.getInstance().getDeviceID(), KavachApp.getInstance().getIMEI(), compressedImage.getPath());
@@ -399,7 +391,6 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
                                 Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_internet));
                             }
 
-//                            }
 
                         }
                     } catch (Exception e) {
@@ -415,6 +406,7 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
     private class AsyncUploadProfile extends AsyncTask<String, Void, Boolean> {
         private ProgressDialog progressDialog;
         private WSUploadProfile wsUploadProfile;
+        private String imagepath;
 
         @Override
         protected void onPreExecute() {
@@ -426,6 +418,7 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
         @Override
         protected Boolean doInBackground(String... strings) {
             try {
+                imagepath = strings[2];
                 String url = "http://kawach.ilabindia.com/" + WSConstants.METHOD_PROFILE;
                 wsUploadProfile = new WSUploadProfile(url, strings[0], strings[1]);
                 final FileInputStream fstrm = new FileInputStream(strings[2]);
@@ -446,11 +439,16 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
-//                if (aBoolean) {
-//                    Utils.displayDialog(getActivity(), getString(R.string.app_name), wsUploadProfile.getMessage());
-//                } else {
-//                    Utils.displayDialog(getActivity(), getString(R.string.app_name), wsUploadProfile.getMessage());
-//                }
+                //delete profile photo from sdcard once upload in server
+                File file = new File(imagepath);
+                if (file.exists()) {
+                    file.delete();
+                }
+                if (aBoolean) {
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_update_profile_success));
+                } else {
+                    Utils.displayDialog(getActivity(), getString(R.string.app_name), getString(R.string.alret_update_profile_failed));
+                }
             }
         }
     }
@@ -478,5 +476,119 @@ public class SettingFragemt extends Fragment implements View.OnClickListener, Co
             }
         }
         return false;
+    }
+
+    private class AsyncGetProfilePic extends AsyncTask<Void, Void, String> {
+        private ProgressDialog progressDialog;
+        private WSGetProfilePicture wsGetProfilePicture;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = Utils.displayProgressDialog(getActivity());
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            WSGetProfilePicture wsGetProfilePicture = new WSGetProfilePicture(getActivity());
+            wsGetProfilePicture.executeService(KavachApp.getInstance().getDeviceID(), KavachApp.getInstance().getIMEI());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (!isCancelled()) {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                //delete profile photo from sdcard once upload in server
+
+            }
+        }
+    }
+
+    public Bitmap decodeFile(String path) {//you can provide file path here
+        int orientation;
+        try {
+            if (path == null) {
+                return null;
+            }
+            // decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            // Find the correct scale value. It should be the power of 2.
+            final int REQUIRED_SIZE = 70;
+            int width_tmp = o.outWidth, height_tmp = o.outHeight;
+            int scale = 0;
+            while (true) {
+                if (width_tmp / 2 < REQUIRED_SIZE
+                        || height_tmp / 2 < REQUIRED_SIZE)
+                    break;
+                width_tmp /= 2;
+                height_tmp /= 2;
+                scale++;
+            }
+            // decode with inSampleSize
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            Bitmap bm = BitmapFactory.decodeFile(path, o2);
+            Bitmap bitmap = bm;
+
+            ExifInterface exif = new ExifInterface(path);
+
+            orientation = exif
+                    .getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+
+            Log.e("ExifInteface .........", "rotation =" + orientation);
+
+//          exif.setAttribute(ExifInterface.ORIENTATION_ROTATE_90, 90);
+
+            Log.e("orientation", "" + orientation);
+            Matrix m = new Matrix();
+
+            if ((orientation == ExifInterface.ORIENTATION_ROTATE_180)) {
+                m.postRotate(180);
+//              m.postScale((float) bm.getWidth(), (float) bm.getHeight());
+                // if(m.preRotate(90)){
+                Log.e("in orientation", "" + orientation);
+                bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(),
+                        bm.getHeight(), m, true);
+                return bitmap;
+            } else if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
+                m.postRotate(90);
+                Log.e("in orientation", "" + orientation);
+                bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(),
+                        bm.getHeight(), m, true);
+                return bitmap;
+            } else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+                m.postRotate(270);
+                Log.e("in orientation", "" + orientation);
+                bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(),
+                        bm.getHeight(), m, true);
+                return bitmap;
+            }
+            return bitmap;
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
+
+    private String SaveImage(Bitmap finalBitmap) {
+
+        Uri outputFileUri = getPostImageUri(true);
+        File file = new File(outputFileUri.getPath());
+        if (file.exists()) file.delete();
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return file.getPath();
     }
 }
